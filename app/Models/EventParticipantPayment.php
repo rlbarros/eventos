@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class EventParticipantPayment extends Model
+{
+    protected $table = 'events_participants_payments';
+
+    protected $fillable = [
+        'event_id',
+        'event_fee_id',
+        'person_id',
+        'batch',
+        'paymaent_date',
+        'payment_method',
+        'amount',
+    ];
+
+    public function Event(): BelongsTo
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    public function EventFee(): BelongsTo
+    {
+        return $this->belongsTo(EventFee::class, 'event_fee_id');
+    }
+
+    public function Person(): BelongsTo
+    {
+        return $this->belongsTo(Person::class, 'person_id');
+    }
+}
