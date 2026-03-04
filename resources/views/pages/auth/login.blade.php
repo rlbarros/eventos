@@ -11,7 +11,7 @@
             <!-- Email Address -->
             <flux:input
                 name="email"
-                :label="__('Email address')"
+                :label="__('Endereço de Email')"
                 :value="old('email')"
                 type="email"
                 required
@@ -23,7 +23,7 @@
             <div class="relative">
                 <flux:input
                     name="password"
-                    :label="__('Password')"
+                    :label="__('Senha')"
                     type="password"
                     required
                     autocomplete="current-password"
@@ -32,7 +32,7 @@
 
                 @if (Route::has('password.request'))
                 <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
-                    {{ __('Forgot your password?') }}
+                    {{ __('Esqueceu sua Senha?') }}
                 </flux:link>
                 @endif
             </div>

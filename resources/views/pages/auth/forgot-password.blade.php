@@ -11,7 +11,7 @@
             <!-- Email Address -->
             <flux:input
                 name="email"
-                :label="__('Email address')"
+                :label="__('Endereço de Email')"
                 type="email"
                 required
                 autofocus
