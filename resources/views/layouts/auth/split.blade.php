@@ -3,6 +3,13 @@
 
 <head>
     @include('partials.head')
+    <style>
+        @media (width>=64rem) {
+            .SM\:w-87\.5 {
+                width: 438px
+            }
+        }
+    </style>
 </head>
 
 <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
@@ -30,7 +37,7 @@
             </div>
         </div>
         <div class="w-full lg:p-8">
-            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-87.5">
                 <a href="{{ route('home') }}" class="z-20 flex flex-col items-center gap-2 font-medium lg:hidden" wire:navigate>
                     <span class="flex h-9 w-9 items-center justify-center rounded-md">
                         <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />

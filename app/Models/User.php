@@ -55,10 +55,21 @@ class User extends Authenticatable
      */
     public function initials(): string
     {
-        return Str::of($this->name)
+        return Str::of($this->namePlusSurname())
             ->explode(' ')
             ->take(2)
             ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function namePlusSurname(): string
+    {
+        $names = Str::of($this->name)->explode(' ');
+        $namesCount = count($names);
+        if ($namesCount == 1) {
+            return $this->name;
+        } else {
+            return $names[0] . ' ' . $names[$namesCount - 1];
+        }
     }
 }

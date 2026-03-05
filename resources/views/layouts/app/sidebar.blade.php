@@ -6,16 +6,25 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <flux:sidebar sticky collapsible="mobile"
+        class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.header>
             <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
             <flux:sidebar.collapse class="lg:hidden" />
         </flux:sidebar.header>
 
         <flux:sidebar.nav>
-            <flux:sidebar.group :heading="__('Platform')" class="grid">
-                <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+            <flux:sidebar.group :heading="__('Visões')" class="grid">
+                <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
+                    wire:navigate>
                     {{ __('Dashboard') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
+
+            <flux:sidebar.group :heading="__('Cadastros')" class="grid">
+                <flux:sidebar.item icon="home" :href="route('event-sites')" :current="request()->routeIs('event-sites')"
+                    wire:navigate>
+                    {{ __('Locais de Eventos') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
@@ -23,12 +32,13 @@
         <flux:spacer />
 
         <flux:sidebar.nav>
-            <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
+            <flux:sidebar.item icon="globe-alt" href="https://ieabrasil.org.br" target="_blank">
+                {{ __('Site Institucional') }}
             </flux:sidebar.item>
 
-            <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
+            <flux:sidebar.item icon="device-phone-mobile" href="https://api.whatsapp.com/send?phone=5584981530203"
+                target="_blank">
+                {{ __('Contato') }}
             </flux:sidebar.item>
         </flux:sidebar.nav>
 
@@ -42,17 +52,13 @@
         <flux:spacer />
 
         <flux:dropdown position="top" align="end">
-            <flux:profile
-                :initials="auth()->user()->initials()"
-                icon-trailing="chevron-down" />
+            <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
 
             <flux:menu>
                 <flux:menu.radio.group>
                     <div class="p-0 text-sm font-normal">
                         <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                            <flux:avatar
-                                :name="auth()->user()->name"
-                                :initials="auth()->user()->initials()" />
+                            <flux:avatar :name="auth()->user()->name" :initials="auth()->user()->initials()" />
 
                             <div class="grid flex-1 text-start text-sm leading-tight">
                                 <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
@@ -66,7 +72,7 @@
 
                 <flux:menu.radio.group>
                     <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
-                        {{ __('Settings') }}
+                        {{ __('Configurações') }}
                     </flux:menu.item>
                 </flux:menu.radio.group>
 
@@ -74,13 +80,9 @@
 
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
-                    <flux:menu.item
-                        as="button"
-                        type="submit"
-                        icon="arrow-right-start-on-rectangle"
-                        class="w-full cursor-pointer"
-                        data-test="logout-button">
-                        {{ __('Log out') }}
+                    <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle"
+                        class="w-full cursor-pointer" data-test="logout-button">
+                        {{ __('Sair') }}
                     </flux:menu.item>
                 </form>
             </flux:menu>
@@ -89,6 +91,7 @@
 
     {{ $slot }}
 
+    <x-toaster-hub />
     @fluxScripts
 </body>
 
