@@ -17,12 +17,12 @@ class Event extends Model
         'event_site_id',
     ];
 
-    public function Church(): BelongsTo
+    public function church(): BelongsTo
     {
         return $this->belongsTo(Church::class, 'church_id');
     }
 
-    public function EventSite(): BelongsTo
+    public function event_site(): BelongsTo
     {
         return $this->belongsTo(EventSite::class, 'event_site_id');
     }

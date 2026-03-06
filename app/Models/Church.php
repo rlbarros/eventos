@@ -15,12 +15,12 @@ class Church extends Model
         'city_id',
     ];
 
-    public function State(): BelongsTo
+    public function state(): BelongsTo
     {
         return $this->belongsTo(State::class, 'state_id');
     }
 
-    public function City(): BelongsTo
+    public function city(): BelongsTo
     {
         return $this->belongsTo(City::class, 'city_id');
     }

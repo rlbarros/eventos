@@ -14,12 +14,12 @@ class EventTripParticipant extends Model
         'person_id'
     ];
 
-    public function EventTrip(): BelongsTo
+    public function event_trip(): BelongsTo
     {
         return $this->belongsTo(EventTrip::class, 'event_trip_id');
     }
 
-    public function Person(): BelongsTo
+    public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'person_id');
     }

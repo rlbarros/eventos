@@ -16,12 +16,12 @@ class EventServiceParticipantConsumption extends Model
         'amount'
     ];
 
-    public function Event(): BelongsTo
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function Person(): BelongsTo
+    public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'person_id');
     }

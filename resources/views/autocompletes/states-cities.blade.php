@@ -7,17 +7,14 @@ use App\Models\State;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Modelable;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 
 new class extends Component
 {
-    #[Modelable]
     #[Validate('required')]
     public $stateId = 12;
-    #[Modelable]
     #[Validate('required')]
     public $cityId = 53;
     public Collection $states;
@@ -74,8 +71,8 @@ new class extends Component
 }
 
 ?>
-<div class="flex start-items" class="gap-4">
-    <flux:field class="max-w-50 mr-4">
+<div class="flex gap-4">
+    <flux:field class="w-50">
         <flux:label>Estado</flux:label>
         @if ($statesLoading)
         <flux:input readonly color="zinc">

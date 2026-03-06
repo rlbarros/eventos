@@ -16,7 +16,7 @@ class EventSiteRoomType extends Model
         'beds'
     ];
 
-    public function EventSite(): BelongsTo
+    public function event_site(): BelongsTo
     {
         return $this->belongsTo(EventSite::class, 'event_site_id');
     }

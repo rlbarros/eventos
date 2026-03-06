@@ -19,17 +19,17 @@ class EventParticipantPayment extends Model
         'amount',
     ];
 
-    public function Event(): BelongsTo
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function EventFee(): BelongsTo
+    public function event_fee(): BelongsTo
     {
         return $this->belongsTo(EventFee::class, 'event_fee_id');
     }
 
-    public function Person(): BelongsTo
+    public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'person_id');
     }

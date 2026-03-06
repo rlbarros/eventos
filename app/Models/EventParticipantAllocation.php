@@ -15,17 +15,17 @@ class EventParticipantAllocation extends Model
         'person_id'
     ];
 
-    public function Event(): BelongsTo
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function EventSiteRoom(): BelongsTo
+    public function event_site_room(): BelongsTo
     {
         return $this->belongsTo(EventSiteRoom::class, 'event_site_room_id');
     }
 
-    public function Person(): BelongsTo
+    public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'person_id');
     }

@@ -15,12 +15,12 @@ class EventSiteRoom extends Model
         'name',
     ];
 
-    public function EventSite(): BelongsTo
+    public function event_site(): BelongsTo
     {
         return $this->belongsTo(EventSite::class, 'event_site_id');
     }
 
-    public function EventSiteRoomType(): BelongsTo
+    public function event_site_room_type(): BelongsTo
     {
         return $this->belongsTo(EventSiteRoomType::class, 'event_site_room_type_id');
     }

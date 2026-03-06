@@ -22,22 +22,22 @@ class Person extends Model
         'complement',
     ];
 
-    public function Church(): BelongsTo
+    public function church(): BelongsTo
     {
         return $this->belongsTo(Church::class, 'church_id');
     }
 
-    public function Father(): BelongsTo
+    public function father(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'father_id');
     }
 
-    public function Mother(): BelongsTo
+    public function mother(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'mother_id');
     }
 
-    public function Spouse(): BelongsTo
+    public function spouse(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'spouse_id');
     }

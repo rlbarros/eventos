@@ -15,7 +15,7 @@ class City extends Model
         'name',
     ];
 
-    public function State(): BelongsTo
+    public function state(): BelongsTo
     {
         return $this->belongsTo(State::class, 'state_id');
     }

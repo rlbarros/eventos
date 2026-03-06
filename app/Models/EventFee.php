@@ -17,12 +17,12 @@ class EventFee extends Model
         'fee'
     ];
 
-    public function Event(): BelongsTo
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function EventSiteRoomType(): BelongsTo
+    public function event_site_room_type(): BelongsTo
     {
         return $this->belongsTo(EventSiteRoomType::class, 'event_site_room_type_id');
     }

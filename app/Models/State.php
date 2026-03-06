@@ -14,13 +14,8 @@ class State extends Model
         'name',
     ];
 
-    public function Cidades(): HasMany
+    public function cities(): HasMany
     {
         return $this->hasMany(City::class, 'state_id');
-    }
-
-    static function ByCode($code): State | null
-    {
-        return State::where('code', $code)->first();
     }
 }

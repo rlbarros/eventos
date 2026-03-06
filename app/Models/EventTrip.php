@@ -17,7 +17,7 @@ class EventTrip extends Model
         'end_date',
     ];
 
-    public function EventDriver(): BelongsTo
+    public function event_driver(): BelongsTo
     {
         return $this->belongsTo(EventDriver::class, 'event_driver_id');
     }

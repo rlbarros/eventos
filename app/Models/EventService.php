@@ -15,7 +15,7 @@ class EventService extends Model
         'fee'
     ];
 
-    public function Event(): BelongsTo
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');
     }

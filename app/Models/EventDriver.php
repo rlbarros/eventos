@@ -17,7 +17,7 @@ class EventDriver extends Model
         'capacity'
     ];
 
-    public function Event(): BelongsTo
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');
     }
