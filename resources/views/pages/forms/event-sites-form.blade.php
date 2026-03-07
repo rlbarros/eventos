@@ -77,7 +77,7 @@ new class extends Component {
 
     public function handleModalCloseEvent()
     {
-        $this->form->gerericReset();
+        $this->form->genericReset();
     }
 
     public function dispatchStateCityExternalySelected()
