@@ -64,10 +64,10 @@ abstract class GenericForm extends Form
             $this->model->save();
         }
 
-        $this->gerericReset();
+        $this->genericReset();
     }
 
-    public function gerericReset()
+    public function genericReset()
     {
         parent::resetExcept(['model']);
     }
