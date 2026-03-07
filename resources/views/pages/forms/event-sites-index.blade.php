@@ -1,10 +1,13 @@
 <?php
 
 use App\Models\EventSite;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
+use Masmerise\Toaster\Toaster;
 
 
 new #[Title('Locais de Evento')] class extends Component
@@ -17,14 +20,19 @@ new #[Title('Locais de Evento')] class extends Component
         return EventSite::latest()->paginate(10);
     }
 
-    public function showEditForm(int $id)
+    #[On('forms.event-site-delete-confirmed')]
+    public function handleEventSiteDeleteConfirmed(int $id)
     {
-        dd($id);
-    }
+        try {
+            $eventSite = EventSite::findOrFail($id);
+            $eventSite->delete();
 
-    public function delete(int $id)
-    {
-        dd($id);
+            Toaster::success(EventSite::modelName() . $this->eventSite->descriptor() . ' excluído com sucesso');
+            Flux::modal('dialogs.delete-confirmation')->close();
+            $this->redirectRoute('event-sites');
+        } catch (\Exception $e) {
+            Toaster::warning('erro ' . $e->getMessage() . 'ao  apagar local de evento ' . $eventSite->descriptor());
+        }
     }
 }; ?>
 
@@ -37,13 +45,12 @@ new #[Title('Locais de Evento')] class extends Component
                 <flux:subheading size="lg" class="mb-4">{{ __('cadastre as chácaras, estâncias ou quaisquer outros
                     locais de receplção onde ocorrem os eventos da IEA.') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="create-event-site">
-                <flux:button variant="primary">
-                    Criar Local de Evento
-                </flux:button>
-            </flux:modal.trigger>
 
-            <livewire:pages::forms.event-sites-post />
+            <flux:button variant="primary" wire:click="$dispatch('forms.event-site-create')">
+                Criar Local de Evento
+            </flux:button>
+
+            <livewire:pages::forms.event-sites-form />
         </div>
     </div>
     <flux:separator variant="subtle" />
@@ -69,12 +76,19 @@ new #[Title('Locais de Evento')] class extends Component
                     <flux:table.cell>{{ $eventSite->city->name }}</flux:table.cell>
                     <flux:table.cell>{{ $eventSite->state->name }}</flux:table.cell>
                     <flux:table.cell>
-                        <flux:button wire:click="showEditForm({{ $eventSite['id'] }})" icon="pencil-square" size="sm" />
-                        <flux:button variant="danger" icon="trash" size="sm" wire:click="delete({{ $eventSite['id'] }})" />
+                        <div class="flex gap-3">
+                            <flux:button wire:click="$dispatch('forms.event-site-view', { id: {{ $eventSite->id }} })" icon="document-magnifying-glass" style="cursor: pointer;"
+                                size="sm" />
+                            <flux:button wire:click="$dispatch('forms.event-site-edit', { id: {{ $eventSite->id }} })" icon="pencil-square" style="cursor: pointer;"
+                                size="sm" />
+                            <flux:button variant="danger" icon="trash" size="sm"
+                                wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $eventSite->id }}, modelName: '{{EventSite::modelName()}}', descriptor: '{{$eventSite->descriptor()}}', callbackEvent: 'forms.event-site-delete-confirmed' })" />
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
                 @endforeach
             </flux:table.rows>
         </flux:table>
     </div>
+    <livewire:dialogs::delete-confirmation />
 </x-pages::forms.layout>

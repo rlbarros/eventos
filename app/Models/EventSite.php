@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\GenericModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventSite extends Model
+class EventSite extends GenericModel
 {
     protected $table = 'event_sites';
 
@@ -18,6 +18,19 @@ class EventSite extends Model
         'number',
         'complement',
     ];
+
+    public static function modelName(): string
+    {
+        return  "Local de Eventos";
+    }
+
+    public function descriptor(): string
+    {
+        if (empty($this->id) || empty($this->name)) {
+            return '';
+        }
+        return $this->id . ' - ' . $this->name;
+    }
 
     public function state(): BelongsTo
     {

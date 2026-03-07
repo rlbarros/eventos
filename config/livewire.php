@@ -33,6 +33,7 @@ return [
         'layouts' => resource_path('views/layouts'),
         'pages' => resource_path('views/pages'),
         'autocompletes' => resource_path('views/autocompletes'),
+        'dialogs' => resource_path('views/dialogs'),
     ],
 
     /*

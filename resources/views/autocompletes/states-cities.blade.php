@@ -13,6 +13,8 @@ use Masmerise\Toaster\Toaster;
 
 new class extends Component
 {
+    public bool $readonly;
+
     #[Validate('required')]
     public $stateId = 12;
     #[Validate('required')]
@@ -82,7 +84,7 @@ new class extends Component
             </x-slot>
         </flux:input>
         @else
-        <flux:select wire:model.live="stateId" wire:change="loadCititesOfState" required>
+        <flux:select wire:model.live="stateId" wire:change="loadCititesOfState" required :disabled="$readonly">
             @foreach ($states as $state)
             <flux:select.option :wire:key="$state->id" :value="$state->id">{{ $state->name }}</flux:select.option>
             @endforeach
@@ -100,7 +102,7 @@ new class extends Component
             </x-slot>
         </flux:input>
         @else
-        <flux:select wire:model.live="cityId" wire:change="dispatchSelections" required>
+        <flux:select wire:model.live="cityId" wire:change="dispatchSelections" required :disabled="$readonly">
             @foreach ($cities as $city)
             <flux:select.option :wire:key="$city->id" :value="$city->id">{{ $city->name }}</flux:select.option>
             @endforeach

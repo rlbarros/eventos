@@ -2,11 +2,14 @@
 
 namespace App\Livewire\Forms\Forms;
 
+use App\Enum\FormModeEnum;
+use App\Livewire\Forms\GenericForm;
 use App\Models\EventSite;
-use Livewire\Form;
+use App\Models\GenericModel;
 
-class EventSiteForm extends Form
+class EventSiteForm extends GenericForm
 {
+
     public $name = '';
     public $phone = '';
     public $zip_code = '';
@@ -17,10 +20,9 @@ class EventSiteForm extends Form
     public $complement = '';
     public $neighborhood = '';
 
-    protected function rules()
+    public function fixedRules(): array
     {
         return [
-            'name' => 'required|string|min:3|max:200|unique:event_sites,name',
             'phone' => 'nullable|string|max:20',
             'zip_code' => 'nullable|string|min:9|max:9',
             'state_id' => 'required|integer|exists:states,id',
@@ -32,21 +34,42 @@ class EventSiteForm extends Form
         ];
     }
 
-    public function store()
+    public function insertRules(): array
     {
-        $this->validate();
-        EventSite::create(
-            $this->only(
-                'name',
-                'phone',
-                'zip_code',
-                'state_id',
-                'city_id',
-                'address',
-                'number',
-                'complement'
-            )
-        );
-        $this->reset();
+        return [
+            'name' => 'unique:event_sites,name'
+        ];
+    }
+
+    public function updateRules(): array
+    {
+        return [
+            'name' => 'required|string|min:3|max:200'
+        ];
+    }
+
+    public function setModel(FormModeEnum $formMode, GenericModel $model): void
+    {
+        $this->formMode = $formMode;
+        $this->model = $model;
+
+        /** @var EventSite */
+        $eventSite = $model;
+
+        if (empty($eventSite) || empty($eventSite->id)) {
+            $this->genericReset();
+            return;
+        }
+
+        $this->id = $eventSite->id;
+        $this->name = $eventSite->name;
+        $this->phone = $eventSite->phone;
+        $this->zip_code = $eventSite->zip_code;
+        $this->state_id = $eventSite->state_id;
+        $this->city_id = $eventSite->city_id;
+        $this->address = $eventSite->address;
+        $this->number = $eventSite->number;
+        $this->complement = $eventSite->complement;
+        $this->neighborhood = $eventSite->neighborhood;
     }
 }
