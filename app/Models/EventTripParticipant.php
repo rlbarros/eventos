@@ -14,6 +14,12 @@ class EventTripParticipant extends Model
         'person_id'
     ];
 
+    public static function modelName(): string
+    {
+        return  "Participantes da Viagem";
+    }
+
+
     public function event_trip(): BelongsTo
     {
         return $this->belongsTo(EventTrip::class, 'event_trip_id');

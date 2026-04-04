@@ -9,9 +9,9 @@ use Livewire\Component;
 new class extends Component
 {
     public int $objectId;
+    public string $callbackEvent;
     public string $modelName;
     public string $descriptor;
-    public string $callbackEvent;
 
     #[On('dialogs.delete-confirmation')]
     public function handleEventSiteCreatingRequest(int $objectId, string $modelName, string $descriptor, string $callbackEvent)
@@ -22,11 +22,16 @@ new class extends Component
         $this->callbackEvent = $callbackEvent;
         Flux::modal('dialogs.delete-confirmation')->show();
     }
+
+    public function callbackEvent()
+    {
+        $this->dispatch($this->callbackEvent, ['id' => $this->objectId]);
+    }
 }
 
 ?>
 
-<dib>
+<div>
     <flux:modal name="dialogs.delete-confirmation" class="md:w-650">
         <div class="pt-4 h-25 mt-5">
             <p>
@@ -42,11 +47,11 @@ new class extends Component
 
             </flux:modal.close>
 
-            <flux:button variant="primary" wire:click="$dispatch('{{$callbackEvent}}', { id: {{ $objectId }} })">
+            <flux:button variant="primary" wire:click="callBackEvent">
                 Confirmar
             </flux:button>
 
         </div>
 
     </flux:modal>
-</dib>
+</div>

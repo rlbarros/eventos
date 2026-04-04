@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventFee extends Model
+class EventFee extends GenericModel
 {
     protected $table = 'events_fees';
 
@@ -16,6 +15,21 @@ class EventFee extends Model
         'batch',
         'fee'
     ];
+
+    public static function modelName(): string
+    {
+        return  "Taxa de Evento";
+    }
+
+    public function descriptor(): string
+    {
+        if (empty($this->id) || empty($this->fee)) {
+            return '';
+        }
+        return $this->id . ' - ' . $this->fee;
+    }
+
+
 
     public function event(): BelongsTo
     {

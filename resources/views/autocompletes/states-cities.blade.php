@@ -110,5 +110,4 @@ new class extends Component
         @endif
         <flux:error name="cityId" />
     </flux:field>
-
 </div>

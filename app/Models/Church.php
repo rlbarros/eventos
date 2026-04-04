@@ -15,6 +15,12 @@ class Church extends Model
         'city_id',
     ];
 
+    public static function modelName(): string
+    {
+        return  "Igreja";
+    }
+
+
     public function state(): BelongsTo
     {
         return $this->belongsTo(State::class, 'state_id');

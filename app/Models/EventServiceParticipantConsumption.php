@@ -16,6 +16,12 @@ class EventServiceParticipantConsumption extends Model
         'amount'
     ];
 
+    public static function modelName(): string
+    {
+        return  "Consumos de Serviços do Participante";
+    }
+
+
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');

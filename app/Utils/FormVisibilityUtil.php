@@ -15,11 +15,12 @@ class FormVisibilityUtil
         };
     }
 
-    public static function submitButtonTitle(FormModeEnum $formMode): string
+    public static function submitButtonLabel(FormModeEnum $formMode): string
     {
         return match ($formMode) {
             FormModeEnum::Create => 'Cadastrar',
             FormModeEnum::Edit => 'Editar',
+            FormModeEnum::View => 'Visualizar'
         };
     }
 

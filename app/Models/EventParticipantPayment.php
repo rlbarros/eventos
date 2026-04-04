@@ -19,6 +19,12 @@ class EventParticipantPayment extends Model
         'amount',
     ];
 
+    public static function modelName(): string
+    {
+        return  "Pagamentos do Participante";
+    }
+
+
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');

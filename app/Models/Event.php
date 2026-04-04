@@ -17,6 +17,12 @@ class Event extends Model
         'event_site_id',
     ];
 
+    public static function modelName(): string
+    {
+        return  "Evento";
+    }
+
+
     public function church(): BelongsTo
     {
         return $this->belongsTo(Church::class, 'church_id');

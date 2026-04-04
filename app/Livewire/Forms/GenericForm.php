@@ -22,7 +22,7 @@ abstract class GenericForm extends Form
     public function getModel(): GenericModel
     {
         if (empty($this->model)) {
-            return new EventSite();
+            $this->model = new EventSite();
         }
         return $this->model;
     }
@@ -52,7 +52,8 @@ abstract class GenericForm extends Form
         $excepts = ['formMode', 'model'];
         if ($this->formMode === FormModeEnum::Create) {
             array_push($excepts, 'id');
-            $this->model::create($this->except($excepts));
+            $attributes = $this->except($excepts);
+            $this->model::create($attributes);
         } else {
 
             $attributes = $this->except($excepts);

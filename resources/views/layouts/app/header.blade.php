@@ -58,7 +58,7 @@
 
             <flux:sidebar.group :heading="__('Cadastros')">
                 <flux:sidebar.item icon="layout-grid" :href="route('event-sites')"
-                    :current="request()->routeIs('event-sites')" wire:navigate>
+                    :current="request()->routeIs('forms/event-sites')" wire:navigate>
                     {{ __('Locais de Evento') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>

@@ -29,8 +29,6 @@ class AppServiceProvider extends ServiceProvider
         // Register the `pages` view namespace so views/components can be referenced
         // as `pages::...` (matches resources/views/pages)
         $this->loadViewsFrom(resource_path('views/pages'), 'pages');
-
-        Blaze::optimize()->in(resource_path('views/components'));
     }
 
     protected function configureDefaults(): void

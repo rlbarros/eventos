@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Person extends Model
 {
-    protected $table = 'event_sites';
+    protected $table = 'persons';
 
     protected $fillable = [
         'church_id',

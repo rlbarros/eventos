@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventTrip extends Model
 {
-    protected $table = 'events_drivers';
+    protected $table = 'events_trips';
 
     protected $fillable = [
         'event_driver_id',

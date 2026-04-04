@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventSiteRoom extends Model
+class EventSiteRoom extends GenericModel
 {
     protected $table = 'event_site_rooms';
 
@@ -14,6 +13,31 @@ class EventSiteRoom extends Model
         'event_site_room_type_id',
         'name',
     ];
+
+    public static function modelName(): string
+    {
+        return  "Quarto";
+    }
+
+    public function descriptor(): string
+    {
+        if (empty($this->id) || empty($this->name)) {
+            return '';
+        }
+        return $this->id . ' - ' . $this->name;
+    }
+
+    public function type(): string
+    {
+        /** @var EventSiteRoomType|null $roomType */
+        $roomType = $this->event_site_room_type();
+        if (empty($roomType)) {
+            return '';
+        }
+
+        return $roomType->name . ' - ' . $roomType->beds . ' leitos';
+    }
+
 
     public function event_site(): BelongsTo
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Forms\Forms;
+namespace App\Livewire\Forms\EventSite;
 
 use App\Enum\FormModeEnum;
 use App\Livewire\Forms\GenericForm;
