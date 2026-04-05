@@ -95,8 +95,7 @@ new class extends GenericFormComponent {
 };
 ?>
 
-<x-pages::forms.generic-form>
-    @include('pages.forms.partials.form-slots')
+<livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
 
     <flux:field>
         <flux:label>Nome</flux:label>
@@ -104,4 +103,6 @@ new class extends GenericFormComponent {
         <flux:error name="form.name" />
     </flux:field>
 
-</x-pages::forms.generic-form>
+    <livewire:autocompletes::room-types :readonly="$this->isReadonly()" :eventSiteId="$this->eventSiteId" class="space-x-2" />
+
+</livewire:pages::forms.generic-form>

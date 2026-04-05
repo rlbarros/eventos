@@ -83,7 +83,7 @@ new class extends Component {
                     Tipos de Quarto
                 </x-slot:label>
                 <div class="w-full mx-auto space-y-4">
-                    <flux:button icon="plus" wire:click="$dispatch('forms.event-sites.room-type-create')" class="ml-2" style="cursor:pointer;" size="sm">
+                    <flux:button icon="plus" wire:click="$dispatch('forms.event-sites.room-type-create')" class="ml-2" size="sm">
                         Adicionar Tipo de Quarto
                     </flux:button>
 
@@ -130,7 +130,7 @@ new class extends Component {
                     Quartos
                 </x-slot:label>
                 <div class="w-full mx-auto space-y-4">
-                    <flux:button icon="plus" wire:click="$dispatch('forms.event-sites.room-create')" class="ml-2" style="cursor:pointer;" size="sm">
+                    <flux:button icon="plus" wire:click="$dispatch('forms.event-sites.room-create')" class="ml-2" size="sm">
                         Adicionar Quarto
                     </flux:button>
 

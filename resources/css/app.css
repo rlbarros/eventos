@@ -68,8 +68,6 @@ select:focus[data-flux-control] {
     @apply size-4;
 } */
 
-
-
 /**
     The lines above are intact.
     The lines below were added by maryUI installer.
@@ -77,7 +75,9 @@ select:focus[data-flux-control] {
 
 /** daisyUI */
 @plugin "daisyui" {
-    themes: light --default, dark --prefersdark;
+  themes:
+    light --default,
+    dark --prefersdark;
 }
 
 /* maryUI */
@@ -92,9 +92,13 @@ select:focus[data-flux-control] {
 */
 
 .mary-table-pagination span[aria-current="page"] > span {
-    @apply bg-primary text-base-100
+  @apply bg-primary text-base-100;
 }
 
 .mary-table-pagination button {
-    @apply cursor-pointer
+  @apply cursor-pointer;
+}
+
+[data-flux-button] {
+  cursor: pointer !important;
 }

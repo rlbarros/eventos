@@ -83,12 +83,15 @@ new class extends GenericFormComponent {
 
     public function submitDisabledCondition(): bool
     {
-        $this->dispatch('log-event', ['obj' => $this->form, 'level' => 'info']);
 
         $emptyName = empty($this->form->name);
         $emptyTypeId = empty($this->form->type);
         $emptyBeds = empty($this->form->beds);
 
+        // $this->dispatch('log-event', [
+        //     'obj' => [`form` => $this->form, 'emptyName' => $emptyName, 'emptyTypeId' => $emptyTypeId, 'emptyBeds' => $emptyBeds],
+        //     'level' => 'info',
+        // ]);
 
         return $emptyName || $emptyTypeId || $emptyBeds;
     }
@@ -106,9 +109,12 @@ new class extends GenericFormComponent {
 
 ?>
 
-<x-pages::forms.generic-form>
-    @include('pages.forms.partials.form-slots')
-
+<livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
+    <flux:field>
+        <flux:label>Nome</flux:label>
+        <flux:input placeholder="insira o nome do tipo de quarto" wire:model="form.name" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
+        <flux:error name="form.name" />
+    </flux:field>
     <div class="flex gap-4">
         <flux:field class="w-50">
             <flux:label>Tipo</flux:label>
@@ -128,4 +134,4 @@ new class extends GenericFormComponent {
             <flux:error name="form.beds" />
         </flux:field>
     </div>
-</x-pages::forms.generic-form>
+</livewire:pages::forms.generic-form>

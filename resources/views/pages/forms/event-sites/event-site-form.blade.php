@@ -145,8 +145,7 @@ new class extends GenericFormComponent
 
 ?>
 
-<x-pages::forms.generic-form>
-    @include('pages.forms.partials.form-slots')
+<livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
     <flux:field>
         <flux:label>Nome</flux:label>
         <flux:input placeholder="insira o nome do local" wire:model="form.name" :readonly="$this->isReadonly()" />
@@ -201,5 +200,5 @@ new class extends GenericFormComponent
             :readonly="$this->isReadonly()" />
         <flux:error name="form.neighborhood" />
     </flux:field>
-    <livewire:autocompletes::states-cities readonly="$this->isReadonly()" class="space-x-2" />
-</x-pages::forms.generic-form>
+    <livewire:autocompletes::states-cities :readonly="$this->isReadonly()" class="space-x-2" />
+</livewire:pages::forms.generic-form>

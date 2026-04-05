@@ -72,6 +72,21 @@ abstract class GenericFormComponent extends Component
     public function checkSubmitButtonDisabled()
     {
         $this->submitDisabled = $this->submitDisabledCondition();
+
+        $this->dispatch('log-event', [
+            'obj' => [`form` => $this->form, 'submitDisabled' => $this->submitDisabled],
+            'level' => 'info',
+        ]);
+    }
+
+    public function modalArray(): array
+    {
+        return [
+            'modalName' => $this->modalName(),
+            'formTitle' => $this->formTitle(),
+            'submitButtonVisible' => $this->submitButtonVisible(),
+            'submitButtonLabel' => $this->submitButtonLabel(),
+        ];
     }
 
     public function showModal(): void
