@@ -22,9 +22,13 @@
             </flux:sidebar.group>
 
             <flux:sidebar.group :heading="__('Cadastros')" class="grid">
-                <flux:sidebar.item icon="home" :href="route('event-sites')" :current="request()->routeIs('event-sites')"
+                <flux:sidebar.item icon="building-office" :href="route('event-sites')" :current="request()->routeIs('event-sites')"
                     wire:navigate>
                     {{ __('Locais de Eventos') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="home-modern" :href="route('churches')" :current="request()->routeIs('churches')"
+                    wire:navigate>
+                    {{ __('Igrejas') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>

@@ -72,8 +72,9 @@ new class extends Component {
     <div class="w-full mx-auto space-y-4">
         <div class="flex items-start max-md:flex-col">
             <div class="flex-1">
-                <flux:heading sixe="xl" level="1">{{ $this->eventSite()->name }}</flux:heading>
-                <flux:subheading size="lg" class="mb-4">{{ $this->eventSiteLocation() }}</flux:subheading>
+                <flux:heading size="lg" class="mb-4">Detalhamento de local de evento</flux:heading>
+                <flux:heading size="sm" class="mb-4">{{ $this->eventSite()->name }}</flux:heading>
+                <flux:subheading sixe="lg" class="mb-4">{{ $this->eventSiteLocation() }}</flux:subheading>
             </div>
         </div>
         <flux:separator variant="subtle" />
@@ -87,7 +88,7 @@ new class extends Component {
                         Adicionar Tipo de Quarto
                     </flux:button>
 
-                    <livewire:pages::forms.event-sites.event-site-room-type-form eventSiteId="{{ $this->eventSiteId }}" />
+                    <livewire:pages::forms.event-sites.event-site-room-type-form :eventSiteId="$this->eventSiteId" />
 
                     <flux:separator variant="subtle" />
 
@@ -134,7 +135,7 @@ new class extends Component {
                         Adicionar Quarto
                     </flux:button>
 
-                    <livewire:pages::forms.event-sites.event-site-room-form eventSiteId="{{ $this->eventSiteId }}" />
+                    <livewire:pages::forms.event-sites.event-site-room-form :eventSiteId="$this->eventSiteId" />
 
                     <flux:separator variant="subtle" />
 
@@ -152,7 +153,7 @@ new class extends Component {
                                 <flux:table.row :key="$room->id">
                                     <flux:table.cell>{{ $room->id }}</flux:table.cell>
                                     <flux:table.cell>{{ $room->name }}</flux:table.cell>
-                                    <flux:table.cell>{{ $room->type }}</flux:table.cell>
+                                    <flux:table.cell>{{ $room->type() }}</flux:table.cell>
                                     <flux:table.cell>
                                         <div class="flex gap-3">
                                             <flux:button wire:click="$dispatch('forms.event-sites.room-view', { id: {{ $roomType->id }} })" icon="document-magnifying-glass" style="cursor: pointer;"

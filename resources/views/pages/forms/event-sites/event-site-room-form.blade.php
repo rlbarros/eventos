@@ -28,12 +28,8 @@ new class extends GenericFormComponent {
 
     public function submitDisabledCondition(): bool
     {
-        $this->dispatch('log-event', ['obj' => $this->form, 'level' => 'info']);
 
         $emptyName = empty($this->form->name);
-
-
-
         return $emptyName;
     }
 
@@ -59,7 +55,9 @@ new class extends GenericFormComponent {
 
     public function beforeSave(): void
     {
+
         $this->form->event_site_id = $this->eventSiteId;
+        // $this->dispatch('log-event', ['obj' => $this->form, 'level' => 'info']);
     }
 
     public function modalName(): string
@@ -70,6 +68,12 @@ new class extends GenericFormComponent {
     public function roomTypes(): array
     {
         return EventSiteRoomType::where('event_site_id', $this->eventSiteId)->pluck('name', 'id')->toArray();
+    }
+
+    #[On('room-type-internaly-selected')]
+    public function handleStateCityInternalySelected($eventSiteRoomTypeId)
+    {
+        $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
     }
 
     #[On('forms.event-sites.room-create')]
@@ -103,6 +107,5 @@ new class extends GenericFormComponent {
         <flux:error name="form.name" />
     </flux:field>
 
-    <livewire:autocompletes::room-types :readonly="$this->isReadonly()" :eventSiteId="$this->eventSiteId" class="space-x-2" />
-
+    <livewire:autocompletes::room-types :readonly="$this->isReadonly()" :eventSiteId="$eventSiteId" :form="$form" class="space-x-2" />
 </livewire:pages::forms.generic-form>

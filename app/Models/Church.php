@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Church extends Model
+class Church extends GenericModel
 {
     protected $table = 'churches';
 
@@ -18,6 +18,14 @@ class Church extends Model
     public static function modelName(): string
     {
         return  "Igreja";
+    }
+
+    public function descriptor(): string
+    {
+        if (empty($this->id) || empty($this->name)) {
+            return '';
+        }
+        return $this->id . ' - ' . $this->name;
     }
 
 

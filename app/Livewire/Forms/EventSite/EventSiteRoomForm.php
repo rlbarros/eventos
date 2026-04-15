@@ -17,6 +17,7 @@ class EventSiteRoomForm extends GenericForm
     public function fixedRules(): array
     {
         return [
+            'event_site_id' => 'required|integer|exists:event_sites,id',
             'event_site_room_type_id' => 'required|integer|exists:event_site_room_types,id',
         ];
     }

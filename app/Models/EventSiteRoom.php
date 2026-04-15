@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 class EventSiteRoom extends GenericModel
 {
@@ -30,10 +31,11 @@ class EventSiteRoom extends GenericModel
     public function type(): string
     {
         /** @var EventSiteRoomType|null $roomType */
-        $roomType = $this->event_site_room_type();
+        $roomType = $this->event_site_room_type()->first();
         if (empty($roomType)) {
             return '';
         }
+        Log::info('Room Type: ' . $roomType->name . ' - ' . $roomType->beds . ' leitos');
 
         return $roomType->name . ' - ' . $roomType->beds . ' leitos';
     }

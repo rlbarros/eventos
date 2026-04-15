@@ -61,6 +61,7 @@ abstract class GenericFormComponent extends Component
     public function handleModalCloseEvent()
     {
         $this->form()->genericReset();
+        $this->closeModal();
     }
 
     public function updated($propertyName)
@@ -72,11 +73,6 @@ abstract class GenericFormComponent extends Component
     public function checkSubmitButtonDisabled()
     {
         $this->submitDisabled = $this->submitDisabledCondition();
-
-        $this->dispatch('log-event', [
-            'obj' => [`form` => $this->form, 'submitDisabled' => $this->submitDisabled],
-            'level' => 'info',
-        ]);
     }
 
     public function modalArray(): array
@@ -102,8 +98,8 @@ abstract class GenericFormComponent extends Component
 
     private function closeAndRedirectIndex()
     {
-        $this->redirectRoute($this->routeName(), $this->routeParameters());
         $this->closeModal();
+        $this->redirectRoute($this->routeName(), $this->routeParameters());
     }
 
     public function resetFormAndShowModal()

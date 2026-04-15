@@ -5,8 +5,8 @@ namespace App\Livewire;
 use App\Models\EventSiteRoomType;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 
@@ -14,12 +14,12 @@ new class extends Component
 {
     public bool $readonly;
 
-
     public $eventSiteId;
+    #[Modelable]
+    public $form;
 
 
-    #[Validate('required')]
-    public $roomTypeId = 0;
+
     public Collection $roomTypes;
     public $roomTypesLoading = false;
 
@@ -43,15 +43,15 @@ new class extends Component
 
 
     #[On('room-type-externaly-selected')]
-    public function handleStateCityExternalySelected($roomTypeId)
+    public function handleStateCityExternalySelected($eventSiteRoomTypeId)
     {
-        $this->roomTypeId = $roomTypeId;
+        $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
         $this->loadRoomTypes();
     }
 
     public function dispatchSelections()
     {
-        $this->dispatch('room-type-internaly-selected', roomTypeId: $this->roomTypeId);
+        $this->dispatch('room-type-internaly-selected', eventSiteRoomTypeId: $this->form->event_site_room_type_id);
     }
 }
 
@@ -67,11 +67,11 @@ new class extends Component
         </x-slot>
     </flux:input>
     @else
-    <flux:select wire:model.live="roomTypeId" wire:change="dispatchSelections" required :disabled="$readonly">
+    <flux:select wire:model.live="form.event_site_room_type_id" wire:change="dispatchSelections" required :disabled="$readonly">
         @foreach ($roomTypes as $roomType)
         <flux:select.option :wire:key="$roomType->id" :value="$roomType->id">{{ $roomType->name }}</flux:select.option>
         @endforeach
     </flux:select>
     @endif
-    <flux:error name="roomTypeId" />
+    <flux:error name="form.event_site_room_type_id" />
 </flux:field>
