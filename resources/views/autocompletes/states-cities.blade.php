@@ -48,12 +48,15 @@ new class extends Component
         $this->citiesLoading = true;
         try {
             $stateId = $this->stateId;
-            $this->cities = City::where('state_id', '=', $stateId)->orderBy('name')->get();
+            $cities = City::where('state_id', '=', $stateId)->orderBy('name')->get();
+            $this->cities = $cities;
+            $this->cityId = $cities->first()->id;
         } catch (\Exception $e) {
             Toaster::warning('não foi possível consultar informações de cidades');
             Log::error('error consulting cities ' . $e->getMessage(), $e->getTrace());
         } finally {
             $this->citiesLoading = false;
+            $this->dispatchSelections();
         }
     }
 

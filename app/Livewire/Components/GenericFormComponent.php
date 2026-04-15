@@ -19,7 +19,7 @@ abstract class GenericFormComponent extends Component
     abstract public function modalName(): string;
     abstract public function routeName(): string;
     abstract public function routeParameters(): array;
-    abstract public function successMessage(): string;
+    abstract public function generMale(): bool;
     abstract public function submitDisabledCondition(): bool;
     abstract public function beforeSave(): void;
 
@@ -119,16 +119,24 @@ abstract class GenericFormComponent extends Component
         $this->showModal();
     }
 
+    public function successMessage($model): string
+    {
+        $this->dispatch('log-event', ['obj' => $model, 'level' => 'info']);
+        $article = $this->generMale() ? 'o' : 'a';
+        return $this->modelName() .  ' ' . $model->descriptor() . ' salv' . $article . ' com sucesso!';
+    }
+
     public function save()
     {
         try {
             $this->beforeSave();
+            $model = $this->form()->getModel();
             $this->form()->store();
-            Toaster::success($this->successMessage());
+            Toaster::success($this->successMessage($model));
             $this->closeAndRedirectIndex();
         } catch (\Exception $e) {
             dd($e);
-            Toaster::warning('erro ' . $e->getMessage() . ' ao salvar ' . $this->modelName() . ' ' . $this->form()->getModel()->descriptor());
+            Toaster::warning('erro ' . $e->getMessage() . ' ao salvar ' . $this->modelName() . ' ' . $this->model()->descriptor());
         }
     }
 };

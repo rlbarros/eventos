@@ -1,17 +1,32 @@
 <?php
 
+use App\Livewire\Components\GenericIndexComponent;
 use App\Models\Church;
-use Flux\Flux;
-use Livewire\Attributes\Computed;
+
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Masmerise\Toaster\Toaster;
 
-new #[Title('Igrejas')] class extends Component {
+new #[Title('Igrejas')] class extends GenericIndexComponent {
 
-    use WithPagination;
+    public function model()
+    {
+        return new Church();
+    }
+
+    public function routeName(): string
+    {
+        return 'churches';
+    }
+
+    public function routeParameters(): array
+    {
+        return [];
+    }
+
+    public function generMale(): bool
+    {
+        return false;
+    }
 
     public function indexArray(): array
     {
@@ -20,38 +35,23 @@ new #[Title('Igrejas')] class extends Component {
             'subHeader' => 'Gerencie as igrejas cadastradas',
             'createButtonLabel' => 'Criar Igreja',
             'createActionEventName' => 'forms.churchs.church-create',
+            'callbackDeleteEvent' => 'forms.church-delete-confirmed',
         ];
     }
 
-    #[Computed]
-    public function index()
-    {
-        return Church::latest()->paginate(10);
-    }
+
 
     #[On('forms.church-delete-confirmed')]
     public function handleChurchDeleteConfirmed(int $id)
     {
-        try {
-            $Church = Church::findOrFail($id);
-            $Church->delete();
-
-            Toaster::success(Church::modelName() . $this->Church->descriptor() . ' excluída com sucesso');
-            Flux::modal('dialogs.delete-confirmation')->close();
-            $this->redirectRoute('churches');
-        } catch (\Exception $e) {
-            Toaster::warning('erro ' . $e->getMessage() . 'ao  apagar igreja ' . $Church->descriptor());
-        }
+        $this->delete($id);
     }
 };
 ?>
 
 
 <livewire:pages::forms.generic-index :indexArray="$this->indexArray()">
-
-
-
-
+    <livewire:pages::forms.churches.church-form />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>
@@ -76,7 +76,7 @@ new #[Title('Igrejas')] class extends Component {
                         <flux:button wire:click="$dispatch('forms.churchs.church-edit', { id: {{ $church->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
                         <flux:button variant="danger" icon="trash" size="sm"
-                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $church->id }}, modelName: '{{church::modelName()}}', descriptor: '{{$church->descriptor()}}', callbackEvent: 'forms.church-delete-confirmed' })" />
+                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $church->id }}, modelName: '{{church::modelName()}}', descriptor: '{{$church->descriptor()}}', callbackDeleteEvent: 'forms.church-delete-confirmed' })" />
                     </div>
                 </flux:table.cell>
             </flux:table.row>

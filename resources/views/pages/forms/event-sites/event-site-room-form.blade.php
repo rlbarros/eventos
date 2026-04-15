@@ -38,9 +38,9 @@ new class extends GenericFormComponent {
         return EventSiteRoom::modelName();
     }
 
-    public function successMessage(): string
+    public function generMale(): bool
     {
-        return 'Quarto ' . $this->form->getModel()->descriptor() . ' salvo com sucesso';
+        return true;
     }
 
     public function routeName(): string

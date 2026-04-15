@@ -1,6 +1,5 @@
 <?php
 
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 new class extends Component {
@@ -10,6 +9,7 @@ new class extends Component {
     public $subHeader;
     public $createButtonLabel;
     public $createActionEventName;
+    public $callbackDeleteEvent;
 
 
     public function mount()
@@ -18,6 +18,7 @@ new class extends Component {
         $this->subHeader = $this->indexArray['subHeader'] ?? null;
         $this->createButtonLabel = $this->indexArray['createButtonLabel'] ?? null;
         $this->createActionEventName = $this->indexArray['createActionEventName'] ?? null;
+        $this->callbackDeleteEvent = $this->indexArray['callbackDeleteEvent'] ?? null;
     }
 }
 ?>
@@ -30,16 +31,14 @@ new class extends Component {
                 <flux:subheading size="lg" class="mb-4">{{ $subHeader }}</flux:subheading>
             </div>
 
-            <flux:button variant="primary" wire:click="$dispatch('forms.churchs.church-create')">
+            <flux:button variant="primary" wire:click="$dispatch('{{ $createActionEventName }}')">
                 {{ $createButtonLabel }}
             </flux:button>
-
-            <livewire:pages::forms.churches.church-form />
         </div>
     </div>
     <flux:separator variant="subtle" />
     <div class="overflow-x-auto">
         {{ $slot }}
     </div>
-    <livewire:dialogs::delete-confirmation />
+    <livewire:dialogs::delete-confirmation :callbackDeleteEvent="$callbackDeleteEvent" />
 </x-pages::forms.layout>

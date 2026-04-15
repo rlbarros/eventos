@@ -19,10 +19,26 @@ abstract class GenericForm extends Form
     public abstract function updateRules(): array;
     public abstract function insertRules(): array;
 
+    private function getAttributes(): array
+    {
+        $excepts = ['formMode', 'model'];
+        if ($this->formMode === FormModeEnum::Create) {
+            array_push($excepts, 'id');
+        }
+        return $this->except($excepts);
+    }
+
     public function getModel(): GenericModel
     {
         if (empty($this->model)) {
             $this->model = new EventSite();
+        }
+
+        $attributes = $this->getAttributes();
+
+        foreach ($attributes as $k => $v) {
+
+            $this->model[$k] = $v;
         }
         return $this->model;
     }
@@ -49,20 +65,11 @@ abstract class GenericForm extends Form
 
         $this->validate();
 
-        $excepts = ['formMode', 'model'];
         if ($this->formMode === FormModeEnum::Create) {
-            array_push($excepts, 'id');
-            $attributes = $this->except($excepts);
+            $attributes = $this->getAttributes();
             $this->model::create($attributes);
         } else {
-
-            $attributes = $this->except($excepts);
-
-            foreach ($attributes as $k => $v) {
-
-                $this->model[$k] = $v;
-            }
-            $this->model->save();
+            $this->getModel()->save();
         }
 
         $this->genericReset();

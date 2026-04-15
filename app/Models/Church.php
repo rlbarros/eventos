@@ -22,10 +22,13 @@ class Church extends GenericModel
 
     public function descriptor(): string
     {
-        if (empty($this->id) || empty($this->name)) {
+        if (empty($this->id) && empty($this->name)) {
             return '';
+        } else if (!empty($this->name)) {
+            return $this->name;
+        } else {
+            return $this->id . ' - ' . $this->name;
         }
-        return $this->id . ' - ' . $this->name;
     }
 
 

@@ -34,15 +34,14 @@ new class extends GenericFormComponent
         return $this->model;
     }
 
-    public function successMessage(): string
+    public function generMale(): bool
     {
-        return 'local de evento ' . $this->form->getModel()->descriptor() . ' salvo com sucesso';
+        return true;
     }
-
 
     public function modalName(): string
     {
-        return 'forms.event-site';
+        return 'forms.event-sites.event-site';
     }
 
     public function routeName(): string
@@ -79,21 +78,21 @@ new class extends GenericFormComponent
 
 
 
-    #[On('forms.event-site.create')]
+    #[On('forms.event-sites.event-site-create')]
     public function handleEventSiteCreatingRequest()
     {
         $this->resetFormAndShowModal();
     }
 
 
-    #[On('forms.event-site.edit')]
+    #[On('forms.event-sites.event-site-edit')]
     public function handleEventSiteEditRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
         $this->dispatchStateCityExternalySelected();
     }
 
-    #[On('forms.event-site.view')]
+    #[On('forms.event-sites.event-site-view')]
     public function handleEventSiteViewRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);

@@ -38,9 +38,9 @@ new class extends GenericFormComponent {
         return EventSiteRoomType::modelName();
     }
 
-    public function successMessage(): string
+    public function generMale(): bool
     {
-        return 'Tipo de quarto ' . $this->form->getModel()->descriptor() . ' salvo com sucesso';
+        return true;
     }
 
     public function beforeSave(): void

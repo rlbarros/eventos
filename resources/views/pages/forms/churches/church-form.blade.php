@@ -37,9 +37,9 @@ new class extends GenericFormComponent {
         return Church::modelName();
     }
 
-    public function successMessage(): string
+    public function generMale(): bool
     {
-        return 'Igreja ' . $this->form->getModel()->descriptor() . ' salva com sucesso';
+        return false;
     }
 
     public function routeName(): string
