@@ -5,27 +5,18 @@ use App\Enum\RoomTypesEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\EventSite\EventSiteRoomTypeForm;
 use App\Models\EventSiteRoomType;
+use App\Traits\Forms\EventSite\WithEventSiteRoomTypeProperties;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
 
-    public $eventSiteId;
+    use WithEventSiteRoomTypeProperties;
 
     public EventSiteRoomTypeForm $form;
-
-    public EventSiteRoomType $model;
 
     public function form()
     {
         return $this->form;
-    }
-
-    public function model()
-    {
-        if (empty($this->model)) {
-            $this->model = new EventSiteRoomType();
-        }
-        return $this->model;
     }
 
     public function modalName(): string
@@ -33,22 +24,12 @@ new class extends GenericFormComponent {
         return 'forms.event-sites.room-type';
     }
 
-    public function modelName(): string
-    {
-        return EventSiteRoomType::modelName();
-    }
-
-    public function generMale(): bool
-    {
-        return true;
-    }
-
     public function beforeSave(): void
     {
         $this->form->event_site_id = $this->eventSiteId;
     }
 
-    #[On('forms.event-sites.room-type-create')]
+    #[On('forms.event-sites.event-site-room-type-create')]
     public function handleEventSiteCreatingRequest()
     {
         $this->form->setModel(FormModeEnum::Create, new EventSiteRoomType());
@@ -57,13 +38,13 @@ new class extends GenericFormComponent {
         $this->showModal();
     }
 
-    #[On('forms.event-sites.room-type-edit')]
+    #[On('forms.event-sites.event-site-room-type-edit')]
     public function handleEventSiteEditRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
     }
 
-    #[On('forms.event-sites.room-type-view')]
+    #[On('forms.event-sites.event-site-room-type-view')]
     public function handleEventSiteViewRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);

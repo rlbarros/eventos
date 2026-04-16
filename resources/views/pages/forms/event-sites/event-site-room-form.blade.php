@@ -4,26 +4,19 @@ use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\EventSite\EventSiteRoomForm;
 use App\Models\EventSiteRoom;
-use App\Models\EventSiteRoomType;
+use App\Traits\Forms\EventSite\WithEventSiteRoomProperties;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
 
-    public $eventSiteId;
+    use WithEventSiteRoomProperties;
+
     public EventSiteRoomForm $form;
-    public EventSiteRoom $model;
+
 
     public function form()
     {
         return $this->form;
-    }
-
-    public function model()
-    {
-        if (empty($this->model)) {
-            $this->model = new EventSiteRoom();
-        }
-        return $this->model;
     }
 
     public function submitDisabledCondition(): bool
@@ -33,65 +26,41 @@ new class extends GenericFormComponent {
         return $emptyName;
     }
 
-    public function modelName(): string
-    {
-        return EventSiteRoom::modelName();
-    }
-
-    public function generMale(): bool
-    {
-        return true;
-    }
-
-    public function routeName(): string
-    {
-        return 'event-site-detail';
-    }
-
-    public function routeParameters(): array
-    {
-        return ['eventSiteId' => $this->eventSiteId];
-    }
-
     public function beforeSave(): void
     {
 
         $this->form->event_site_id = $this->eventSiteId;
-        // $this->dispatch('log-event', ['obj' => $this->form, 'level' => 'info']);
     }
 
     public function modalName(): string
     {
-        return 'forms.event-sites.room';
-    }
-
-    public function roomTypes(): array
-    {
-        return EventSiteRoomType::where('event_site_id', $this->eventSiteId)->pluck('name', 'id')->toArray();
+        return 'forms.event-sites.event-site-room';
     }
 
     #[On('room-type-internaly-selected')]
     public function handleStateCityInternalySelected($eventSiteRoomTypeId)
     {
         $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
+        $this->dispatch('log-event', ['obj' => $this->form, 'level' => 'info']);
     }
 
-    #[On('forms.event-sites.room-create')]
+    #[On('forms.event-sites.event-site-room-create')]
     public function handleEventSiteCreatingRequest()
     {
         $this->form->setModel(FormModeEnum::Create, new EventSiteRoom());
         $this->submitDisabled = true;
         $this->checkSubmitButtonDisabled();
         $this->showModal();
+        $this->dispatch('room-type-retrieve-selection');
     }
 
-    #[On('forms.event-sites.room-edit')]
+    #[On('forms.event-sites.event-site-room-edit')]
     public function handleEventSiteEditRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
     }
 
-    #[On('forms.event-sites.room-view')]
+    #[On('forms.event-sites.event-site-room-view')]
     public function handleEventSiteViewRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);

@@ -20,6 +20,7 @@ class EventSiteRoomTypeForm extends GenericForm
     {
         $roomTypes = array_map(fn(RoomTypesEnum $roomType) => $roomType->value, RoomTypesEnum::cases());
         return [
+            'name' => 'required|string|min:3|max:200',
             'type' => 'in:' . implode(',', $roomTypes),
             'beds' => 'required|integer|min:1',
         ];
@@ -27,16 +28,12 @@ class EventSiteRoomTypeForm extends GenericForm
 
     public function insertRules(): array
     {
-        return [
-            'name' => 'unique:event_site_room_types,name'
-        ];
+        return [];
     }
 
     public function updateRules(): array
     {
-        return [
-            'name' => 'required|string|min:3|max:200'
-        ];
+        return [];
     }
 
     public function setModel(FormModeEnum $formMode, GenericModel $model): void

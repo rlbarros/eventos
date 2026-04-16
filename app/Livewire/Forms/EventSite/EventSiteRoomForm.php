@@ -19,21 +19,18 @@ class EventSiteRoomForm extends GenericForm
         return [
             'event_site_id' => 'required|integer|exists:event_sites,id',
             'event_site_room_type_id' => 'required|integer|exists:event_site_room_types,id',
+            'name' => 'required|string|min:3|max:200'
         ];
     }
 
     public function insertRules(): array
     {
-        return [
-            'name' => 'unique:event_site_rooms,name'
-        ];
+        return [];
     }
 
     public function updateRules(): array
     {
-        return [
-            'name' => 'required|string|min:3|max:200'
-        ];
+        return [];
     }
 
     public function setModel(FormModeEnum $formMode, GenericModel $model): void

@@ -1,32 +1,13 @@
 <?php
 
 use App\Livewire\Components\GenericIndexComponent;
-use App\Models\Church;
-
+use App\Traits\Forms\Church\WithChurchProperties;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 
 new #[Title('Igrejas')] class extends GenericIndexComponent {
 
-    public function model()
-    {
-        return new Church();
-    }
-
-    public function routeName(): string
-    {
-        return 'churches';
-    }
-
-    public function routeParameters(): array
-    {
-        return [];
-    }
-
-    public function generMale(): bool
-    {
-        return false;
-    }
+    use WithChurchProperties;
 
     public function indexArray(): array
     {
@@ -76,7 +57,7 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
                         <flux:button wire:click="$dispatch('forms.churchs.church-edit', { id: {{ $church->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
                         <flux:button variant="danger" icon="trash" size="sm"
-                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $church->id }}, modelName: '{{church::modelName()}}', descriptor: '{{$church->descriptor()}}', callbackDeleteEvent: 'forms.church-delete-confirmed' })" />
+                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $church->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$church->descriptor()}}', callbackDeleteEvent: 'forms.church-delete-confirmed' })" />
                     </div>
                 </flux:table.cell>
             </flux:table.row>

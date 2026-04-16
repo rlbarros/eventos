@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\WithNameDescriptor;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
 
 class EventSiteRoom extends GenericModel
 {
+    use WithNameDescriptor;
+
     protected $table = 'event_site_rooms';
 
     protected $fillable = [
@@ -18,14 +21,6 @@ class EventSiteRoom extends GenericModel
     public static function modelName(): string
     {
         return  "Quarto";
-    }
-
-    public function descriptor(): string
-    {
-        if (empty($this->id) || empty($this->name)) {
-            return '';
-        }
-        return $this->id . ' - ' . $this->name;
     }
 
     public function type(): string

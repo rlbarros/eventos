@@ -43,6 +43,12 @@ new class extends Component
         }
     }
 
+    public function stateChanged()
+    {
+        $this->loadCititesOfState();
+        $this->dispatchSelections();
+    }
+
     public function loadCititesOfState()
     {
         $this->citiesLoading = true;
@@ -56,7 +62,6 @@ new class extends Component
             Log::error('error consulting cities ' . $e->getMessage(), $e->getTrace());
         } finally {
             $this->citiesLoading = false;
-            $this->dispatchSelections();
         }
     }
 
@@ -64,9 +69,9 @@ new class extends Component
     public function handleStateCityExternalySelected($stateId, $cityId)
     {
         $this->stateId = $stateId;
-        $this->cityId = $cityId;
         $this->loadStates();
         $this->loadCititesOfState();
+        $this->cityId = $cityId;
     }
 
     public function dispatchSelections()
@@ -87,7 +92,7 @@ new class extends Component
             </x-slot>
         </flux:input>
         @else
-        <flux:select wire:model.live="stateId" wire:change="loadCititesOfState" required :disabled="$readonly">
+        <flux:select wire:model.live="stateId" wire:change="stateChanged" required :disabled="$readonly">
             @foreach ($states as $state)
             <flux:select.option :wire:key="$state->id" :value="$state->id">{{ $state->name }}</flux:select.option>
             @endforeach

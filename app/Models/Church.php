@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-
+use App\Traits\WithNameDescriptor;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Church extends GenericModel
 {
+    use WithNameDescriptor;
+
     protected $table = 'churches';
 
     protected $fillable = [
@@ -18,17 +20,6 @@ class Church extends GenericModel
     public static function modelName(): string
     {
         return  "Igreja";
-    }
-
-    public function descriptor(): string
-    {
-        if (empty($this->id) && empty($this->name)) {
-            return '';
-        } else if (!empty($this->name)) {
-            return $this->name;
-        } else {
-            return $this->id . ' - ' . $this->name;
-        }
     }
 
 

@@ -6,37 +6,22 @@ use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\EventSite\EventSiteForm;
 use App\Models\EventSite;
+use App\Traits\Forms\EventSite\WithEventSiteProperties;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Masmerise\Toaster\Toaster;
 
 new class extends GenericFormComponent
 {
+    use WithEventSiteProperties;
 
     public $zipCodeLoading = false;
 
     public EventSiteForm $form;
 
-    public EventSite $model;
-
-    public function mount()
-    {
-        $this->model = new EventSite();
-    }
-
     public function form()
     {
         return $this->form;
-    }
-
-    public function model()
-    {
-        return $this->model;
-    }
-
-    public function generMale(): bool
-    {
-        return true;
     }
 
     public function modalName(): string
@@ -44,24 +29,7 @@ new class extends GenericFormComponent
         return 'forms.event-sites.event-site';
     }
 
-    public function routeName(): string
-    {
-        return 'event-sites';
-    }
-
-    public function routeParameters(): array
-    {
-        return [];
-    }
-
-    public function customMethods(): string
-    {
-        return '';
-    }
-
-    public function beforeSave(): void
-    {;
-    }
+    public function beforeSave(): void {}
 
     public function submitDisabledCondition(): bool
     {

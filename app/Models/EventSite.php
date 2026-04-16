@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Models\GenericModel;
+use App\Traits\WithNameDescriptor;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventSite extends GenericModel
 {
+    use WithNameDescriptor;
+
     protected $table = 'event_sites';
 
     protected $fillable = [
@@ -22,14 +25,6 @@ class EventSite extends GenericModel
     public static function modelName(): string
     {
         return  "Local de Eventos";
-    }
-
-    public function descriptor(): string
-    {
-        if (empty($this->id) || empty($this->name)) {
-            return '';
-        }
-        return $this->id . ' - ' . $this->name;
     }
 
     public function state(): BelongsTo

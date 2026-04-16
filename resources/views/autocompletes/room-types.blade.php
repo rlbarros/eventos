@@ -26,6 +26,10 @@ new class extends Component
     public function mount()
     {
         $this->loadRoomTypes();
+        if ($this->roomTypes->hasSole()) {
+            $this->form->event_site_room_type_id = $this->roomTypes->first()->id;
+            $this->dispatchSelections();
+        }
     }
 
     public function loadRoomTypes()
@@ -49,6 +53,12 @@ new class extends Component
         $this->loadRoomTypes();
     }
 
+    #[On('room-type-retrieve-selection')]
+    public function handleStateCityRetrieveSelection()
+    {
+        $this->dispatchSelections();
+    }
+
     public function dispatchSelections()
     {
         $this->dispatch('room-type-internaly-selected', eventSiteRoomTypeId: $this->form->event_site_room_type_id);
@@ -57,7 +67,7 @@ new class extends Component
 
 ?>
 
-<flux:field class="w-50">
+<flux:field class="w-full">
     <flux:label>Tipo de quarto</flux:label>
     @if ($roomTypesLoading)
     <flux:input readonly color="zinc">

@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Components;
 
+use App\Interfaces\IProperties;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Masmerise\Toaster\Toaster;
 
-
-abstract class GenericIndexComponent extends Component
+abstract class GenericIndexComponent extends Component implements IProperties
 {
 
     use WithPagination;
@@ -19,6 +19,17 @@ abstract class GenericIndexComponent extends Component
     abstract public function routeName(): string;
     abstract public function routeParameters(): array;
 
+    public function customOrderingColumn(): string
+    {
+        return '';
+    }
+
+    public function customWhereIndex(): array
+    {
+        return [];
+    }
+
+
     public function modelName(): string
     {
         return $this->model()::modelName();
@@ -27,7 +38,18 @@ abstract class GenericIndexComponent extends Component
     #[Computed]
     public function index()
     {
-        return $this->model()::latest()->paginate(10);
+        $query = $this->model()->query();
+        foreach ($this->customWhereIndex() as $whereArray) {
+            [$column, $operator, $value] = $whereArray;
+            $query->where($column, $operator, $value);
+        }
+
+        if (!empty($this->customOrderingColumn())) {
+
+            return $query->latest($this->customOrderingColumn())->paginate(10);
+        }
+
+        return $query->latest()->paginate(10);
     }
 
     public function exclusionSuccessMessage($model): string

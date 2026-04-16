@@ -4,9 +4,12 @@ use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Church\ChurchForm;
 use App\Models\Church;
+use App\Traits\Forms\Church\WithChurchProperties;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
+
+    use WithChurchProperties;
 
     public $churchId;
     public ChurchForm $form;
@@ -17,39 +20,11 @@ new class extends GenericFormComponent {
         return $this->form;
     }
 
-    public function model()
-    {
-        if (empty($this->model)) {
-            $this->model = new Church();
-        }
-        return $this->model;
-    }
-
     public function submitDisabledCondition(): bool
     {
 
         $emptyName = empty($this->form->name);
         return $emptyName;
-    }
-
-    public function modelName(): string
-    {
-        return Church::modelName();
-    }
-
-    public function generMale(): bool
-    {
-        return false;
-    }
-
-    public function routeName(): string
-    {
-        return 'churches';
-    }
-
-    public function routeParameters(): array
-    {
-        return [];
     }
 
     public function beforeSave(): void {}

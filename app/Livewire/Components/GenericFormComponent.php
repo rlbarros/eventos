@@ -3,13 +3,15 @@
 namespace App\Livewire\Components;
 
 use App\Enum\FormModeEnum;
+use App\Interfaces\IProperties;
 use App\Utils\FormVisibilityUtil;
 use Flux\Flux;
+
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 
 
-abstract class GenericFormComponent extends Component
+abstract class GenericFormComponent extends Component implements IProperties
 {
 
     public $submitDisabled = true;
@@ -114,29 +116,23 @@ abstract class GenericFormComponent extends Component
     {
         $model = $this->model()->findOrFail($id);
         $this->form->setModel($formMode, $model);
-        // $this->dispatch('log-event', ['obj' => $this->form, 'level' => 'info']);
         $this->checkSubmitButtonDisabled();
         $this->showModal();
     }
 
     public function successMessage($model): string
     {
-        $this->dispatch('log-event', ['obj' => $model, 'level' => 'info']);
         $article = $this->generMale() ? 'o' : 'a';
         return $this->modelName() .  ' ' . $model->descriptor() . ' salv' . $article . ' com sucesso!';
     }
 
     public function save()
     {
-        try {
-            $this->beforeSave();
-            $model = $this->form()->getModel();
-            $this->form()->store();
-            Toaster::success($this->successMessage($model));
-            $this->closeAndRedirectIndex();
-        } catch (\Exception $e) {
-            dd($e);
-            Toaster::warning('erro ' . $e->getMessage() . ' ao salvar ' . $this->modelName() . ' ' . $this->model()->descriptor());
-        }
+
+        $this->beforeSave();
+        $model = $this->form()->getModel();
+        $this->form()->store();
+        Toaster::success($this->successMessage($model));
+        $this->closeAndRedirectIndex();
     }
 };

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\WithNameDescriptor;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Person extends Model
+class Person extends GenericModel
 {
+    use WithNameDescriptor;
+
     protected $table = 'persons';
 
     protected $fillable = [
@@ -21,6 +23,11 @@ class Person extends Model
         'function',
         'complement',
     ];
+
+    public static function modelName(): string
+    {
+        return  "Pessoa";
+    }
 
     public function church(): BelongsTo
     {
