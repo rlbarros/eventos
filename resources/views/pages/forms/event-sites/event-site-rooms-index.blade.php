@@ -9,14 +9,15 @@ new class extends GenericIndexComponent
 {
     use WithEventSiteRoomProperties;
 
+    public $eventSiteId;
+
     public function indexArray(): array
     {
         return [
             'header' => 'Quartos',
-            'subHeader' => 'cadastre os tipos de quartos disponíveis nos locais de evento.',
+            'subHeader' => 'cadastre os quartos disponíveis para cada tipo de quarto no local de evento.',
             'createButtonLabel' => 'Criar Quarto',
-            'createActionEventName' => 'forms.event-sites.event-site-room-create',
-            'callbackDeleteEvent' => 'forms.event-sites.event-site-room-delete-confirmed',
+            'createActionEventName' => 'forms.event-sites.event-site-room-create'
         ];
     }
 
@@ -60,7 +61,7 @@ new class extends GenericIndexComponent
                         <flux:button wire:click="$dispatch('forms.event-sites.event-site-room-edit', { id: {{ $room->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
                         <flux:button variant="danger" icon="trash" size="sm"
-                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $room->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$room->descriptor()}}', callbackEvent: 'forms.event-sites.event-site-room-delete-confirmed' })" />
+                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $room->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$room->descriptor()}}', callbackDeleteEvent: 'forms.event-sites.event-site-room-delete-confirmed' })" />
                     </div>
                 </flux:table.cell>
             </flux:table.row>

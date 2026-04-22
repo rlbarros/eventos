@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Church;
+use App\Models\EventSite;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -33581,5 +33582,79 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('cities')->insert($cities);
+
+        $eventSites = [
+            'name' => 'Estância Árvore da Vida',
+            'phone' => '(19) 98424-3403',
+            'zip_code' => '13176-050',
+            'state_id' => 35,
+            'city_id' => 3853,
+            'address' => 'Estr. Estância Árvore da Vida',
+            'number' => '',
+            'complement' => '',
+            'neighborhood' => ''
+        ];
+        DB::table('event_sites')->insert($eventSites);
+
+        $eventSite = EventSite::first();
+        $eventSiteRoomTypes = [
+            [
+                'event_site_id' => $eventSite->id,
+                'name' => 'Casa ABC',
+                'type' => 'Apartamento',
+                'beds' => 4
+            ],
+            [
+                'event_site_id' => $eventSite->id,
+                'name' => 'Casa Brasilia',
+                'type' => 'Apartamento',
+                'beds' => 4
+            ],
+            [
+                'event_site_id' => $eventSite->id,
+                'name' => 'Maple Village',
+                'type' => 'Apartamento',
+                'beds' => 4
+            ],
+            [
+                'event_site_id' => $eventSite->id,
+                'name' => 'Recanto Sul de Minas',
+                'type' => 'Hotel',
+                'beds' => 4
+            ],
+            [
+                'event_site_id' => $eventSite->id,
+                'name' => 'Alojamento São Carlos',
+                'type' => 'Alojamento',
+                'beds' => 8
+            ],
+            [
+                'event_site_id' => $eventSite->id,
+                'name' => 'Alojamento Nelo Horizonte',
+                'type' => 'Alojamento',
+                'beds' => 8
+            ]
+        ];
+        DB::table('event_site_room_types')->insert($eventSiteRoomTypes);
+
+        $churches = [
+            'name' => 'SP - Sede Campinas',
+            'state_id' => 35,
+            'city_id' => 3376,
+        ];
+        DB::table('churches')->insert($churches);
+
+        $church = Church::first();
+
+        $events = [
+            [
+                'name' => '62ª Conferência Internacional da Igreja Evangélica Apostóilica',
+                'start_date' => '2026-04-12',
+                'end_date' => '2026-04-12',
+                'church_id' => $church->id,
+                'event_site_id' => $eventSite->id,
+            ]
+        ];
+        DB::table('events')->insert($events);
     }
 }

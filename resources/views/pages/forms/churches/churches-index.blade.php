@@ -15,8 +15,7 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
             'header' => 'Igrejas',
             'subHeader' => 'Gerencie as igrejas cadastradas',
             'createButtonLabel' => 'Criar Igreja',
-            'createActionEventName' => 'forms.churchs.church-create',
-            'callbackDeleteEvent' => 'forms.church-delete-confirmed',
+            'createActionEventName' => 'forms.churchs.church-create'
         ];
     }
 

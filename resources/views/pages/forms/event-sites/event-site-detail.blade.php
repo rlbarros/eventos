@@ -53,17 +53,32 @@ new class extends Component {
     }
 
     #[On('forms.event-sites.room-type-delete-confirmed')]
-    public function handleEventSiteDeleteConfirmed(int $id)
+    public function handleEventSiteRoomTypeDeleteConfirmed(int $id)
     {
         try {
-            $eventSite = EventSite::findOrFail($id);
-            $eventSite->delete();
+            $eventSiteRoomType = EventSiteRoomType::findOrFail($id);
+            $eventSiteRoomType->delete();
 
-            Toaster::success(EventSite::modelName() . $this->eventSite->descriptor() . ' excluído com sucesso');
+            Toaster::success(EventSiteRoomType::modelName() . $this->eventSiteRoomType->descriptor() . ' excluído com sucesso');
             Flux::modal('dialogs.delete-confirmation')->close();
             $this->redirectRoute('event-sites');
         } catch (\Exception $e) {
-            Toaster::warning('erro ' . $e->getMessage() . 'ao  apagar local de evento ' . $eventSite->descriptor());
+            Toaster::warning('erro ' . $e->getMessage() . 'ao  apagar tipo de quarto de local de evento ' . $eventSiteRoomType->descriptor());
+        }
+    }
+
+    #[On('forms.event-sites.room-delete-confirmed')]
+    public function handleEventSiteRoomDeleteConfirmed(int $id)
+    {
+        try {
+            $eventSiteRoom = EventSiteRoom::findOrFail($id);
+            $eventSiteRoom->delete();
+
+            Toaster::success(EventSiteRoom::modelName() . $this->eventSiteRoom->descriptor() . ' excluído com sucesso');
+            Flux::modal('dialogs.delete-confirmation')->close();
+            $this->redirectRoute('event-sites');
+        } catch (\Exception $e) {
+            Toaster::warning('erro ' . $e->getMessage() . 'ao  apagar quarto de local de evento ' . $eventSiteRoom->descriptor());
         }
     }
 };
@@ -71,6 +86,7 @@ new class extends Component {
 ?>
 
 <x-pages::forms.layout>
+    <livewire:dialogs::delete-confirmation />
     <div class="w-full mx-auto space-y-4">
         <div class="flex items-start max-md:flex-col">
             <div class="flex-1">

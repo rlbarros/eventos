@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventParticipantPayment extends Model
+class EventParticipantPayment extends GenericModel
 {
     protected $table = 'events_participants_payments';
 
@@ -22,6 +22,17 @@ class EventParticipantPayment extends Model
     public static function modelName(): string
     {
         return  "Pagamentos do Participante";
+    }
+
+    public function descriptor(): string
+    {
+        if (!empty($this->person_id)) {
+            $person = $this->person;
+            $church = $this->person->church;
+            return $person->function . ' - ' . $person->name . ' (' . $church->name . ')';
+        }
+
+        return '';
     }
 
 

@@ -11,8 +11,9 @@ new class extends GenericFormComponent {
 
     use WithEventSiteRoomProperties;
 
-    public EventSiteRoomForm $form;
+    public $eventSiteId;
 
+    public EventSiteRoomForm $form;
 
     public function form()
     {
@@ -23,7 +24,8 @@ new class extends GenericFormComponent {
     {
 
         $emptyName = empty($this->form->name);
-        return $emptyName;
+        $emptyRoomType = empty($this->form->event_site_room_type_id);
+        return $emptyName || $emptyRoomType;
     }
 
     public function beforeSave(): void
@@ -41,7 +43,7 @@ new class extends GenericFormComponent {
     public function handleStateCityInternalySelected($eventSiteRoomTypeId)
     {
         $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
-        $this->dispatch('log-event', ['obj' => $this->form, 'level' => 'info']);
+        $this->checkSubmitButtonDisabled();
     }
 
     #[On('forms.event-sites.event-site-room-create')]
@@ -51,7 +53,6 @@ new class extends GenericFormComponent {
         $this->submitDisabled = true;
         $this->checkSubmitButtonDisabled();
         $this->showModal();
-        $this->dispatch('room-type-retrieve-selection');
     }
 
     #[On('forms.event-sites.event-site-room-edit')]

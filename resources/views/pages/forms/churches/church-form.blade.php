@@ -24,6 +24,9 @@ new class extends GenericFormComponent {
     {
 
         $emptyName = empty($this->form->name);
+        $emptyState = empty($this->form->state_id);
+        $emptyCity = empty($this->form->city_id);
+        return $emptyName || $emptyState || $emptyCity;
         return $emptyName;
     }
 

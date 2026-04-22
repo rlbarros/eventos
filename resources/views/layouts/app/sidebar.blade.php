@@ -30,6 +30,16 @@
                     wire:navigate>
                     {{ __('Igrejas') }}
                 </flux:sidebar.item>
+                <flux:sidebar.item icon="home-modern" :href="route('persons')" :current="request()->routeIs('persons')"
+                    wire:navigate>
+                    {{ __('Pessoas') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
+            <flux:sidebar.group :heading="__('Eventos')" class="grid">
+                <flux:sidebar.item icon="calendar" :href="route('events')" :current="request()->routeIs('events')"
+                    wire:navigate>
+                    {{ __('Eventos') }}
+                </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
 

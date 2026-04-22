@@ -9,8 +9,6 @@ new class extends Component {
     public $subHeader;
     public $createButtonLabel;
     public $createActionEventName;
-    public $callbackDeleteEvent;
-
 
     public function mount()
     {
@@ -18,13 +16,13 @@ new class extends Component {
         $this->subHeader = $this->indexArray['subHeader'] ?? null;
         $this->createButtonLabel = $this->indexArray['createButtonLabel'] ?? null;
         $this->createActionEventName = $this->indexArray['createActionEventName'] ?? null;
-        $this->callbackDeleteEvent = $this->indexArray['callbackDeleteEvent'] ?? null;
     }
 };
 
 ?>
 
 <div class="w-full mx-auto space-y-4">
+
     <div class="flex items-start max-md:flex-col">
         <div class="flex-1">
             <flux:heading sixe="xl" level="1">{{ $header }}</flux:heading>
@@ -39,5 +37,4 @@ new class extends Component {
     <div class="overflow-x-auto">
         {{ $slot }}
     </div>
-    <livewire:dialogs::delete-confirmation :callbackDeleteEvent="$callbackDeleteEvent" />
 </div>

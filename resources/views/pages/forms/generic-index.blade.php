@@ -9,6 +9,7 @@ new class extends Component {
 ?>
 
 <x-pages::forms.layout>
+    <livewire:dialogs::delete-confirmation />
     <livewire:pages::forms.generic-list :indexArray="$indexArray">
         {{ $slot }}
     </livewire:pages::forms.generic-list>

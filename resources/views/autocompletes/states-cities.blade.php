@@ -4,10 +4,8 @@ namespace App\Livewire;
 
 use App\Models\City;
 use App\Models\State;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 
@@ -15,19 +13,16 @@ new class extends Component
 {
     public bool $readonly;
 
-    #[Validate('required')]
-    public $stateId = 12;
-    #[Validate('required')]
-    public $cityId = 53;
-    public Collection $states;
-    public Collection $cities;
+    public $stateId = 0;
+    public $cityId = 0;
+    public $states;
+    public $cities;
     public $statesLoading = false;
     public $citiesLoading = false;
 
     public function mount()
     {
         $this->loadStates();
-        $this->loadCititesOfState();
     }
 
     public function loadStates()
@@ -46,7 +41,6 @@ new class extends Component
     public function stateChanged()
     {
         $this->loadCititesOfState();
-        $this->dispatchSelections();
     }
 
     public function loadCititesOfState()
@@ -56,7 +50,7 @@ new class extends Component
             $stateId = $this->stateId;
             $cities = City::where('state_id', '=', $stateId)->orderBy('name')->get();
             $this->cities = $cities;
-            $this->cityId = $cities->first()->id;
+            $this->cityId = 0;
         } catch (\Exception $e) {
             Toaster::warning('não foi possível consultar informações de cidades');
             Log::error('error consulting cities ' . $e->getMessage(), $e->getTrace());
@@ -93,6 +87,7 @@ new class extends Component
         </flux:input>
         @else
         <flux:select wire:model.live="stateId" wire:change="stateChanged" required :disabled="$readonly">
+            <flux:select.option value="0">Selecione um estado...</flux:select.option>
             @foreach ($states as $state)
             <flux:select.option :wire:key="$state->id" :value="$state->id">{{ $state->name }}</flux:select.option>
             @endforeach
@@ -111,9 +106,12 @@ new class extends Component
         </flux:input>
         @else
         <flux:select wire:model.live="cityId" wire:change="dispatchSelections" required :disabled="$readonly">
+            <flux:select.option :wire:key="0" :value="0">Selecione uma cidade...</flux:select.option>
+            @if (isset($cities))
             @foreach ($cities as $city)
             <flux:select.option :wire:key="$city->id" :value="$city->id">{{ $city->name }}</flux:select.option>
             @endforeach
+            @endif
         </flux:select>
         @endif
         <flux:error name="cityId" />

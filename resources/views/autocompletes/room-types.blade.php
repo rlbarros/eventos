@@ -26,10 +26,6 @@ new class extends Component
     public function mount()
     {
         $this->loadRoomTypes();
-        if ($this->roomTypes->hasSole()) {
-            $this->form->event_site_room_type_id = $this->roomTypes->first()->id;
-            $this->dispatchSelections();
-        }
     }
 
     public function loadRoomTypes()
@@ -50,13 +46,6 @@ new class extends Component
     public function handleStateCityExternalySelected($eventSiteRoomTypeId)
     {
         $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
-        $this->loadRoomTypes();
-    }
-
-    #[On('room-type-retrieve-selection')]
-    public function handleStateCityRetrieveSelection()
-    {
-        $this->dispatchSelections();
     }
 
     public function dispatchSelections()
@@ -78,6 +67,7 @@ new class extends Component
     </flux:input>
     @else
     <flux:select wire:model.live="form.event_site_room_type_id" wire:change="dispatchSelections" required :disabled="$readonly">
+        <flux:select.option value="0">Selecione um tipo de quarto...</flux:select.option>
         @foreach ($roomTypes as $roomType)
         <flux:select.option :wire:key="$roomType->id" :value="$roomType->id">{{ $roomType->name }}</flux:select.option>
         @endforeach

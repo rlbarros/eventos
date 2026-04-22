@@ -78,6 +78,7 @@ new class extends GenericFormComponent
     {
         $this->form->state_id = $stateId;
         $this->form->city_id = $cityId;
+        $this->checkSubmitButtonDisabled();
     }
 
     public function queryZipCode()

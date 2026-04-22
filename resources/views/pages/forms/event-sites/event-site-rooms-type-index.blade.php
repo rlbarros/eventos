@@ -15,8 +15,7 @@ new class extends GenericIndexComponent
             'header' => 'Tipos de Quartos',
             'subHeader' => 'cadastre os tipos de quartos disponíveis nos locais de evento.',
             'createButtonLabel' => 'Criar Tipo de Quarto',
-            'createActionEventName' => 'forms.event-sites.event-site-room-type-create',
-            'callbackDeleteEvent' => 'forms.event-sites.event-site-room-type-delete-confirmed',
+            'createActionEventName' => 'forms.event-sites.event-site-room-type-create'
         ];
     }
 
@@ -61,12 +60,12 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $roomType->beds }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
-                        <flux:button wire:click="$dispatch('forms.event-sites.room-type-view', { id: {{ $roomType->id }} })" icon="document-magnifying-glass" style="cursor: pointer;"
+                        <flux:button wire:click="$dispatch('forms.event-sites.event-site-room-type-view', { id: {{ $roomType->id }} })" icon="document-magnifying-glass" style="cursor: pointer;"
                             size="sm" />
-                        <flux:button wire:click="$dispatch('forms.event-sites.room-type-edit', { id: {{ $roomType->id }} })" icon="pencil-square" style="cursor: pointer;"
+                        <flux:button wire:click="$dispatch('forms.event-sites.event-site-room-type-edit', { id: {{ $roomType->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
                         <flux:button variant="danger" icon="trash" size="sm"
-                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $roomType->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$roomType->descriptor()}}', callbackEvent: 'forms.event-sites.room-type-delete-confirmed' })" />
+                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $roomType->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$roomType->descriptor()}}', callbackDeleteEvent: 'forms.event-sites.event-site-room-type-delete-confirmed' })" />
                     </div>
                 </flux:table.cell>
             </flux:table.row>

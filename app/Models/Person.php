@@ -21,12 +21,16 @@ class Person extends GenericModel
         'mother_id',
         'spouse_id',
         'function',
-        'complement',
     ];
 
     public static function modelName(): string
     {
         return  "Pessoa";
+    }
+
+    public function descriptor(): string
+    {
+        return $this->name . ' | ' . $this->church->name;
     }
 
     public function church(): BelongsTo

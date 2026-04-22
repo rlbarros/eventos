@@ -55,13 +55,6 @@ new class extends GenericFormComponent {
         return array_map(fn(RoomTypesEnum $roomType) => $roomType->value, RoomTypesEnum::cases());
     }
 
-
-    public function updated($propertyName)
-    {
-        $this->form->validateOnly($propertyName);
-        $this->checkSubmitButtonDisabled();
-    }
-
     public function submitDisabledCondition(): bool
     {
 

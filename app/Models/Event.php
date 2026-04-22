@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\WithNameDescriptor;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Event extends Model
+class Event extends GenericModel
 {
+    use WithNameDescriptor;
+
     protected $table = 'events';
 
     protected $fillable = [
@@ -21,7 +23,6 @@ class Event extends Model
     {
         return  "Evento";
     }
-
 
     public function church(): BelongsTo
     {

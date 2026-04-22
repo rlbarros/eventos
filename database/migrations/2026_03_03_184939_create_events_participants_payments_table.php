@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\Event;
-use App\Models\EventSiteRoom;
+use App\Models\EventFee;
 use App\Models\Person;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,11 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events_paticipants_allocations', function (Blueprint $table) {
+        Schema::create('events_participants_payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Event::class)->constrained();
+            $table->foreignIdFor(EventFee::class)->constrained();
             $table->foreignIdFor(Person::class)->constrained();
-            $table->foreignIdFor(EventSiteRoom::class)->nullable()->constrained();
+            $table->date('payment_date')->nullable();
+            $table->decimal('amount', 10, 2)->nullable();
+            $table->timestamps();
         });
     }
 
@@ -27,10 +28,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('events_paticipants_allocations', function (Blueprint $table) {
-            $table->dropForeign(['event_id']);
+        Schema::table('events_participants_payments', function (Blueprint $table) {
+            $table->dropForeign(['event_fee_id']);
             $table->dropForeign(['person_id']);
         });
-        Schema::dropIfExists('events_paticipants_allocations');
+        Schema::dropIfExists('events_participants_payments');
     }
 };

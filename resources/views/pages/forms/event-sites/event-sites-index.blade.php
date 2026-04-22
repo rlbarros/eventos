@@ -16,8 +16,7 @@ new #[Title('Locais de Evento')] class extends GenericIndexComponent
             'header' => 'Locais de Evento',
             'subHeader' => 'cadastre as chácaras, estâncias ou quaisquer outros locais de recepção onde ocorrem os eventos da IEA.',
             'createButtonLabel' => 'Criar Local de Evento',
-            'createActionEventName' => 'forms.event-sites.event-site-create',
-            'callbackDeleteEvent' => 'forms.event-sites.event-site-delete-confirmed',
+            'createActionEventName' => 'forms.event-sites.event-site-create'
         ];
     }
 
