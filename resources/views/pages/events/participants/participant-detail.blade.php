@@ -13,11 +13,11 @@ use Masmerise\Toaster\Toaster;
 
 new class extends Component {
 
-    public $eventId;
-    public $personId;
+    public int $eventId = 0;
+    public int $personId = 0;
 
     #[Url]
-    public $selectedTab = 'payments-tab';
+    public string $selectedTab = 'payments-tab';
 
     use WithPagination;
 

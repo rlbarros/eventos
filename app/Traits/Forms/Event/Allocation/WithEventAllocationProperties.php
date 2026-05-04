@@ -5,10 +5,9 @@ namespace App\Traits\Forms\Event\Participant;
 use App\Models\EventParticipantAllocation;
 
 
-trait WithEventParticipantProperties
+trait WithEventAllocationProperties
 {
     public int $eventId = 0;
-    public int $eventSiteId = 0;
 
     public function model()
     {
@@ -24,7 +23,7 @@ trait WithEventParticipantProperties
     {
         return [
             'eventId' => $this->eventId,
-            'selectedTab' => 'participants-tab'
+            'selectedTab' => 'allocations-tab'
         ];
     }
 
@@ -35,7 +34,7 @@ trait WithEventParticipantProperties
 
     public function customOrderingColumn(): string
     {
-        return 'id';
+        return '';
     }
 
     public function customWhereIndex(): array

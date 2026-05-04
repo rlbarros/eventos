@@ -6,7 +6,7 @@ use App\Models\EventSiteRoom;
 
 trait WithEventSiteRoomProperties
 {
-    public $eventSiteId;
+    public int $eventSiteId = 0;
 
     public function model()
     {
@@ -29,5 +29,17 @@ trait WithEventSiteRoomProperties
     public function generMale(): bool
     {
         return true;
+    }
+
+    public function customOrderingColumn(): string
+    {
+        return '';
+    }
+
+    public function customWhereIndex(): array
+    {
+        return [
+            ['event_site_id', '=', $this->eventSiteId]
+        ];
     }
 }

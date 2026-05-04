@@ -11,11 +11,11 @@ class EventForm extends GenericForm
 {
 
 
-    public $name = '';
-    public $start_date = '';
-    public $end_date = '';
-    public $church_id = 0;
-    public $event_site_id = 0;
+    public string $name = '';
+    public string $start_date = '';
+    public string $end_date = '';
+    public int $church_id = 0;
+    public int $event_site_id = 0;
 
     public function fixedRules(): array
     {

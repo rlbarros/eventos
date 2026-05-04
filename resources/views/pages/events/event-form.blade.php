@@ -12,7 +12,7 @@ new class extends GenericFormComponent {
 
     public EventForm $form;
 
-    public $dateConfig = ['altFormat' => 'd/m/Y'];
+    public array $dateConfig = ['altFormat' => 'd/m/Y'];
 
     public function form()
     {
@@ -59,7 +59,7 @@ new class extends GenericFormComponent {
     }
 
     #[On('church-internaly-selected')]
-    public function handleChurchInternalySelected($churchId)
+    public function handleChurchInternalySelected(int $churchId)
     {
         $this->form->church_id = $churchId;
         $this->checkSubmitButtonDisabled();
@@ -71,7 +71,7 @@ new class extends GenericFormComponent {
     }
 
     #[On('event-site-internaly-selected')]
-    public function handleEventSiteInternalySelected($eventSiteId)
+    public function handleEventSiteInternalySelected(int $eventSiteId)
     {
         $this->form->event_site_id = $eventSiteId;
         $this->checkSubmitButtonDisabled();

@@ -1,7 +1,6 @@
 <?php
 
 use App\Enum\FormModeEnum;
-
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Event\Participant\EventParticipantAllocationForm;
 use App\Models\EventParticipantAllocation;
@@ -19,7 +18,10 @@ new class extends GenericFormComponent {
         return $this->form;
     }
 
-    public $eventId;
+    public function isPersonVisible(): bool
+    {
+        return $this->form->formMode === FormModeEnum::Create;
+    }
 
     public function modalName(): string
     {
@@ -29,6 +31,7 @@ new class extends GenericFormComponent {
     public function beforeSave(): void
     {
         $this->form->event_id = $this->eventId;
+        $this->form->event_site_room_id = null;
     }
 
     #[On('events.participants.participant-create')]
@@ -40,15 +43,18 @@ new class extends GenericFormComponent {
         $this->showModal();
     }
 
-    #[On('events.participants.particpant-edit')]
+    #[On('events.participants.participant-edit')]
     public function handleEventSiteEditRequest(int $id)
     {
+        $this->form->formMode = FormModeEnum::Edit;
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
+        $this->dispatchPersonExternalySelected();
     }
 
     #[On('events.participants.participant-view')]
     public function handleEventSiteViewRequest(int $id)
     {
+        $this->form->formMode = FormModeEnum::View;
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);
     }
 
@@ -60,7 +66,7 @@ new class extends GenericFormComponent {
     }
 
     #[On('person-internaly-selected')]
-    public function handlePersonInternalySelected($personId)
+    public function handlePersonInternalySelected(int $personId)
     {
         $this->form->person_id = $personId;
         $this->checkSubmitButtonDisabled();
@@ -70,10 +76,19 @@ new class extends GenericFormComponent {
     {
         $this->dispatch('person-externaly-selected', personId: $this->form->person_id);
     }
+
+    #[On('event-site-room-type-internally-selected')]
+    public function handleEventSiteRoomTypeInternalySelected(int $eventSiteRoomTypeId)
+    {
+        $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
+    }
 };
 
 ?>
 
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
+    @if($this->isPersonVisible())
     <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" class="space-x-2" />
+    @endif
+    <livewire:selects.room-types :form="$this->form()" :readonly="$this->isReadonly()" :eventSiteId="$this->eventSiteId" />
 </livewire:pages::forms.generic-form>

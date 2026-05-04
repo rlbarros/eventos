@@ -9,7 +9,7 @@ use Livewire\Form;
 
 abstract class GenericForm extends Form
 {
-    public $formMode = FormModeEnum::Create;
+    public FormModeEnum $formMode = FormModeEnum::Create;
     protected int $id = 0;
     public GenericModel $model;
 
@@ -47,10 +47,7 @@ abstract class GenericForm extends Form
     {
         $variableRules = $this->updateRules();
         if ($this->formMode === FormModeEnum::Create) {
-            foreach ($variableRules as $k => $v) {
-                $insertRule = $this->insertRules()[$k];
-                $variableRules[$k] = $v . '|' . $insertRule;
-            }
+            $variableRules = $this->insertRules();
         }
 
         $returnRules = [

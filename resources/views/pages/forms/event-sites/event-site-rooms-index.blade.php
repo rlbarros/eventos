@@ -9,8 +9,6 @@ new class extends GenericIndexComponent
 {
     use WithEventSiteRoomProperties;
 
-    public $eventSiteId;
-
     public function indexArray(): array
     {
         return [
@@ -25,13 +23,6 @@ new class extends GenericIndexComponent
     public function handleEventSiteRoomTypeDeleteConfirmed(int $id)
     {
         $this->delete($id);
-    }
-
-    public function customWhereIndex(): array
-    {
-        return [
-            ['event_site_id', '=', $this->eventSiteId]
-        ];
     }
 }; ?>
 

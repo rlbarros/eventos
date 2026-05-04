@@ -10,15 +10,15 @@ use App\Models\Person;
 class PersonForm extends GenericForm
 {
 
-    public $church_id = 0;
-    public $name = '';
-    public $birth_date = '';
-    public $phone = '';
-    public $avatar = null;
-    public $father_id = null;
-    public $mother_id = null;
-    public $spouse_id = null;
-    public $function = '';
+    public int $church_id = 0;
+    public string $name = '';
+    public string $birth_date = '';
+    public string $phone = '';
+    public array | null $avatar = null;
+    public int | null $father_id = null;
+    public int | null $mother_id = null;
+    public int | null $spouse_id = null;
+    public string $function = '';
 
 
     public function fixedRules(): array

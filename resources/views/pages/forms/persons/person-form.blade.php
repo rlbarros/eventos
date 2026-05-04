@@ -55,7 +55,7 @@ new class extends GenericFormComponent {
     }
 
     #[On('church-internaly-selected')]
-    public function handleStateCityInternalySelected($churchId)
+    public function handleStateCityInternalySelected(int $churchId)
     {
         $this->form->church_id = $churchId;
         $this->checkSubmitButtonDisabled();

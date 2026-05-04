@@ -3,6 +3,7 @@
 namespace App\Livewire\Components;
 
 use App\Interfaces\IProperties;
+use App\Models\GenericModel;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -14,20 +15,12 @@ abstract class GenericIndexComponent extends Component implements IProperties
 
     use WithPagination;
 
+    public bool $withPagination = true;
+
     abstract public function model();
     abstract public function generMale(): bool;
     abstract public function routeName(): string;
     abstract public function routeParameters(): array;
-
-    public function customOrderingColumn(): string
-    {
-        return '';
-    }
-
-    public function customWhereIndex(): array
-    {
-        return [];
-    }
 
 
     public function modelName(): string
@@ -45,14 +38,17 @@ abstract class GenericIndexComponent extends Component implements IProperties
         }
 
         if (!empty($this->customOrderingColumn())) {
-
-            return $query->latest($this->customOrderingColumn())->paginate(10);
+            $query->latest($this->customOrderingColumn());
         }
 
-        return $query->latest()->paginate(10);
+        if ($this->withPagination) {
+            return $query->paginate(10);
+        } else {
+            return $query->get();
+        }
     }
 
-    public function exclusionSuccessMessage($model): string
+    public function exclusionSuccessMessage(GenericModel $model): string
     {
         $article = $this->generMale() ? 'o' : 'a';
         return $this->modelName() . ' ' . $model->descriptor() . ' excluíd' . $article . ' com sucesso!';

@@ -15,10 +15,10 @@ new class extends Component
     public bool $readonly;
 
     #[Modelable]
-    public $form;
+    public object $form;
 
     public Collection $eventSites;
-    public $eventSitesLoading = false;
+    public bool $eventSitesLoading = false;
 
     public function mount()
     {
@@ -40,7 +40,7 @@ new class extends Component
 
 
     #[On('event-site-externaly-selected')]
-    public function handleStateeventSiteExternalySelected($eventSiteId)
+    public function handleEventSiteExternalySelected(int $eventSiteId)
     {
         $this->form->event_site_id = $eventSiteId;
     }

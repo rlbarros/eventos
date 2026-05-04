@@ -12,17 +12,20 @@ use Masmerise\Toaster\Toaster;
 
 new class extends Component {
 
-    public $eventId;
+    public int $eventId;
+    public int $eventSiteId;
 
     #[Url]
-    public $selectedTab = 'participants-tab';
+    public string $selectedTab = 'participants-tab';
 
     use WithPagination;
 
     #[Computed]
     public function event()
     {
-        return Event::findOrFail($this->eventId);
+        $event = Event::findOrFail($this->eventId);
+        $this->eventSiteId = $event->event_site->id;
+        return $event;
     }
 
     public function eventSiteLocation()
@@ -84,12 +87,13 @@ new class extends Component {
             <x-slot:label>
                 Participantes
             </x-slot:label>
-            <livewire:pages::events.participants.participants-index :eventId="$this->eventId" />
+            <livewire:pages::events.participants.participants-index :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" />
         </x-mary-tab>
         <x-mary-tab name="allocations-tab" icon="o-building-office">
             <x-slot:label>
                 Alocação de Quartos
             </x-slot:label>
+            <livewire:pages::events.allocations.allocations-index :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" />
         </x-mary-tab>
         <x-mary-tab name="fees-tab" icon="o-building-office">
             <x-slot:label>

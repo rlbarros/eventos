@@ -9,6 +9,8 @@ class EventParticipantAllocation extends GenericModel
 {
     protected $table = 'events_participants_allocations';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'event_id',
         'person_id',
@@ -39,6 +41,11 @@ class EventParticipantAllocation extends GenericModel
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'person_id');
+    }
+
+    public function event_site_room_type(): BelongsTo
+    {
+        return $this->belongsTo(EventSiteRoomType::class, 'event_site_room_type_id');
     }
 
     public function event_site_room(): BelongsTo

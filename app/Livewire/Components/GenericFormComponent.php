@@ -4,6 +4,7 @@ namespace App\Livewire\Components;
 
 use App\Enum\FormModeEnum;
 use App\Interfaces\IProperties;
+use App\Models\GenericModel;
 use App\Utils\FormVisibilityUtil;
 use Flux\Flux;
 
@@ -66,7 +67,7 @@ abstract class GenericFormComponent extends Component implements IProperties
         $this->closeModal();
     }
 
-    public function updated($propertyName)
+    public function updated(string $propertyName)
     {
         $this->form()->validateOnly($propertyName);
         $this->checkSubmitButtonDisabled();
@@ -120,7 +121,7 @@ abstract class GenericFormComponent extends Component implements IProperties
         $this->showModal();
     }
 
-    public function successMessage($model): string
+    public function successMessage(GenericModel $model): string
     {
         $article = $this->generMale() ? 'o' : 'a';
         return $this->modelName() .  ' ' . $model->descriptor() . ' salv' . $article . ' com sucesso!';

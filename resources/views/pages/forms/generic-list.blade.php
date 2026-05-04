@@ -4,11 +4,11 @@ use Livewire\Component;
 
 new class extends Component {
 
-    public $indexArray;
-    public $header;
-    public $subHeader;
-    public $createButtonLabel;
-    public $createActionEventName;
+    public array $indexArray;
+    public string $header;
+    public string $subHeader;
+    public string $createButtonLabel;
+    public string $createActionEventName;
 
     public function mount()
     {
