@@ -58,8 +58,8 @@ new class extends GenericFormComponent {
         $this->dispatchStateCityExternalySelected();
     }
 
-    #[On('church-internaly-selected')]
-    public function handleChurchInternalySelected(int $churchId)
+    #[On('church-selected')]
+    public function handleChurchSelected(int $churchId)
     {
         $this->form->church_id = $churchId;
         $this->checkSubmitButtonDisabled();
@@ -70,8 +70,8 @@ new class extends GenericFormComponent {
         $this->dispatch('church-externaly-selected', churchId: $this->form->church_id);
     }
 
-    #[On('event-site-internaly-selected')]
-    public function handleEventSiteInternalySelected(int $eventSiteId)
+    #[On('event-site-selected')]
+    public function handleEventSiteSelected(int $eventSiteId)
     {
         $this->form->event_site_id = $eventSiteId;
         $this->checkSubmitButtonDisabled();

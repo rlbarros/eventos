@@ -20,11 +20,12 @@ new class extends GenericFormComponent {
     public function submitDisabledCondition(): bool
     {
 
+        $emptyChurch = empty($this->form->church_id);
         $emptyName = empty($this->form->name);
         $emptyBirthDate = empty($this->form->birth_date);
         $emptyFunction = empty($this->form->function);
-        $emptyChurch = empty($this->form->church_id);
-        return $emptyName || $emptyBirthDate || $emptyFunction || $emptyChurch;
+
+        return $emptyChurch || $emptyName || $emptyBirthDate || $emptyFunction;
     }
 
     public function beforeSave(): void {}
@@ -38,39 +39,40 @@ new class extends GenericFormComponent {
     public function handleCreatingRequest()
     {
         $this->resetFormAndShowModal();
+        $this->dispatchChurchInjected();
     }
 
     #[On('forms.persons.person-edit')]
     public function handleEditRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
-        $this->dispatchChurchExternalySelected();
+        $this->dispatchChurchInjected();
     }
 
     #[On('forms.persons.person-view')]
     public function handleViewRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);
-        $this->dispatchChurchExternalySelected();
+        $this->dispatchChurchInjected();
     }
 
-    #[On('church-internaly-selected')]
-    public function handleStateCityInternalySelected(int $churchId)
+    #[On('church-selected')]
+    public function handleChurchSelect(int $id)
     {
-        $this->form->church_id = $churchId;
+        $this->form->church_id = $id;
         $this->checkSubmitButtonDisabled();
     }
 
-    public function dispatchChurchExternalySelected()
+    public function dispatchChurchInjected()
     {
-        $this->dispatch('church-externaly-selected', churchId: $this->form->church_id);
+        $this->dispatch('church-injected');
     }
 };
 ?>
 
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
 
-    <livewire:autocompletes::churches :readonly="$this->isReadonly()" :form="$form" class="space-x-2" />
+    <livewire:autocompletes.churches :churchId="$this->form->church_id" :readonly="$this->isReadonly()" />
 
     <flux:field>
         <flux:label>Função *</flux:label>
@@ -107,11 +109,6 @@ new class extends GenericFormComponent {
         <flux:error name="form.phone" />
     </flux:field>
 
-    <livewire:autocompletes::persons :readonly="$this->isReadonly()" fieldName="father_id" label="Pai" :form="$form" class="space-x-2" />
-
-    <livewire:autocompletes::persons :readonly="$this->isReadonly()" fieldName="mother_id" label="Mãe" :form="$form" class="space-x-2" />
-
-    <livewire:autocompletes::persons :readonly="$this->isReadonly()" fieldName="spouse_id" label="Cônjuge" :form="$form" class="space-x-2" />
 
 
 

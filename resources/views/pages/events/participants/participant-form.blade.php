@@ -65,8 +65,8 @@ new class extends GenericFormComponent {
         return $emptyPersonId;
     }
 
-    #[On('person-internaly-selected')]
-    public function handlePersonInternalySelected(int $personId)
+    #[On('person-selected')]
+    public function handlePersonSelected(int $personId)
     {
         $this->form->person_id = $personId;
         $this->checkSubmitButtonDisabled();
@@ -77,8 +77,8 @@ new class extends GenericFormComponent {
         $this->dispatch('person-externaly-selected', personId: $this->form->person_id);
     }
 
-    #[On('event-site-room-type-internally-selected')]
-    public function handleEventSiteRoomTypeInternalySelected(int $eventSiteRoomTypeId)
+    #[On('event-site-room-type-selected')]
+    public function handleEventSiteRoomTypeSelected(int $eventSiteRoomTypeId)
     {
         $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
     }

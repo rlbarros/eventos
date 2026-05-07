@@ -70,7 +70,7 @@ new class extends Component
 
     public function dispatchSelections()
     {
-        $this->dispatch('state-city-internaly-selected', stateId: $this->stateId, cityId: $this->cityId);
+        $this->dispatch('state-city-selected', stateId: $this->stateId, cityId: $this->cityId);
     }
 }
 

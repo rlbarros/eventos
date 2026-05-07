@@ -11,14 +11,14 @@ class PersonForm extends GenericForm
 {
 
     public int $church_id = 0;
+    public string $function = '';
     public string $name = '';
     public string $birth_date = '';
-    public string $phone = '';
+    public string | null $phone = '';
     public array | null $avatar = null;
     public int | null $father_id = null;
     public int | null $mother_id = null;
     public int | null $spouse_id = null;
-    public string $function = '';
 
 
     public function fixedRules(): array

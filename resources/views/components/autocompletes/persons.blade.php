@@ -14,7 +14,6 @@ new class extends Component
 {
     public bool $readonly = false;
     public bool $touched = false;
-    public string $fieldName = '';
     public string $label = '';
     public string $searchTerm = '';
     public string $lastSearchTerm = '';
@@ -105,7 +104,7 @@ new class extends Component
 
     public function dispatchSelections()
     {
-        $this->dispatch('person-internaly-selected', personId: $this->form->person_id);
+        $this->dispatch('person-selected', personId: $this->form->person_id);
     }
 }
 

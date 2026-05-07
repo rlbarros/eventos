@@ -1,76 +1,62 @@
 <?php
 
-namespace App\Livewire;
-
 use App\Models\Church;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Modelable;
+use Livewire\Attributes\Json;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
-use Masmerise\Toaster\Toaster;
 
-new class extends Component
-{
+new class extends Component {
+
+    #[Reactive]
     public bool $readonly;
 
-    #[Modelable]
-    public $form;
+    #[Reactive]
+    public int $churchId;
 
+    public string $query;
 
-
-    public Collection $churches;
-    public $churchesLoading = false;
-
-    public function mount()
+    #[On('church-injected')]
+    public function handleChurchInjected()
     {
-        $this->loadChurches();
-    }
-
-    public function loadChurches()
-    {
-        $this->churchesLoading = true;
-        try {
-            $this->churches = Church::orderBy('name')->get();
-        } catch (\Exception $e) {
-            Toaster::warning('não foi possível consultar informações de igrejas');
-            Log::error('error consulting churches ' . $e->getMessage(), $e->getTrace());
-        } finally {
-            $this->churchesLoading = false;
+        if (empty($this->churchId)) {
+            $this->query = '';
+        } else {
+            $this->query = Church::find($this->churchId)->name;
         }
     }
 
-
-    #[On('church-externaly-selected')]
-    public function handleStateChurchExternalySelected($churchId)
+    #[Json]
+    public function search(string $query)
     {
-        $this->form->church_id = $churchId;
-    }
+        $churches = Church::where('name', 'like', "%{$query}%")
+            ->limit(10)
+            ->get();
 
-    public function dispatchSelections()
-    {
-        $this->dispatch('church-internaly-selected', churchId: $this->form->church_id);
+        if ($churches->count() === 1) {
+            $church = $churches->first();
+            $this->dispatch('church-selected', $church->id);
+        }
+
+        return $churches;
     }
-}
+};
 
 ?>
 
-<flux:field class="w-full">
-    <flux:label>Igreja</flux:label>
-    @if ($churchesLoading)
-    <flux:input readonly color="zinc">
-        <x-slot name="iconTrailing">
-            <svg class="mr-3 size-5 animate-spin text-shadow-blue-800" viewBox="0 0 24 24">
-            </svg>
-        </x-slot>
-    </flux:input>
-    @else
-    <flux:select wire:model.live="form.church_id" wire:change="dispatchSelections" required :disabled="$readonly">
-        <flux:select.option value="0">Selecione uma igreja...</flux:select.option>
-        @foreach ($churches as $church)
-        <flux:select.option :wire:key="$church->id" :value="$church->id">{{ $church->name }}</flux:select.option>
-        @endforeach
-    </flux:select>
-    @endif
-    <flux:error name="form.church_id" />
-</flux:field>
+<div x-data="{ query: @entangle('query'), churches: [] }">
+
+    <flux:field class="w-full">
+        <flux:label>Igreja</flux:label>
+
+        <flux:input x-model.debounce.300ms="query" wire:model="query" x-on:input.debounce.300ms="$wire.search(query).then(data => churches = data)"
+            list="churches-list" autocomplete="off" :readonly="$readonly" />
+
+        <datalist id="churches-list" class="w-full" style="max-height: 200px; overflow-y: auto;">
+            <template x-for="church in churches">
+                <option x-value="church.id" x-text="church.name"></option>
+            </template>
+        </datalist>
+
+    </flux:field>
+</div>

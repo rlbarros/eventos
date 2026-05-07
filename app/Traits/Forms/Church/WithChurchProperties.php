@@ -26,4 +26,14 @@ trait WithChurchProperties
     {
         return false;
     }
+
+    public function customOrderingColumn(): string
+    {
+        return '';
+    }
+
+    public function customWhereIndex(): array
+    {
+        return [];
+    }
 }

@@ -21,7 +21,7 @@ new class extends Component {
 
     public function roomTypeSelected()
     {
-        $this->dispatch('event-site-room-type-internally-selected', $this->form->event_site_room_type_id);
+        $this->dispatch('event-site-room-type-selected', $this->form->event_site_room_type_id);
     }
 };
 

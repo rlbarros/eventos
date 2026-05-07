@@ -47,7 +47,7 @@ new class extends Component
 
     public function dispatchSelections()
     {
-        $this->dispatch('event-site-internaly-selected', eventSiteId: $this->form->event_site_id);
+        $this->dispatch('event-site-selected', eventSiteId: $this->form->event_site_id);
     }
 }
 

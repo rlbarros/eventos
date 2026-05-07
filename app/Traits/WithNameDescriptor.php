@@ -2,20 +2,15 @@
 
 namespace App\Traits;
 
+use App\Utils\DescriptorUtil;
+
 trait WithNameDescriptor
 {
     public function descriptor(): string
     {
-        if (empty($this->id) && empty($this->name)) {
-            return '';
-        } else if (!empty($this->id) && !empty($this->name)) {
-            return $this->id . ' - ' . $this->name;
-        } else if (!empty($this->name)) {
-            return $this->name;
-        } else if (!empty($this->id)) {
-            return $this->id;
-        } else {
-            return '';
-        }
+        $id = $this->id ?? null;
+        $name = $this->name ?? null;
+
+        return DescriptorUtil::describe($name, null);
     }
 }

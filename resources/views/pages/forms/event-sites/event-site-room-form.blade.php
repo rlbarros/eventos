@@ -11,8 +11,6 @@ new class extends GenericFormComponent {
 
     use WithEventSiteRoomProperties;
 
-    public $eventSiteId;
-
     public EventSiteRoomForm $form;
 
     public function form()
@@ -39,8 +37,8 @@ new class extends GenericFormComponent {
         return 'forms.event-sites.event-site-room';
     }
 
-    #[On('room-type-internaly-selected')]
-    public function handleStateCityInternalySelected($eventSiteRoomTypeId)
+    #[On('event-site-room-type-selected')]
+    public function handleStateCitySelected(int $eventSiteRoomTypeId)
     {
         $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
         $this->checkSubmitButtonDisabled();
@@ -77,5 +75,5 @@ new class extends GenericFormComponent {
         <flux:error name="form.name" />
     </flux:field>
 
-    <livewire:autocompletes::room-types :readonly="$this->isReadonly()" :eventSiteId="$eventSiteId" :form="$form" class="space-x-2" />
+    <livewire:selects.room-types :readonly="$this->isReadonly()" :eventSiteId="$eventSiteId" :form="$form" class="space-x-2" />
 </livewire:pages::forms.generic-form>

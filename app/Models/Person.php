@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\WithNameDescriptor;
+use App\Utils\DescriptorUtil;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Person extends GenericModel
@@ -30,7 +31,11 @@ class Person extends GenericModel
 
     public function descriptor(): string
     {
-        return $this->name . ' | ' . $this->church->name;
+
+        $name = $this->name ?? null;
+        $churchName = $this->church->name ?? null;
+
+        return DescriptorUtil::describe($name, $churchName);
     }
 
     public function church(): BelongsTo

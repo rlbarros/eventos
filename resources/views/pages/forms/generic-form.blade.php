@@ -5,11 +5,11 @@ use Livewire\Component;
 
 new class extends Component {
 
-    public $modalArray;
-    public $modalName;
-    public $formTitle;
-    public $submitButtonVisible;
-    public $submitButtonLabel;
+    public array $modalArray;
+    public string $modalName;
+    public string $formTitle;
+    public bool $submitButtonVisible;
+    public string $submitButtonLabel;
 
     public function mount()
     {

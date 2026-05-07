@@ -57,8 +57,8 @@ new class extends GenericFormComponent {
         $this->dispatchStateCityExternalySelected();
     }
 
-    #[On('state-city-internaly-selected')]
-    public function handleStateCityInternalySelected($stateId, $cityId)
+    #[On('state-city-selected')]
+    public function handleStateCitySelected($stateId, $cityId)
     {
         $this->form->state_id = $stateId;
         $this->form->city_id = $cityId;
