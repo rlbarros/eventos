@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms\Event\Participant;
 
+use App\Models\EventParticipantAllocation;
 use App\Enum\FormModeEnum;
 use App\Livewire\Forms\GenericForm;
 use App\Models\GenericModel;
@@ -41,6 +42,7 @@ class EventParticipantAllocationForm extends GenericForm
         $this->formMode = $formMode;
         $this->model = $model;
 
+        /** @var EventParticipantAllocation */
         $eventParticipantAllocation = $model;
 
         if (empty($eventParticipantAllocation) || empty($eventParticipantAllocation->id)) {

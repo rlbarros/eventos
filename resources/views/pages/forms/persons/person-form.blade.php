@@ -67,7 +67,8 @@ new class extends GenericFormComponent {
     {
         $this->dispatch('church-injected');
     }
-};
+}
+
 ?>
 
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
@@ -108,8 +109,6 @@ new class extends GenericFormComponent {
         <flux:input placeholder="(00) 00000-0000" wire:model="form.phone" mask="(99) 99999-9999" :readonly="$this->isReadonly()" />
         <flux:error name="form.phone" />
     </flux:field>
-
-
 
 
 </livewire:pages::forms.generic-form>

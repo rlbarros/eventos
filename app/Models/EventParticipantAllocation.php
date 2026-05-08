@@ -15,6 +15,7 @@ class EventParticipantAllocation extends GenericModel
         'event_id',
         'person_id',
         'event_site_room_id',
+        'event_site_room_type_id',
     ];
 
     public static function modelName(): string

@@ -102,3 +102,8 @@ select:focus[data-flux-control] {
 [data-flux-button] {
   cursor: pointer !important;
 }
+
+.hide-only-child:has(> :only-child),
+.hide-only-child:empty {
+  display: none;
+}

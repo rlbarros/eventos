@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Livewire\Forms\Church;
+namespace App\Livewire\Forms\church;
 
 use App\Enum\FormModeEnum;
 use App\Livewire\Forms\GenericForm;
-use App\Models\Church;
+use App\Models\church;
 use App\Models\GenericModel;
 
 class ChurchForm extends GenericForm
@@ -42,18 +42,18 @@ class ChurchForm extends GenericForm
         $this->model = $model;
 
         /** @var Church */
-        $Church = $model;
+        $church = $model;
 
-        if (empty($Church) || empty($Church->id)) {
+        if (empty($church) || empty($church->id)) {
             $this->genericReset();
             return;
         }
 
-        $this->id = $Church->id;
-        $this->name = $Church->name;
+        $this->id = $church->id;
+        $this->name = $church->name;
 
 
-        $this->state_id = $Church->state_id;
-        $this->city_id = $Church->city_id;
+        $this->state_id = $church->state_id;
+        $this->city_id = $church->city_id;
     }
 }

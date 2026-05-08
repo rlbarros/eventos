@@ -36,6 +36,7 @@ new class extends Component {
         if ($churches->count() === 1) {
             $church = $churches->first();
             $this->dispatch('church-selected', $church->id);
+        } else {
         }
 
         return $churches;
@@ -44,15 +45,15 @@ new class extends Component {
 
 ?>
 
-<div x-data="{ query: @entangle('query'), churches: [] }">
+<div x-data="{ query: @entangle('query'), datalistVisible: false, churches: [] }">
 
     <flux:field class="w-full">
         <flux:label>Igreja</flux:label>
 
-        <flux:input x-model.debounce.300ms="query" wire:model="query" x-on:input.debounce.300ms="$wire.search(query).then(data => churches = data)"
+        <flux:input x-model.debounce.300ms="query" wire:model="query" x-on:input.debounce.300ms="$wire.search(query).then(data => {churches = data; datalistVisible = data.length > 1})"
             list="churches-list" autocomplete="off" :readonly="$readonly" />
 
-        <datalist id="churches-list" class="w-full" style="max-height: 200px; overflow-y: auto;">
+        <datalist id="churches-list" class="w-full hide-only-child" style="max-height: 200px; overflow-y: auto;" x-show="datalistVisible" x-cloak>
             <template x-for="church in churches">
                 <option x-value="church.id" x-text="church.name"></option>
             </template>

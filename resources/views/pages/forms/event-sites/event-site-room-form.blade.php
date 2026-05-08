@@ -51,18 +51,26 @@ new class extends GenericFormComponent {
         $this->submitDisabled = true;
         $this->checkSubmitButtonDisabled();
         $this->showModal();
+        $this->dispatchEventSiteRoomTypeInjected();
     }
 
     #[On('forms.event-sites.event-site-room-edit')]
     public function handleEventSiteEditRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
+        $this->dispatchEventSiteRoomTypeInjected();
     }
 
     #[On('forms.event-sites.event-site-room-view')]
     public function handleEventSiteViewRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);
+        $this->dispatchEventSiteRoomTypeInjected();
+    }
+
+    public function dispatchEventSiteRoomTypeInjected()
+    {
+        $this->dispatch('event-site-room-type-injected', $this->form->event_site_room_type_id);
     }
 };
 ?>

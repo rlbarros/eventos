@@ -28,7 +28,7 @@ new #[Title('Locais de Evento')] class extends GenericIndexComponent
 }; ?>
 
 
-<livewire:pages::forms.generic-index :indexArray="$this->indexArray()">
+<livewire:pages::forms.generic-index :indexArray="$this->indexArray()" :search="$this->search">
     <livewire:pages::forms.event-sites.event-site-form />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>

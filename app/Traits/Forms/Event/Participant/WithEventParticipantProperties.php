@@ -44,4 +44,9 @@ trait WithEventParticipantProperties
             ['event_id', '=', $this->eventId]
         ];
     }
+
+    public function whereHasTable(): string
+    {
+        return 'person';
+    }
 }

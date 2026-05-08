@@ -41,14 +41,15 @@ new class extends GenericFormComponent {
         $this->submitDisabled = true;
         $this->checkSubmitButtonDisabled();
         $this->showModal();
+        $this->dispatchEventSiteRoomTypeInjected();
     }
 
     #[On('events.participants.participant-edit')]
     public function handleEventSiteEditRequest(int $id)
     {
-        $this->form->formMode = FormModeEnum::Edit;
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
         $this->dispatchPersonExternalySelected();
+        $this->dispatchEventSiteRoomTypeInjected();
     }
 
     #[On('events.participants.participant-view')]
@@ -56,6 +57,7 @@ new class extends GenericFormComponent {
     {
         $this->form->formMode = FormModeEnum::View;
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);
+        $this->dispatchEventSiteRoomTypeInjected();
     }
 
     public function submitDisabledCondition(): bool
@@ -82,6 +84,11 @@ new class extends GenericFormComponent {
     {
         $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
     }
+
+    public function dispatchEventSiteRoomTypeInjected()
+    {
+        $this->dispatch('event-site-room-type-injected', $this->form->event_site_room_type_id);
+    }
 };
 
 ?>
@@ -90,5 +97,5 @@ new class extends GenericFormComponent {
     @if($this->isPersonVisible())
     <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" class="space-x-2" />
     @endif
-    <livewire:selects.room-types :form="$this->form()" :readonly="$this->isReadonly()" :eventSiteId="$this->eventSiteId" />
+    <livewire:selects.room-types :readonly="$this->isReadonly()" :eventSiteId="$eventSiteId" :form="$form" class="space-x-2" />
 </livewire:pages::forms.generic-form>

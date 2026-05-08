@@ -6,6 +6,8 @@ use App\Interfaces\IProperties;
 use App\Models\GenericModel;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Masmerise\Toaster\Toaster;
@@ -22,11 +24,26 @@ abstract class GenericIndexComponent extends Component implements IProperties
     abstract public function routeName(): string;
     abstract public function routeParameters(): array;
 
+    #[Url(history: true)]
+    public string $search = '';
 
     public function modelName(): string
     {
         return $this->model()::modelName();
     }
+
+    public function columnFilter(): string
+    {
+        return 'name';
+    }
+
+    public function whereHasTable(): string
+    {
+        return '';
+    }
+
+    protected $listeners = ['search-updated' => '$refresh'];
+
 
     #[Computed]
     public function index()
@@ -35,6 +52,16 @@ abstract class GenericIndexComponent extends Component implements IProperties
         foreach ($this->customWhereIndex() as $whereArray) {
             [$column, $operator, $value] = $whereArray;
             $query->where($column, $operator, $value);
+        }
+
+        if (!empty($this->search)) {
+            if (empty($this->whereHasTable())) {
+                $query->whereRaw('LOWER(' . $this->columnFilter() . ') LIKE \'%' . strtolower($this->search) . '%\'');
+            } else {
+                $query->whereHas($this->whereHasTable(), function ($whereHasQuery) {
+                    $whereHasQuery->whereRaw('LOWER(' . $this->columnFilter() . ') LIKE \'%' . strtolower($this->search) . '%\'');
+                });
+            }
         }
 
         if (!empty($this->customOrderingColumn())) {
