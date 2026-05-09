@@ -1,128 +1,74 @@
 <?php
 
-namespace App\Livewire;
-
 use App\Models\Person;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Modelable;
+use Livewire\Attributes\Json;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
-use Masmerise\Toaster\Toaster;
 
-new class extends Component
-{
-    public bool $readonly = false;
-    public bool $touched = false;
-    public string $label = '';
-    public string $searchTerm = '';
-    public string $lastSearchTerm = '';
+new class extends Component {
 
-    #[Modelable]
-    public object $form;
+    #[Reactive]
+    public bool $readonly;
 
-    public Collection $persons;
+    #[Reactive]
+    public int $personId;
 
-    public function invalid()
+    public string $query;
+
+    #[On('person-injected')]
+    public function handlePersonInjected()
     {
-        return $this->touched = true && empty($this->persons);
-    }
-
-    public function hasTwoPersonsOrMore()
-    {
-        return $this->persons->count() >= 2;
-    }
-
-    public function mount()
-    {
-        $this->persons = new Collection();
-    }
-
-    public function loadPersons()
-    {
-        $searchTerm = $this->searchTerm;
-
-
-
-        // Check if search term contains "|" and take first element if it does
-        if (strpos($searchTerm, '|') !== false) {
-            $searchTerm = explode('|', $searchTerm)[0];
-        }
-
-        if (strlen($searchTerm) < 3) {
-            $this->lastSearchTerm = '';
-            $this->persons = new Collection();
-            $this->form->person_id = 0;
-            return;
-        }
-
-        $this->touched = true;
-        if ($this->persons->isNotEmpty() && $this->persons->hasSole('name', '=', $searchTerm)) {
-            $this->form->person_id = $this->persons->where('name', '=', $searchTerm)->first()->id;
-            $this->dispatchSelections();
-            return;
-        }
-
-        $searchTerm = trim(strtolower($searchTerm));
-
-        $isLastSearchTermPrefix = str_starts_with($searchTerm, $this->lastSearchTerm);
-        $isPersonsHasAtLeastTwoItems = $this->persons->count() >= 2;
-        $isLastSearchTermLowerThanCurrent = strlen($this->lastSearchTerm) < strlen($searchTerm);
-
-        try {
-            if ($this->touched && $isPersonsHasAtLeastTwoItems && $isLastSearchTermPrefix && $isLastSearchTermLowerThanCurrent) {
-                $this->persons = $this->persons->filter(function ($person) use ($searchTerm) {
-                    return str_starts_with(strtolower($person->name), $searchTerm);
-                });
-            } else {
-                $this->dispatch('log-event', ['obj' => $searchTerm, 'level' => 'info']);
-                $this->persons = Person::orderBy('name')
-                    ->whereRaw('LOWER(name) LIKE ?', ["{$searchTerm}%"])
-                    ->get();
-                $this->dispatch('log-event', ['obj' => $this->persons, 'level' => 'info']);
-            }
-            $this->lastSearchTerm = $searchTerm;
-
-            if ($this->persons->hasSole()) {
-                $pessoa = $this->persons->first();
-                $this->form->person_id = $pessoa->id;
-                $this->searchTerm = $pessoa->descriptor();
-                $this->dispatchSelections();
-            }
-        } catch (\Exception $e) {
-            Toaster::warning('não foi possível consultar informações de pessoas');
-            Log::error('error consulting persons ' . $e->getMessage(), $e->getTrace());
+        if (empty($this->personId)) {
+            $this->query = '';
+        } else {
+            $this->query = Person::find($this->personId)->name;
         }
     }
 
-    #[On('person-externaly-selected')]
-    public function handleStateeventSiteExternalySelected(int $personId)
+    #[Json]
+    public function search(string $query)
     {
-        $this->form->person_id = $personId;
-    }
+        if (str_contains($query, '|')) {
+            $query = trim(explode('|', $query)[1]);
+        }
+        $persons = Person::where('name', 'like', "%{$query}%")
+            ->limit(10)
+            ->get();
+
+        if ($persons->count() === 1) {
+            $person = $persons->first();
+            $this->dispatch('person-selected', $person->id);
+        }
 
 
-    public function dispatchSelections()
-    {
-        $this->dispatch('person-selected', personId: $this->form->person_id);
+        $formattedPersons = $persons->map(function ($person) {
+            return [
+                'id' => $person->id,
+                'name' => $person->name,
+                'church' => $person->church->name
+            ];
+        });
+
+        return $formattedPersons;
     }
-}
+};
 
 ?>
 
-<flux:field class="w-full">
-    <flux:label>{{ ucfirst(str_replace('_', ' ', $label)) }}</flux:label>
+<div x-data="{ query: @entangle('query'), datalistVisible: false, persons: [] }">
 
+    <flux:field class="w-full">
+        <flux:label>Pessoa</flux:label>
 
-    <flux:input wire:model.live="searchTerm" wire:keydown.debounce.300ms="loadPersons" :invalid="$this->invalid()" :disabled="$readonly" list="persons-list" autocomplete="off" />
+        <flux:input x-model.debounce.300ms="query" wire:model="query" x-on:input.debounce.300ms="$wire.search(query).then(data => {persons = data; datalistVisible = data.length > 1})"
+            list="persons-list" autocomplete="off" :readonly="$readonly" />
 
+        <datalist id="persons-list" class="w-full hide-only-child" style="max-height: 200px; overflow-y: auto;" x-show="datalistVisible" x-cloak>
+            <template x-for="person in persons">
+                <option x-value="person.id" x-text="person.church + ' | ' + person.name"></option>
+            </template>
+        </datalist>
 
-    <datalist id="persons-list" class="w-full" style="max-height: 200px; overflow-y: auto;" wire:model.live="form.person_id" wire:change="dispatchSelections">
-        @if($this->hasTwoPersonsOrMore())
-        @foreach ($persons as $person)
-        <option id="person-{{$person->id}}">{{$person->descriptor()}}</option>;
-        @endforeach
-        @endif
-    </datalist>
-
-</flux:field>
+    </flux:field>
+</div>

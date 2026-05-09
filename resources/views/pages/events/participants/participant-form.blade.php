@@ -48,7 +48,7 @@ new class extends GenericFormComponent {
     public function handleEventSiteEditRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
-        $this->dispatchPersonExternalySelected();
+        $this->dispatchPersonInjected();
         $this->dispatchEventSiteRoomTypeInjected();
     }
 
@@ -63,8 +63,9 @@ new class extends GenericFormComponent {
     public function submitDisabledCondition(): bool
     {
         $emptyPersonId = empty($this->form->person_id);
+        $emptyEvemtSiteRoomTypeId = empty($this->form->event_site_room_type_id);
 
-        return $emptyPersonId;
+        return $emptyPersonId || $emptyEvemtSiteRoomTypeId;
     }
 
     #[On('person-selected')]
@@ -74,15 +75,16 @@ new class extends GenericFormComponent {
         $this->checkSubmitButtonDisabled();
     }
 
-    public function dispatchPersonExternalySelected()
+    public function dispatchPersonInjected()
     {
-        $this->dispatch('person-externaly-selected', personId: $this->form->person_id);
+        $this->dispatch('person-injected', personId: $this->form->person_id);
     }
 
     #[On('event-site-room-type-selected')]
     public function handleEventSiteRoomTypeSelected(int $eventSiteRoomTypeId)
     {
         $this->form->event_site_room_type_id = $eventSiteRoomTypeId;
+        $this->checkSubmitButtonDisabled();
     }
 
     public function dispatchEventSiteRoomTypeInjected()
