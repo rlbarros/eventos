@@ -170,7 +170,7 @@ new class extends Component
     </flux:card>
 
 
-    <flux:card class="flex flex-col gap-10 w-80">
+    <flux:card class="flex flex-col gap-10 w-89">
 
         <flux:callout variant="indigo" icon="information-circle" inline>
             <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Leitos do Evento </flux:callout.heading>
