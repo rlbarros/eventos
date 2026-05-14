@@ -13,10 +13,10 @@ new class extends Component {
     public string $subHeader;
     public string $createButtonLabel;
     public string $createActionEventName;
+    public bool $searchVisihle = true;
 
     #[Url(history: true)]
     public string $search;
-
 
     public function updatedSearch()
     {
@@ -36,6 +36,7 @@ new class extends Component {
         $this->subHeader = $this->indexArray['subHeader'] ?? null;
         $this->createButtonLabel = $this->indexArray['createButtonLabel'] ?? null;
         $this->createActionEventName = $this->indexArray['createActionEventName'] ?? null;
+        $this->searchVisihle = $this->indexArray['searchVisible'] ?? true;
     }
 };
 
@@ -49,9 +50,11 @@ new class extends Component {
             <flux:subheading size="lg" class="mb-4">{{ $subHeader }}</flux:subheading>
         </div>
 
+        @if($this->searchVisihle)
         <div class="w-50">
             <flux:input wire:model.live.debounce.300ms="search" wire:island="list" type="text" icon="magnifying-glass" placeholder="filtre aqui" />
         </div>
+        @endif
 
         <flux:button variant="primary" wire:click="$dispatch('{{ $createActionEventName }}')">
             {{ $createButtonLabel }}

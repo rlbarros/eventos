@@ -95,7 +95,13 @@ new class extends Component {
             </x-slot:label>
             <livewire:pages::events.allocations.allocations-index :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" />
         </x-mary-tab>
-        <x-mary-tab name="fees-tab" icon="o-building-office">
+        <x-mary-tab name="batches-tab" icon="o-chart-bar-square">
+            <x-slot:label>
+                lotes
+            </x-slot:label>
+            <livewire:pages::events.batches.batches-index :eventId="$this->eventId" />
+        </x-mary-tab>
+        <x-mary-tab name="fees-tab" icon="o-chart-bar">
             <x-slot:label>
                 taxas
             </x-slot:label>

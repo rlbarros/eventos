@@ -8,6 +8,8 @@ class EventBatch extends GenericModel
 {
     protected $table = 'events_batches';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'event_id',
         'batch',

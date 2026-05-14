@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Traits\Forms\Event\Participant;
+namespace App\Traits\Forms\Event\Batch;
 
-use App\Models\EventParticipantAllocation;
+use App\Models\EventBatch;
 
 
-trait WithEventAllocationProperties
+trait WithEventBatchProperties
 {
     public int $eventId = 0;
 
     public function model()
     {
-        return new EventParticipantAllocation();
+        return new EventBatch();
     }
 
     public function routeName(): string
@@ -23,7 +23,7 @@ trait WithEventAllocationProperties
     {
         return [
             'eventId' => $this->eventId,
-            'selectedTab' => 'allocations-tab'
+            'selectedTab' => 'batches-tab'
         ];
     }
 
@@ -34,7 +34,7 @@ trait WithEventAllocationProperties
 
     public function customOrderingColumn(): string
     {
-        return '';
+        return 'id';
     }
 
     public function customWhereIndex(): array
@@ -42,5 +42,10 @@ trait WithEventAllocationProperties
         return [
             ['event_id', '=', $this->eventId]
         ];
+    }
+
+    public function columnFilter(): string
+    {
+        return '';
     }
 }
