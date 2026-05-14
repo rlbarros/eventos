@@ -11,6 +11,7 @@ class EventFee extends GenericModel
     protected $fillable = [
         'event_id',
         'event_site_room_type_id',
+        'event_batch_id',
         'category',
         'batch',
         'fee'
@@ -39,5 +40,10 @@ class EventFee extends GenericModel
     public function event_site_room_type(): BelongsTo
     {
         return $this->belongsTo(EventSiteRoomType::class, 'event_site_room_type_id');
+    }
+
+    public function event_batch(): BelongsTo
+    {
+        return $this->belongsTo(EventBatch::class, 'event_batch_id');
     }
 }

@@ -54,7 +54,7 @@ new class extends GenericIndexComponent
                         <flux:button wire:click="$dispatch('events.batches.batch-edit', { id: {{ $batch->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
                         <flux:button variant="danger" icon="trash" size="sm"
-                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $batch->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$batch->descriptor()}}', callbackDeleteEvent: 'events.participants.participant-delete-confirmed' })" />
+                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $batch->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$batch->descriptor()}}', callbackDeleteEvent: 'events.batches.batch-delete-confirmed' })" />
                     </div>
                 </flux:table.cell>
             </flux:table.row>

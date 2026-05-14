@@ -12,7 +12,7 @@ class EventSiteRoomTypeForm extends GenericForm
 {
 
     public $name = '';
-    public $type = RoomTypesEnum::Alojamento->value;
+    public int|string $type = RoomTypesEnum::Alojamento->value;
     public $beds = 1;
     public $event_site_id = 0;
 

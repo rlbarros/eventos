@@ -46,11 +46,11 @@ new class extends GenericFormComponent {
 
     public function submitDisabledCondition(): bool
     {
-        $emptyBatchId = empty($this->form->batch);
+        $emptyBatch = empty($this->form->batch);
         $emptyStartDate = empty($this->form->start_date);
         $emptyEndDate = empty($this->form->end_date);
 
-        return $emptyBatchId || $emptyStartDate || $emptyEndDate;
+        return $emptyBatch || $emptyStartDate || $emptyEndDate;
     }
 };
 

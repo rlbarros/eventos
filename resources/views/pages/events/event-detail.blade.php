@@ -105,6 +105,7 @@ new class extends Component {
             <x-slot:label>
                 taxas
             </x-slot:label>
+            <livewire:pages::events.fees.fees-index :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" />
         </x-mary-tab>
     </x-mary-tabs>
 </div>

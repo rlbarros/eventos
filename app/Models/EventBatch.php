@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\DateUtil;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventBatch extends GenericModel
@@ -24,10 +25,10 @@ class EventBatch extends GenericModel
 
     public function descriptor(): string
     {
-        if (empty($this->id) || empty($this->batch)) {
+        if (empty($this->batch) || empty($this->start_date) || empty($this->end_date)) {
             return '';
         }
-        return $this->id . ' - ' . $this->batch;
+        return $this->batch . ' | ' . DateUtil::formatDateToBr($this->start_date) . ' - ' . DateUtil::formatDateToBr($this->end_date);
     }
 
     public function event(): BelongsTo

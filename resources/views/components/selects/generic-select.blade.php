@@ -49,11 +49,13 @@ new class extends Component
         $this->recordsLoading = true;
         try {
             $query = $this->model->query();
+            Log::info('1' . $query->toSql());
             foreach ($this->customWhereIndex() as $whereArray) {
                 [$column, $operator, $value] = $whereArray;
                 $query->where($column, $operator, $value);
             }
             if (!empty($this->customOrderingColumn())) {
+                Log::info('2' . $query->toSql());
                 $this->records = $query->latest($this->customOrderingColumn())->get();
             } else {
                 $this->records = $query->latest()->get();
