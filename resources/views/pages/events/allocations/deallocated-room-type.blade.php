@@ -35,7 +35,7 @@ new class extends Component
         @if($loop->iteration > 1)
         <flux:separator class="mt-4 mb-4 ml-0 mr-0" style="width: 395px!important;" />
         @endif
-        <livewire:pages::events.allocations.unnalocated-church :church="$church" />
+        <livewire:pages::events.allocations.deallocated-church :church="$church" />
         @endforeach
     </x-slot:content>
 </x-mary-collapse>

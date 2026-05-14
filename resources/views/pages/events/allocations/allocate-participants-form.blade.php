@@ -2,6 +2,7 @@
 
 use App\Models\EventParticipantAllocation;
 use App\Models\EventSiteRoom;
+use App\Utils\JSUtil;
 use Flux\Flux;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
@@ -19,34 +20,7 @@ new class extends Component {
     #[On('events.allocate-participants-create')]
     public function allocatingRequest()
     {
-
-        $js = "(function() {
-            let arrayConcatenado = [];
-
-            for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                
-                if (key && key.startsWith('unnalocated-selected-participants')) {
-                    try {
-                        // Recupera a string do localStorage
-                        let dadoRaw = localStorage.getItem(key);
-                        // Converte de volta para Array JavaScript
-                        let dadosArray = JSON.parse(dadoRaw); 
-                        
-                        if (Array.isArray(dadosArray)) {
-                            // Adiciona os itens ao array principal (mesma coisa que usar .concat)
-                            arrayConcatenado.push(...dadosArray);
-                        }
-                    } catch (e) {
-                        console.error('Erro ao ler a chave do localStorage: ' + key, e);
-                    }
-                }
-            }
-
-            // Envia o array único concatenado de volta para o PHP do Livewire
-            console.log(arrayConcatenado);
-            Livewire.dispatch('events.allocate-participants-load-records', { participants: arrayConcatenado});
-        })();";
+        $js = JSUtil::retrieveFromLocalStorageAndDispatch('deallocated-selected-participants', 'events.allocate-participants-load-records');
         $this->js($js);
         Flux::modal('events.allocate-participants')->show();
     }
@@ -151,7 +125,7 @@ new class extends Component {
 
                 <flux:select wire:model.live="selectedRoom" required>
 
-                    <flux:select.option value="0">Selectioe</flux:select.option>
+                    <flux:select.option value="0">Selecione o quarto...</flux:select.option>
                     @foreach ($availableRooms as $room)
                     <flux:select.option :wire:key="$room['id']" :value="$room['id']">
                         {{ $room['name'] }}

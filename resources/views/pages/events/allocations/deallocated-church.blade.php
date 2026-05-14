@@ -17,7 +17,7 @@ new class extends Component
 
     public function updatedSelectedParticipants()
     {
-        $key = 'unnalocated-selected-participants-' . $this->name;
+        $key = 'deallocated-selected-participants-' . $this->name;
         $js = "localStorage.setItem('" . $key . "', '" . json_encode($this->selectedParticipants) . "');";
         $this->js($js);
     }
