@@ -8,6 +8,7 @@ new class extends Component
     public object $roomType;
     public array $rooms;
 
+
     public function availableBeds()
     {
         $availableBeds = 0;

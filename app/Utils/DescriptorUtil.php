@@ -18,4 +18,18 @@ class DescriptorUtil
             return '';
         }
     }
+
+    public static function functionAbreviation(string $function): string
+    {
+        switch ($function) {
+            case 'Pastor':
+                return 'PR.';
+            case 'Evangelista':
+                return 'EV.';
+            case 'Pregador de Conferência':
+                return 'OBC.';
+            default:
+                return '';
+        }
+    }
 }

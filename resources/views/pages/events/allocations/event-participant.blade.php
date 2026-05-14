@@ -17,4 +17,4 @@ new class extends Component
 }
 ?>
 
-<flux:checkbox wire:key="id" label="{{$name}}" />
+<flux:checkbox wire:key="id" value="{{ (string) $id }}" label="{{$name}}" />

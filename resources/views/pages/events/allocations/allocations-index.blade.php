@@ -6,6 +6,7 @@ use App\Models\EventSite;
 use App\Models\EventSiteRoom;
 use App\Models\EventSiteRoomType;
 use App\Traits\Forms\Event\Participant\WithEventParticipantProperties;
+use App\Utils\DescriptorUtil;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -19,10 +20,35 @@ new class extends Component
     public int $occupedBeds = 0;
 
     public array $eventSiteRooms;
+    public array $unnalocatedRoomTypeChurchesParticipants;
 
     public function mount()
     {
         $this->eventSiteRooms = $this->eventSiteRooms();
+        $this->unnalocatedRoomTypeChurchesParticipants = $this->unnalocatedRoomTypeChurchesParticipants();
+        $this->removerChavesLocalStorage();
+    }
+
+    public function removerChavesLocalStorage()
+    {
+        $js = "(function() {
+            // Cria uma lista separada para evitar problemas de índice ao deletar durante o loop
+            var chavesParaRemover = [];
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (key && key.startsWith('unnalocated-selected-participants')) {
+                    chavesParaRemover.push(key);
+                }
+            }
+            
+            // Deleta as chaves filtradas
+            chavesParaRemover.forEach(function(key) {
+                localStorage.removeItem(key);
+            });
+        })();";
+
+        $this->js($js);
     }
 
 
@@ -55,7 +81,7 @@ new class extends Component
     }
 
     #[Computed()]
-    public function unallocatedArray()
+    public function unnalocatedRoomTypeChurchesParticipants()
     {
         $unnalocatedParticipants = EventParticipantAllocation::where('event_id', $this->eventId)->whereNull('event_site_room_id')->get();
         $roomTypes = [];
@@ -82,7 +108,7 @@ new class extends Component
             $participants = $church['participants'];
             array_push($participants, [
                 'id' => $unnalocatedParticipant->id,
-                'name' => $unnalocatedParticipant->person->function . ' ' . $unnalocatedParticipant->person->name
+                'name' => DescriptorUtil::functionAbreviation($unnalocatedParticipant->person->function) . ' ' . $unnalocatedParticipant->person->name
             ]);
             $church['participants'] = $participants;
             $churches[$participantChurch->id] = $church;
@@ -149,63 +175,70 @@ new class extends Component
         return $roomsAllocations;
     }
 
-    public function alocarSelecionados() {}
+    public function alocarSelecionados()
+    {
+        $this->dispatch('events.allocate-participants-create');
+    }
 
     public function desalocarSelecionados() {}
 }
 ?>
 
-<div class="grid grid-cols-3 gap-4 w-full justify-items-center items-center">
-    <flux:card class="space-y-6 w-120">
-        <div>
-            <flux:heading size="lg">Participantes não alocados</flux:heading>
-        </div>
-        <div class="grid grid-cols-1 gap-2 w-full">
+<div>
+    <livewire:pages::events.allocations.allocate-participants-form />
+
+    <div class="grid grid-cols-3 gap-4 w-full justify-items-center items-center">
+        <flux:card class="space-y-6 w-120">
+            <div>
+                <flux:heading size="lg">Participantes não alocados</flux:heading>
+            </div>
+            <div class="grid grid-cols-1 gap-2 w-full">
+                <x=mary-accordion>
+                    @foreach($this->unnalocatedRoomTypeChurchesParticipants as $roomType)
+                    <livewire:pages::events.allocations.unnalocated-room-type :roomType="$roomType" />
+                    @endforeach
+                </x=mary-accordion>
+            </div>
+        </flux:card>
+
+
+        <flux:card class="flex flex-col gap-10 w-89">
+
+            <flux:callout variant="indigo" icon="information-circle" inline>
+                <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Leitos do Evento </flux:callout.heading>
+                <x-slot name="controls" class="mt-1">
+                    <flux:badge color="indigo" size="xs" rounded>{{$this->totalBeds}}</flux:badge>
+                </x-slot>
+            </flux:callout>
+            <flux:callout color="green" icon="check-circle" inline>
+                <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Leitos Disponíveis</flux:callout.heading>
+                <x-slot name="controls" class="mt-1">
+                    <flux:badge color="green" size="xs" rounded>{{$this->availableBeds}}</flux:badge>
+                </x-slot>
+            </flux:callout>
+            <flux:callout color="red" icon="exclamation-circle" inline>
+                <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Leitos Alocados</flux:callout.heading>
+                <x-slot name="controls" class="mt-1">
+                    <flux:badge color="red" size="xs" rounded>{{$this->occupedBeds}}</flux:badge>
+                </x-slot>
+            </flux:callout>
+
+            <flux:button variant="primary" icon:trailing="chevron-right" wire:click="alocarSelecionados">
+                Alocar Selecionados
+            </flux:button>
+
+            <flux:button variant="primary" icon="chevron-left" wire:click="desalocarSelecionados">
+                Desalocar Selecionados
+            </flux:button>
+        </flux:card>
+
+
+        <flux:card class="space-y-6 w-120">
             <x=mary-accordion>
-                @foreach($this->unallocatedArray() as $roomType)
-                <livewire:pages::events.allocations.unnalocated-room-type :roomType="$roomType" />
+                @foreach($this->eventSiteRooms as $roomTypeArray)
+                <livewire:pages::events.allocations.available-room-type :room-type="$roomTypeArray['roomType']" :rooms="$roomTypeArray['rooms']" :wire:key="$roomTypeArray['roomType']->id" />
                 @endforeach
             </x=mary-accordion>
-        </div>
-    </flux:card>
-
-
-    <flux:card class="flex flex-col gap-10 w-89">
-
-        <flux:callout variant="indigo" icon="information-circle" inline>
-            <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Leitos do Evento </flux:callout.heading>
-            <x-slot name="controls" class="mt-1">
-                <flux:badge color="indigo" size="xs" rounded>{{$this->totalBeds}}</flux:badge>
-            </x-slot>
-        </flux:callout>
-        <flux:callout color="green" icon="check-circle" inline>
-            <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Leitos Disponíveis</flux:callout.heading>
-            <x-slot name="controls" class="mt-1">
-                <flux:badge color="green" size="xs" rounded>{{$this->availableBeds}}</flux:badge>
-            </x-slot>
-        </flux:callout>
-        <flux:callout color="red" icon="exclamation-circle" inline>
-            <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Leitos Alocados</flux:callout.heading>
-            <x-slot name="controls" class="mt-1">
-                <flux:badge color="red" size="xs" rounded>{{$this->occupedBeds}}</flux:badge>
-            </x-slot>
-        </flux:callout>
-
-        <flux:button variant="primary" icon:trailing="chevron-right" wire:click="alocarSelecionados">
-            Alocar Selecionados
-        </flux:button>
-
-        <flux:button variant="primary" icon="chevron-left" wire:click="desalocarSelecionados">
-            Desalocar Selecionados
-        </flux:button>
-    </flux:card>
-
-
-    <flux:card class="space-y-6 w-120">
-        <x=mary-accordion>
-            @foreach($this->eventSiteRooms as $roomTypeArray)
-            <livewire:pages::events.allocations.available-room-type :room-type="$roomTypeArray['roomType']" :rooms="$roomTypeArray['rooms']" :wire:key="$roomTypeArray['roomType']->id" />
-            @endforeach
-        </x=mary-accordion>
-    </flux:card>
+        </flux:card>
+    </div>
 </div>

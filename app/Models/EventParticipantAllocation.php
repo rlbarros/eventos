@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-
+use App\Utils\DescriptorUtil;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventParticipantAllocation extends GenericModel
@@ -28,7 +28,9 @@ class EventParticipantAllocation extends GenericModel
         if (!empty($this->person_id)) {
             $person = $this->person;
             $church = $this->person->church;
-            return $person->function . ' - ' . $person->name . ' (' . $church->name . ')';
+            $abv = DescriptorUtil::functionAbreviation(($person->function));
+
+            return $abv . ' ' . $person->name . ' (' . $church->name . ')';
         }
 
         return '';

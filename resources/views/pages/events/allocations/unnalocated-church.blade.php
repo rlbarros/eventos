@@ -5,14 +5,21 @@ use Livewire\Component;
 new class extends Component
 {
     public array $church;
-
     public string $name;
     public array $participants;
+    public array $selectedParticipants = [];
 
     public function mount()
     {
         $this->name = $this->church['church'] ?? '';
         $this->participants = $this->church['participants'] ?? [];
+    }
+
+    public function updatedSelectedParticipants()
+    {
+        $key = 'unnalocated-selected-participants-' . $this->name;
+        $js = "localStorage.setItem('" . $key . "', '" . json_encode($this->selectedParticipants) . "');";
+        $this->js($js);
     }
 };
 ?>
@@ -23,16 +30,15 @@ new class extends Component
         <flux:badge color="green" rounded size="xs" class="ml-2">{{count($participants)}}</flux:badge>
     </flux:label>
 
-    <flux:checkbox.group class="mt-2">
-        @if(count($participants) > 1)
-        <flux:checkbox.all label="Todos" />
-        @endif
+    <flux:checkbox.group class="mt-2" wire:model.live="selectedParticipants">
         @foreach($participants as $participant)
-        @if($loop->iteration
-        <= count($participants))
-            <flux:separator class="mb-4" variant="subtle" style="width: 365px!important;" />
+
+
+        <flux:checkbox wire:key="{{ $participant['id'] }}" value="{{ (string) $participant['id'] }}" label="{{$participant['name']}}" />
+
+        @if(!$loop->last)
+        <flux:separator class="my-2" variant="subtle" style="width: 365px!important;" />
         @endif
-        <livewire:pages::events.allocations.event-participant :participant="$participant" :wire:key="$participant['id']" />
         @endforeach
     </flux:checkbox.group>
 </flux:field>
