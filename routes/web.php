@@ -13,6 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::livewire('events', 'pages::events.events-index')->name('events');
     Route::livewire('events/event-detail/{eventId}', 'pages::events.event-detail')->name('event-detail');
+    Route::livewire('events/event-detail/{eventId}/participant/{allocationId}', 'pages::events.participants.participant-detail')->name('participant-detail');
 });
 
 require __DIR__ . '/settings.php';
