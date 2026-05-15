@@ -16,8 +16,7 @@ new class extends GenericIndexComponent
             'header' => 'Lotes',
             'subHeader' => 'cadastre os serviçoes dos eventos.',
             'createButtonLabel' => 'Adicionar Serviço',
-            'createActionEventName' => 'events.services.service-create',
-            'searchVisible' => false
+            'createActionEventName' => 'events.services.service-create'
         ];
     }
 

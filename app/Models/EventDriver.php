@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\WithNameDescriptor;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventDriver extends Model
+class EventDriver extends GenericModel
 {
+    use WithNameDescriptor;
+
     protected $table = 'events_drivers';
 
     protected $fillable = [
@@ -21,7 +23,6 @@ class EventDriver extends Model
     {
         return  "Motorista";
     }
-
 
     public function event(): BelongsTo
     {
