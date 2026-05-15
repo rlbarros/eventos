@@ -13,7 +13,7 @@ new class extends GenericIndexComponent
     public function indexArray(): array
     {
         return [
-            'header' => 'Lotes',
+            'header' => 'Serviços',
             'subHeader' => 'cadastre os serviçoes dos eventos.',
             'createButtonLabel' => 'Adicionar Serviço',
             'createActionEventName' => 'events.services.service-create'

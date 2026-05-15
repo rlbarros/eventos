@@ -13,7 +13,7 @@ new class extends GenericIndexComponent
     public function indexArray(): array
     {
         return [
-            'header' => 'Lotes',
+            'header' => 'Motoristas',
             'subHeader' => 'cadastre os motoristas de tranporte do evento.',
             'createButtonLabel' => 'Adicionar Motorista',
             'createActionEventName' => 'events.drivers.driver-create'
@@ -47,7 +47,7 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $driver->id }}</flux:table.cell>
                 <flux:table.cell>{{ $driver->name }}</flux:table.cell>
                 <flux:table.cell>{{ $driver->phone }}</flux:table.cell>
-                <flux:table.cell>{{ $driver->vehicle }} ( {{ $driver->capacidade }} Lugares)</flux:table.cell>
+                <flux:table.cell>{{ $driver->vehicle }} ({{ $driver->capacity }} Lugares)</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
                         <flux:button wire:click="$dispatch('events.drivers.driver-edit', { id: {{ $driver->id }} })" icon="pencil-square" style="cursor: pointer;"
