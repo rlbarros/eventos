@@ -119,5 +119,11 @@ new class extends Component {
             </x-slot:label>
             <livewire:pages::events.drivers.drivers-index :eventId="$this->eventId" />
         </x-mary-tab>
+        <x-mary-tab name="trips-tab" icon="o-map">
+            <x-slot:label>
+                viagens
+            </x-slot:label>
+            <livewire:pages::events.trips.trips-index :eventId="$this->eventId" />
+        </x-mary-tab>
     </x-mary-tabs>
 </div>
