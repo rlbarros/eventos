@@ -4,7 +4,6 @@ use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Event\Batch\EventBatchForm;
 use App\Models\EventBatch;
-use App\Models\EventParticipantAllocation;
 use App\Traits\Forms\Event\Batch\WithEventBatchProperties;
 use Livewire\Attributes\On;
 

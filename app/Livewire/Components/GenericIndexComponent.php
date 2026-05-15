@@ -6,7 +6,6 @@ use App\Interfaces\IProperties;
 use App\Models\GenericModel;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;

@@ -19,7 +19,7 @@ class EventFee extends GenericModel
 
     public static function modelName(): string
     {
-        return  "Taxa de Evento";
+        return "Taxa de Evento";
     }
 
     public function descriptor(): string

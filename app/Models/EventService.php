@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventService extends Model
+class EventService extends GenericModel
 {
     protected $table = 'events_services';
 
@@ -18,6 +17,14 @@ class EventService extends Model
     public static function modelName(): string
     {
         return  "Serviço de Evento";
+    }
+
+    public function descriptor(): string
+    {
+        if (empty($this->id) || empty($this->fee)) {
+            return '';
+        }
+        return $this->id . ' - ' . $this->fee;
     }
 
 
