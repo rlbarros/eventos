@@ -21,10 +21,10 @@ class EventService extends GenericModel
 
     public function descriptor(): string
     {
-        if (empty($this->id) || empty($this->fee)) {
+        if (empty($this->id) || empty($this->name) || empty($this->fee)) {
             return '';
         }
-        return $this->id . ' - ' . $this->fee;
+        return $this->id . ' - ' . $this->name . ' - ' . $this->fee;
     }
 
 

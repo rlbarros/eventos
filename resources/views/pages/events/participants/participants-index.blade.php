@@ -48,7 +48,7 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $participant->event_site_room_type->name }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
-                        <flux:button href="{{ $eventId }}/participant/{{ $participant->id }}?selectedTab=participants-tab" icon="document-text" style="cursor: pointer;" wire:navigate
+                        <flux:button href="{{ $eventId }}/participant/{{ $participant->id }}?selectedTab=payments-tab" icon="document-text" style="cursor: pointer;" wire:navigate
                             size="sm" />
                         <flux:button wire:click="$dispatch('events.participants.participant-edit', { id: {{ $participant->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />

@@ -71,6 +71,14 @@ new class extends Component {
 
 
 <div class="w-full mx-auto space-y-4">
+    <flux:callout inline class="mb-4">
+        <flux:callout.heading>
+            <flux:breadcrumbs>
+                <flux:breadcrumbs.item icon="calendar" href="{{ route('events') }}">Eventos </flux:breadcrumbs.item>
+                <flux:breadcrumbs.item separator="slash" href="{{ route('event-detail', ['eventId' => $this->eventId]) }}" separator="slash">Evento {{ $this->eventId }}</flux:breadcrumbs.item>
+            </flux:breadcrumbs>
+        </flux:callout.heading>
+    </flux:callout>
     <livewire:dialogs::delete-confirmation />
     <div class="flex items-start max-md:flex-col">
         <div class="flex-1">
