@@ -94,6 +94,9 @@ new class extends Component {
             <x-slot:label>
                 viagens
             </x-slot:label>
-        </x-mary-tab>
+            <livewire:pages::events.participants.trips.trips-index
+                :eventId="$this->eventId"
+                :personId="$this->person->id"
+                :allocationId="$this->allocationId" /> </x-mary-tab>
     </x-mary-tabs>
 </div>
