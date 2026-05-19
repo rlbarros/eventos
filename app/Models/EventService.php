@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\CurrencyUtil;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventService extends GenericModel
@@ -24,7 +25,7 @@ class EventService extends GenericModel
         if (empty($this->id) || empty($this->name) || empty($this->fee)) {
             return '';
         }
-        return $this->id . ' - ' . $this->name . ' - ' . $this->fee;
+        return $this->id . ' - ' . $this->name . ' - R$ ' . CurrencyUtil::formatCurrencyToBr($this->fee);
     }
 
 

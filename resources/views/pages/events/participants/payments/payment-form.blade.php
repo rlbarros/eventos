@@ -6,6 +6,7 @@ use App\Livewire\Forms\Event\Participant\Payment\EventParticipantPaymentForm;
 use App\Models\EventFee;
 use App\Models\EventParticipantPayment;
 use App\Traits\Forms\Event\Participant\Payment\WithEventParticipantPaymentProperties;
+use App\Utils\CurrencyUtil;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
@@ -37,7 +38,7 @@ new class extends GenericFormComponent {
                     ->where('end_date', '>=', $paymentDate);
             })->first();
         $this->form->event_fee_id = $eventFee->id;
-        $this->form->amount = str_replace(',', '.', $this->form->amount);
+        $this->form->amount = CurrencyUtil::formatCurrencyToDb($this->form->amount);
         $this->form->payment_date = $paymentDate;
     }
 
@@ -53,8 +54,9 @@ new class extends GenericFormComponent {
 
 
     #[On('events.participants.payments.payment-edit')]
-    public function handleEventSiteEditRequest(int $id)
+    public function handleEventSiteEditRequest(int $id, int $personId)
     {
+        $this->personId = $personId;
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
     }
 

@@ -48,6 +48,8 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $service->fee }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
+                        <flux:button href="{{ $eventId }}/service/{{ $service->id }}" icon="document-text" style="cursor: pointer;" wire:navigate
+                            size="sm" />
                         <flux:button wire:click="$dispatch('events.services.service-edit', { id: {{ $service->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
                         <flux:button variant="danger" icon="trash" size="sm"

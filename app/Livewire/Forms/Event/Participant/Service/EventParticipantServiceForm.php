@@ -23,8 +23,8 @@ class EventParticipantServiceForm extends GenericForm
             'event_id' => 'required|integer|exists:events,id',
             'event_service_id' => 'required|integer|exists:events_services,id',
             'person_id' => 'required|integer|exists:persons,id',
-            'payment_date' => 'required|date',
-            'amount' => 'required|numeric|min:0.01',
+            'payment_date' => 'nullable|date',
+            'amount' => 'nullable|numeric|min:0.01',
         ];
     }
 

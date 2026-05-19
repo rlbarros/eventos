@@ -3,14 +3,13 @@
 use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Event\Participant\Service\EventParticipantServiceForm;
-use App\Models\EventServiceParticipantConsumption;
-use App\Traits\Forms\Event\Participant\Service\WithEventParticipantServiceProperties;
+use App\Traits\Forms\Event\Service\Partipants\WithEventServiceParticipantsProperties;
 use App\Utils\CurrencyUtil;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
 
-    use WithEventParticipantServiceProperties;
+    use WithEventServiceParticipantsProperties;
 
     public EventParticipantServiceForm $form;
 
@@ -21,61 +20,44 @@ new class extends GenericFormComponent {
 
     public function modalName(): string
     {
-        return 'events.participants.services.service';
+        return 'events.services.participants.participant';
     }
 
     public function beforeSave(): void
     {
         $this->form->event_id = $this->eventId;
+        $this->form->event_service_id = $this->serviceId;
         $this->form->person_id = $this->personId;
         $this->form->amount = CurrencyUtil::formatCurrencyToDb($this->form->amount);
     }
 
-    #[On('event-service-selected')]
-    public function handleServiceSelected(int $id)
-    {
-        $this->form->event_service_id = $id;
-        $this->checkSubmitButtonDisabled();
-    }
-
-    public function injectService(): void
-    {
-        $this->dispatch('event-service-injected', $this->form->event_service_id);
-    }
-
-    #[On('events.participants.services.service-create')]
-    public function handleParticipantCreatingRequest()
-    {
-        $this->form->setModel(FormModeEnum::Create, new EventServiceParticipantConsumption());
-        $this->submitDisabled = true;
-        $this->checkSubmitButtonDisabled();
-        $this->showModal();
-    }
-
-
-
-    #[On('events.participants.services.service-edit')]
+    #[On('events.services.participants.participant-edit')]
     public function handleEventSiteEditRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
-        $this->injectService();
+    }
+
+    #[On('events.services.participants.participant-view')]
+    public function handleEventSiteViewRequest(int $id)
+    {
+        $this->form->formMode = FormModeEnum::View;
+        $this->findModelByIdAndShowModal($id, FormModeEnum::View);
+        $this->dispatchEventSiteRoomTypeInjected();
     }
 
     public function submitDisabledCondition(): bool
     {
+        $emptyPersonId = empty($this->form->person_id);
 
-        $emptyEventServiceId = empty($this->form->event_service_id);
-        $emptyPaymentDate = empty($this->form->payment_date);
-        $emptyAmount = empty($this->form->amount);
-
-        return $emptyEventServiceId || $emptyPaymentDate || $emptyAmount;
+        return $emptyPersonId;
     }
 };
 
 ?>
 
+
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
-    <livewire:selects.services :readonly="$this->isReadonly()" :eventId="$eventId" :form="$form" class="space-x-2" />
+
     <flux:field>
         <flux:label>Data de Pagamento *</flux:label>
         <flux:input type="date" wire:model="form.payment_date" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
@@ -91,4 +73,7 @@ new class extends GenericFormComponent {
         </flux:input>
         <flux:error name="form.amount" />
     </flux:field>
+
+
+
 </livewire:pages::forms.generic-form>

@@ -5,6 +5,7 @@ use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Event\Service\EventServiceForm;
 use App\Models\EventService;
 use App\Traits\Forms\Event\Service\WithEventServiceProperties;
+use App\Utils\CurrencyUtil;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
@@ -26,7 +27,7 @@ new class extends GenericFormComponent {
     public function beforeSave(): void
     {
         $this->form->event_id = $this->eventId;
-        $this->form->fee = str_replace(',', '.', $this->form->fee);
+        $this->form->fee = CurrencyUtil::formatCurrencyToDb($this->form->fee);
     }
 
     #[On('events.services.service-create')]
