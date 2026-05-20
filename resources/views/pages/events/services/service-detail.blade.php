@@ -5,6 +5,7 @@ use App\Models\EventServiceParticipantConsumption;
 use App\Utils\CurrencyUtil;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -20,6 +21,9 @@ new class extends Component {
     public string $totalInServices;
     public string $totalPayed;
     public string $balance;
+
+    #[Url(history: true)]
+    public string $search = '';
 
     use WithPagination;
 
@@ -39,6 +43,13 @@ new class extends Component {
         )
             ->where('event_service_id', $this->serviceId)
             ->groupBy('event_service_id', 'person_id')
+            ->with('person')
+            ->whereHas('person', function ($whereHasQuery) {
+                if (empty($this->search)) {
+                    return;
+                }
+                $whereHasQuery->whereRaw('LOWER(name) LIKE \'%' . strtolower($this->search) . '%\'');
+            })
             ->get();
         $this->totalInServices = (count($this->participants) * $this->service->fee);
         $this->totalPayed = $totalParticipantsPayed;

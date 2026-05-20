@@ -4,7 +4,7 @@ use App\Livewire\Components\GenericIndexComponent;
 use App\Traits\Forms\Event\Service\Partipants\WithEventServiceParticipantsProperties;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\On;
-
+use Livewire\Attributes\Url;
 
 new class extends GenericIndexComponent
 {
@@ -20,6 +20,22 @@ new class extends GenericIndexComponent
             'createButtonLabel' => 'Adicionar Requisitante',
             'createActionEventName' => 'events.services.participants.participant-create'
         ];
+    }
+
+    #[Url(history: true)]
+    public string $search = '';
+    protected $listeners = ['search-updated' => '$refresh'];
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+
+        $js = "const url = new URL(window.location);
+            url.searchParams.set('search', '" . $this->search . "');
+            url.searchParams.set('page', 1);
+            window.history.replaceState({}, '', url);
+            window.location.reload();";
+        $this->js($js);
     }
 
 
