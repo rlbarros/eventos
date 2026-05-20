@@ -62,7 +62,7 @@ new class extends Component {
                         <flux:heading size="sm" style="font-size:1.1rem;">{{ $this->person->descriptor()  }}</flux:heading>
                         <flux:subheading sixe="xl" class="font-bold" style="font-size:1rem; margin-top:2px;">{{ $this->roomType->descriptor() }}</flux:subheading>
                         @foreach($eventFees as $eventFee)
-                        <flux:subheading sixe="lg" style="margin-top: 4px;">Lote {{ $eventFee->event_batch->batch }} | <strong> R$ {{ $eventFee->fee }}</strong></flux:subheading>
+                        <flux:subheading sixe="lg" style="margin-top: 4px;">Lote {{ $eventFee->event_batch->batch }} | <strong> {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($eventFee->fee, true)     }}</strong></flux:subheading>
                         @endforeach
                     </div>
                 </flux:callout.heading>

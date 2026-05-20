@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Utils\DateUtil;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventServiceParticipantConsumption extends GenericModel
@@ -24,8 +23,8 @@ class EventServiceParticipantConsumption extends GenericModel
 
     public function descriptor(): string
     {
-        if (!empty($this->amount) && !empty($this->payment_date)) {
-            return $this->amount . ' - ' . DateUtil::formatDateToBr($this->payment_date);
+        if (!empty($this->id) && !empty($this->person_id)) {
+            return $this->id . ' - ' . $this->person->name;
         }
 
         return '';

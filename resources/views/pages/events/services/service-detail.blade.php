@@ -34,17 +34,15 @@ new class extends Component {
         $this->participants = EventServiceParticipantConsumption::select(
             DB::raw('MIN(id) as id'),
             'event_service_id',
-            'person_id'
+            'person_id',
+            DB::raw('SUM(amount) as amount')
         )
             ->where('event_service_id', $this->serviceId)
             ->groupBy('event_service_id', 'person_id')
             ->get();
         $this->totalInServices = (count($this->participants) * $this->service->fee);
-        $balance = $this->totalInServices - $totalParticipantsPayed;
-
-        $this->totalInServices = CurrencyUtil::formatCurrencyToBr($this->totalInServices);
-        $this->balance = CurrencyUtil::formatCurrencyToBr($balance);
-        $this->totalPayed = CurrencyUtil::formatCurrencyToBr($totalParticipantsPayed);
+        $this->totalPayed = $totalParticipantsPayed;
+        $this->balance = $this->totalInServices - $totalParticipantsPayed;
     }
 };
 
@@ -72,9 +70,9 @@ new class extends Component {
             </flux:callout>
             <flux:callout inline>
                 <flux:callout.heading>
-                    <flux:heading size="sm">Total Requisitado: R$ {{ $this->totalInServices }}</flux:heading>
-                    <flux:heading size="sm">Total Pago: R$ {{ $this->totalPayed }}</flux:heading>
-                    <flux:heading size="sm">Saldo Devedor: R$ {{ $this->balance }}</flux:heading>
+                    <flux:heading size="sm">Total Requisitado: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->totalInServices, true) }}</flux:heading>
+                    <flux:heading size="sm">Total Pago: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->totalPayed, true) }}</flux:heading>
+                    <flux:heading size="sm">Saldo Devedor: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->balance, true) }}</flux:heading>
                 </flux:callout.heading>
             </flux:callout>
         </div>

@@ -58,8 +58,8 @@ new class extends GenericIndexComponent
 <div class="w-full mx-auto space-y-4">
     <flux:callout inline>
         <flux:callout.heading>
-            <flux:heading size="sm">Total Pago: R$ {{ $this->totalPayed }}</flux:heading>
-            <flux:heading size="sm">Saldo Devedor: R$ {{ $this->balance }}</flux:heading>
+            <flux:heading size="sm">Total Pago: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->totalPayed, true) }}</flux:heading>
+            <flux:heading size="sm">Saldo Devedor: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->balance, true) }}</flux:heading>
         </flux:callout.heading>
     </flux:callout>
 

@@ -20,7 +20,7 @@ new class extends GenericFormComponent {
 
     public function modalName(): string
     {
-        return 'events.services.participants.participant';
+        return 'events.services.participants.payment';
     }
 
     public function beforeSave(): void
@@ -31,25 +31,26 @@ new class extends GenericFormComponent {
         $this->form->amount = CurrencyUtil::formatCurrencyToDb($this->form->amount);
     }
 
-    #[On('events.services.participants.participant-edit')]
-    public function handleEventSiteEditRequest(int $id)
+    #[On('events.services.participants.payment-create')]
+    public function handleEventSiteCreateRequest()
     {
-        $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
+        $this->resetFormAndShowModal();
     }
 
-    #[On('events.services.participants.participant-view')]
-    public function handleEventSiteViewRequest(int $id)
+    #[On('events.services.participants.payment-edit')]
+    public function handleEventSiteEditRequest(int $id, int $personId)
     {
-        $this->form->formMode = FormModeEnum::View;
-        $this->findModelByIdAndShowModal($id, FormModeEnum::View);
-        $this->dispatchEventSiteRoomTypeInjected();
+        $this->personId = $personId;
+        $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
     }
 
     public function submitDisabledCondition(): bool
     {
-        $emptyPersonId = empty($this->form->person_id);
+        $emptyPaymentDate = empty($this->form->payment_date);
 
-        return $emptyPersonId;
+        $emptyAmount = empty($this->form->amount);
+
+        return $emptyPaymentDate || $emptyAmount;
     }
 };
 

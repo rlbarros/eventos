@@ -52,4 +52,9 @@ trait WithEventServiceParticipantsProperties
         array_push($baseConditions, ['person_id', '=', $this->personId]);
         return $baseConditions;
     }
+
+    public function whereHasTable(): string
+    {
+        return 'person';
+    }
 }

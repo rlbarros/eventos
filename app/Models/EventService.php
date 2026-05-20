@@ -25,7 +25,7 @@ class EventService extends GenericModel
         if (empty($this->id) || empty($this->name) || empty($this->fee)) {
             return '';
         }
-        return $this->id . ' - ' . $this->name . ' - R$ ' . CurrencyUtil::formatCurrencyToBr($this->fee);
+        return $this->id . ' - ' . $this->name . ' - ' . CurrencyUtil::formatCurrencyToBr($this->fee, true);
     }
 
 

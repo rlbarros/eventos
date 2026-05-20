@@ -64,8 +64,8 @@ new class extends GenericIndexComponent
 <div class="w-full mx-auto space-y-4">
     <flux:callout inline>
         <flux:callout.heading>
-            <flux:heading size="sm">Total Pago: R$ {{ $this->totalPayed }}</flux:heading>
-            <flux:heading size="sm">Saldo Devedor: R$ {{ $this->balance }}</flux:heading>
+            <flux:heading size="sm">Total Pago: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->totalPayed, true) }}</flux:heading>
+            <flux:heading size="sm">Saldo Devedor: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->balance, true) }}</flux:heading>
         </flux:callout.heading>
     </flux:callout>
 
@@ -89,7 +89,7 @@ new class extends GenericIndexComponent
                 <flux:table.row :key="$payment->id">
                     <flux:table.cell>{{ $payment->id }}</flux:table.cell>
                     <flux:table.cell>{{ App\Utils\DateUtil::formatDateToBr($payment->payment_date) }}</flux:table.cell>
-                    <flux:table.cell>{{ $payment->amount }}</flux:table.cell>
+                    <flux:table.cell>{{ \App\Utils\CurrencyUtil::formatCurrencyToBr($payment->amount, true) }}</flux:table.cell>
                     <flux:table.cell>
                         <div class="flex gap-3">
                             <flux:button wire:click="$dispatch('events.participants.payments.payment-edit', { id: {{ $payment->id }} })" icon="pencil-square" style="cursor: pointer;"
