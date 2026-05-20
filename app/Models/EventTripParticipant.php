@@ -22,10 +22,10 @@ class EventTripParticipant extends GenericModel
 
     public function descriptor(): string
     {
-        if (empty($this->id) || empty($this->event_trip_id) || empty($this->person_id)) {
+        if (empty($this->id) || empty($this->person_id)) {
             return '';
         }
-        return $this->id . ' - ' . $this->event_trip_id . ' - ' . $this->person_id;
+        return $this->id . ' - '  . $this->person->name;
     }
 
 

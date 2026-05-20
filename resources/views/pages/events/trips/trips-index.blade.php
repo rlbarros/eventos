@@ -55,6 +55,8 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ App\Utils\DateUtil::formatDateToBr($trip->end_date) }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
+                        <flux:button href="{{ $eventId }}/trip/{{ $trip->id }}" icon="document-text" style="cursor: pointer;" wire:navigate
+                            size="sm" />
                         <flux:button wire:click="$dispatch('events.trips.trip-edit', { id: {{ $trip->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
                         <flux:button variant="danger" icon="trash" size="sm"
