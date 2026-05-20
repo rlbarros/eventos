@@ -18,6 +18,17 @@ new class extends GenericFormComponent {
         return $this->form;
     }
 
+    public function combineDateAndTime(string $date, string $time): string
+    {
+        if (empty($date) || empty($time)) {
+            return $date;
+        }
+
+        $datetime = date_create($date . ' ' . $time);
+
+        return $datetime ? date_format($datetime, 'Y-m-d H:i:s') : $date;
+    }
+
     public function modalName(): string
     {
         return 'events.trips.trip';
@@ -26,6 +37,8 @@ new class extends GenericFormComponent {
     public function beforeSave(): void
     {
         $this->form->event_id = $this->eventId;
+        $this->form->start_date = $this->combineDateAndTime($this->form->start_date, $this->form->start_time);
+        $this->form->end_date = $this->combineDateAndTime($this->form->end_date, $this->form->end_time);
     }
 
     #[On('event-driver-selected')]
@@ -81,8 +94,14 @@ new class extends GenericFormComponent {
     </flux:field>
 
     <flux:field>
-        <flux:label>Partida</flux:label>
+        <flux:label>Data da Partida</flux:label>
         <flux:input type="date" wire:model="form.start_date" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
+        <flux:error name="form.start_date" />
+    </flux:field>
+
+    <flux:field>
+        <flux:label>Horário da Partida</flux:label>
+        <flux:input type="tune" wire:model="form.start_time" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.start_date" />
     </flux:field>
 
@@ -93,9 +112,15 @@ new class extends GenericFormComponent {
     </flux:field>
 
     <flux:field>
-        <flux:label>Chegada</flux:label>
+        <flux:label>Data da Chegada</flux:label>
         <flux:input type="date" wire:model="form.end_date" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.end_date" />
+    </flux:field>
+
+    <flux:field>
+        <flux:label>Horário da Chegada</flux:label>
+        <flux:input type="time" wire:model="form.end_time" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
+        <flux:error name="form.end_time" />
     </flux:field>
 
 

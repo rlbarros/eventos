@@ -19,12 +19,18 @@ abstract class GenericForm extends Form
     public abstract function updateRules(): array;
     public abstract function insertRules(): array;
 
+    public function additionalExcepts(): array
+    {
+        return [];
+    }
+
     private function getAttributes(): array
     {
         $excepts = ['formMode', 'model'];
         if ($this->formMode === FormModeEnum::Create) {
             array_push($excepts, 'id');
         }
+        $excepts = array_merge($excepts, $this->additionalExcepts());
         return $this->except($excepts);
     }
 

@@ -50,9 +50,9 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $trip->id }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->event_driver->name }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->from }}</flux:table.cell>
-                <flux:table.cell>{{ App\Utils\DateUtil::formatDateToBr($trip->start_date) }}</flux:table.cell>
+                <flux:table.cell>{{ App\Utils\DateUtil::formatDateTimeToBr($trip->start_date) }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->to }}</flux:table.cell>
-                <flux:table.cell>{{ App\Utils\DateUtil::formatDateToBr($trip->end_date) }}</flux:table.cell>
+                <flux:table.cell>{{ App\Utils\DateUtil::formatDateTimeToBr($trip->end_date) }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
                         <flux:button href="{{ $eventId }}/trip/{{ $trip->id }}" icon="document-text" style="cursor: pointer;" wire:navigate
