@@ -4,7 +4,6 @@ use App\Livewire\Components\GenericIndexComponent;
 use App\Traits\Forms\Event\Participant\WithEventParticipantAllocatedProperties;
 use Livewire\Attributes\On;
 
-
 new class extends GenericIndexComponent
 {
     use WithEventParticipantAllocatedProperties;
@@ -15,16 +14,23 @@ new class extends GenericIndexComponent
         return [
             'header' => 'Participantes',
             'subHeader' => '',
-            'createButtonLabel' => 'Adicionar Participante',
-            'createActionEventName' => 'events.participants.participant-create',
-            'createButtonVisible' => false
+            'createButtonLabel' => 'imprimir alocações',
+            'createActionEventName' => 'print-allocations',
         ];
     }
-}; ?>
+
+    #[On('print-allocations')]
+    public function handlePrintAllocations()
+    {
+        $url = route('exports.allocations', ['eventId' => $this->eventId, 'format' => 'print']);
+        $this->js("window.open('{$url}', '_blank')");
+    }
+};
+
+?>
 
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
-
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>
             <flux:table.column sortable sorted direction="desc">#</flux:table.column>

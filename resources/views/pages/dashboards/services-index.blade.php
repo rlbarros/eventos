@@ -2,7 +2,7 @@
 
 use App\Livewire\Components\GenericIndexComponent;
 use App\Traits\Forms\Event\Participant\Service\WithEventParticipantServiceConsumptionProperties;
-
+use Livewire\Attributes\On;
 
 new class extends GenericIndexComponent
 {
@@ -14,12 +14,20 @@ new class extends GenericIndexComponent
         return [
             'header' => 'Participantes',
             'subHeader' => '',
-            'createButtonLabel' => '',
-            'createActionEventName' => '',
-            'createButtonVisible' => false
+            'createButtonLabel' => 'imprimir serviços',
+            'createActionEventName' => 'print-services',
         ];
     }
-}; ?>
+
+    #[On('print-services')]
+    public function handlePrintServices()
+    {
+        $url = route('exports.services', ['eventId' => $this->eventId, 'format' => 'print']);
+        $this->js("window.open('{$url}', '_blank')");
+    }
+};
+
+?>
 
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">

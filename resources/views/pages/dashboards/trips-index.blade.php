@@ -2,6 +2,7 @@
 
 use App\Livewire\Components\GenericIndexComponent;
 use App\Traits\Forms\Event\Participant\Trip\WithEventTripParticipantsProperties;
+use Livewire\Attributes\On;
 
 new class extends GenericIndexComponent
 {
@@ -13,10 +14,16 @@ new class extends GenericIndexComponent
         return [
             'header' => 'Viagens',
             'subHeader' => '',
-            'createButtonLabel' => '',
-            'createActionEventName' => '',
-            'createButtonVisible' => false
+            'createButtonLabel' => 'imprimir viagens',
+            'createActionEventName' => 'print-trips',
         ];
+    }
+
+    #[On('print-trips')]
+    public function handlePrintTrips()
+    {
+        $url = route('exports.trips', ['eventId' => $this->eventId, 'format' => 'print']);
+        $this->js("window.open('{$url}', '_blank')");
     }
 }; ?>
 
