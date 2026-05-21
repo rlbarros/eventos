@@ -17,6 +17,7 @@ class EventTripParticipantForm extends GenericForm
     public function fixedRules(): array
     {
         return [
+            'event_id' => 'required|integer|exists:events,id',
             'event_trip_id' => 'required|integer|exists:events_trips,id',
             'person_id' => 'required|integer|exists:persons,id',
         ];
@@ -46,7 +47,8 @@ class EventTripParticipantForm extends GenericForm
         }
 
         $this->id = $eventTripParticipant->id;
-        $this->person_id = $eventTripParticipant->person_id;
+        $this->event_id = $eventTripParticipant->event_id;
         $this->event_trip_id = $eventTripParticipant->event_trip_id;
+        $this->person_id = $eventTripParticipant->person_id;
     }
 }

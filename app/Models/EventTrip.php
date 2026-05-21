@@ -28,7 +28,7 @@ class EventTrip extends GenericModel
         if (empty($this->event_driver_id) || empty($this->from) || empty($this->to) || empty($this->start_date) || empty($this->end_date)) {
             return '';
         }
-        return 'de ' . $this->from . ' (' . DateUtil::formatDateToBr($this->start_date) . ') para ' . $this->to . ' (' . DateUtil::formatDateToBr($this->end_date) . ') | motorista: ' . $this->event_driver->name;
+        return 'de ' . $this->from . ' (' . DateUtil::formatDateTimeToBr($this->start_date) . ') para ' . $this->to . ' (' . DateUtil::formatDateTimeToBr($this->end_date) . ') | motorista: ' . $this->event_driver->name;
     }
 
     public function event(): BelongsTo

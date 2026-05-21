@@ -1,0 +1,43 @@
+<?php
+
+use App\Livewire\Components\GenericIndexComponent;
+use App\Traits\Forms\Event\Participant\Trip\WithEventTripParticipantsProperties;
+
+new class extends GenericIndexComponent
+{
+    use WithEventTripParticipantsProperties;
+
+
+    public function indexArray(): array
+    {
+        return [
+            'header' => 'Viagens',
+            'subHeader' => '',
+            'createButtonLabel' => '',
+            'createActionEventName' => '',
+            'createButtonVisible' => false
+        ];
+    }
+}; ?>
+
+
+<livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
+
+    <flux:table :paginate="$this->index()" pagination:scroll-to>
+        <flux:table.columns>
+            <flux:table.column sortable sorted direction="desc">#</flux:table.column>
+            <flux:table.column sortable>Viagem</flux:table.column>
+            <flux:table.column sortable>Passageiro</flux:table.column>
+        </flux:table.columns>
+
+        <flux:table.rows>
+            @foreach ($this->index() as $participant)
+            <flux:table.row :key="$participant->id">
+                <flux:table.cell>{{ $participant->id }}</flux:table.cell>
+                <flux:table.cell>{{ $participant->event_trip->descriptor() }}</flux:table.cell>
+                <flux:table.cell>{{ $participant->person->descriptor() }}</flux:table.cell>
+            </flux:table.row>
+            @endforeach
+        </flux:table.rows>
+    </flux:table>
+</livewire:pages::forms.generic-list>

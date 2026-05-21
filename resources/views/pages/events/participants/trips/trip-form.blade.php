@@ -25,6 +25,7 @@ new class extends GenericFormComponent {
 
     public function beforeSave(): void
     {
+        $this->form->event_id = $this->eventId;
         $this->form->person_id = $this->personId;
     }
 

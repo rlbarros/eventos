@@ -2,6 +2,7 @@
 
 use App\Models\Event;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 new class extends Component
@@ -10,6 +11,9 @@ new class extends Component
     public array $events;
 
     public string $eventSiteName;
+
+    #[Url]
+    public string $selectedTab = 'allocations-tab';
 
     public function mount()
     {
@@ -75,9 +79,28 @@ new class extends Component
                 <livewire:pages::dashboards.services-card :eventId="$selectedEvent" />
             </div>
         </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700" style="min-height: 100px;">
-
+        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
             <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+            <x-mary-tabs wire:model="selectedTab">
+                <x-mary-tab name="allocations-tab" icon="o-users">
+                    <x-slot:label>
+                        alocações
+                    </x-slot:label>
+                    <livewire:pages::dashboards.allocations-index :eventId="$selectedEvent" class="pt=2" />
+                </x-mary-tab>
+                <x-mary-tab name="services-tab" icon="o-building-office">
+                    <x-slot:label>
+                        serviços
+                    </x-slot:label>
+                    <livewire:pages::dashboards.services-index :eventId="$selectedEvent" class="pt=2" />
+                </x-mary-tab>
+                <x-mary-tab name="trips-tab" icon="o-building-office">
+                    <x-slot:label>
+                        viagens
+                    </x-slot:label>
+                    <livewire:pages::dashboards.trips-index :eventId="$selectedEvent" class="pt=2" />
+            </x-mary-tabs>
+
         </div>
     </div>
 </x-pages::forms.layout>

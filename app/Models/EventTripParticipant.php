@@ -11,6 +11,7 @@ class EventTripParticipant extends GenericModel
     public $timestamps = false;
 
     protected $fillable = [
+        'event_id',
         'event_trip_id',
         'person_id'
     ];

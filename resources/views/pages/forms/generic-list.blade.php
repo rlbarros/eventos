@@ -14,6 +14,7 @@ new class extends Component {
     public string $createButtonLabel;
     public string $createActionEventName;
     public bool $searchVisihle = true;
+    public bool $createButtonVisible = true;
 
     #[Url(history: true)]
     public string $search;
@@ -37,6 +38,7 @@ new class extends Component {
         $this->createButtonLabel = $this->indexArray['createButtonLabel'] ?? null;
         $this->createActionEventName = $this->indexArray['createActionEventName'] ?? null;
         $this->searchVisihle = $this->indexArray['searchVisible'] ?? true;
+        $this->createButtonVisible = $this->indexArray['createButtonVisible'] ?? true;
     }
 };
 
@@ -56,9 +58,11 @@ new class extends Component {
         </div>
         @endif
 
+        @if($this->createButtonVisible)
         <flux:button variant="primary" wire:click="$dispatch('{{ $createActionEventName }}')">
             {{ $createButtonLabel }}
         </flux:button>
+        @endif
     </div>
     <flux:separator variant="subtle" />
     <div class="overflow-x-auto">
