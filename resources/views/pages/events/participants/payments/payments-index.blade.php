@@ -92,7 +92,7 @@ new class extends GenericIndexComponent
                     <flux:table.cell>{{ \App\Utils\CurrencyUtil::formatCurrencyToBr($payment->amount, true) }}</flux:table.cell>
                     <flux:table.cell>
                         <div class="flex gap-3">
-                            <flux:button wire:click="$dispatch('events.participants.payments.payment-edit', { id: {{ $payment->id }} })" icon="pencil-square" style="cursor: pointer;"
+                            <flux:button wire:click="$dispatch('events.participants.payments.payment-edit', { id: {{ $payment->id }}, personId: {{ $payment->person_id }} })" icon="pencil-square" style="cursor: pointer;"
                                 size="sm" />
                             <flux:button variant="danger" icon="trash" size="sm"
                                 wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $payment->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$payment->descriptor()}}', callbackDeleteEvent: 'events.payments.payment-delete-confirmed' })" />

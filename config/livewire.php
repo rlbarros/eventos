@@ -35,6 +35,7 @@ return [
         'autocompletes' => resource_path('views/components/autocompletes'),
         'selects' => resource_path('views/components/selects'),
         'dialogs' => resource_path('views/dialogs'),
+        'views' => resource_path('views'),
     ],
 
     /*

@@ -78,7 +78,7 @@ new class extends Component {
                 'availableBeds' => max(0, ($roomType?->beds ?? 0) - $allocationsCount),
                 'occupedBeds' => $allocationsCount,
             ];
-        })->filter(fn($room) => $room['availableBeds'] > 0 && $room['availableBeds'] > count($this->names))->values()->all();
+        })->filter(fn($room) => $room['availableBeds'] > 0 && $room['availableBeds'] >= count($this->names))->values()->all();
     }
 
     public function handleModalCloseEvent()
