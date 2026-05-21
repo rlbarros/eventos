@@ -76,6 +76,12 @@ new class extends GenericFormComponent {
     <livewire:autocompletes.churches :churchId="$this->form->church_id" :readonly="$this->isReadonly()" />
 
     <flux:field>
+        <flux:label>CPF</flux:label>
+        <flux:input placeholder="000.000.000-00" wire:model="form.cpf" mask="999.999.999-99" :readonly="$this->isReadonly()" />
+        <flux:error name="form.cpf" />
+    </flux:field>
+
+    <flux:field>
         <flux:label>Função *</flux:label>
         <flux:select wire:model="form.function" :disabled="$this->isReadonly()">
             <flux:select.option value="">Selecionar...</flux:select.option>

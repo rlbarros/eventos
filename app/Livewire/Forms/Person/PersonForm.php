@@ -11,6 +11,7 @@ class PersonForm extends GenericForm
 {
 
     public int $church_id = 0;
+    public string $cpf = '';
     public string $function = '';
     public string $name = '';
     public string $birth_date = '';
@@ -25,6 +26,7 @@ class PersonForm extends GenericForm
     {
         return [
             'church_id' => 'required|integer|exists:churches,id',
+            'cpf' => 'nullable|string|max:14|unique:persons,cpf',
             'function' => 'required|in:Membro,Pastor,Convidado,Obreiro,Diácono,Pregador de Conferência,Presbítero,Evangelista',
             'birth_date' => 'required|date',
             'phone' => 'nullable|string|max:20',
@@ -64,6 +66,7 @@ class PersonForm extends GenericForm
 
         $this->id = $person->id;
         $this->church_id = $person->church_id;
+        $this->cpf = $person->cpf;
         $this->function = $person->function;
         $this->name = $person->name;
         $this->birth_date = $person->birth_date;

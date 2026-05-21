@@ -39,9 +39,10 @@ class ChurchesPersonsSeeder extends Seeder
 
             // Extract person data
             $function = trim($data[3]);
-            $personName = trim($data[4]);
-            $phone = trim($data[5]);
-            $birthDate = trim($data[6]);
+            $cpf = trim($data[4]);
+            $personName = trim($data[5]);
+            $phone = trim($data[6]);
+            $birthDate = trim($data[7]);
 
             // Find or create church
             $church = Church::where('name', $churchName)->first();
@@ -58,6 +59,7 @@ class ChurchesPersonsSeeder extends Seeder
             // Create person
             Person::create([
                 'church_id' => $church->id,
+                'cpf' => $cpf ?: null,
                 'name' => $personName,
                 'birth_date' => $birthDate ?: null,
                 'phone' => $phone ?: null,

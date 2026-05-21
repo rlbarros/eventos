@@ -33600,19 +33600,7 @@ class DatabaseSeeder extends Seeder
         $eventSiteRoomTypes = [
             [
                 'event_site_id' => $eventSite->id,
-                'name' => 'Casa ABC',
-                'type' => 'Apartamento',
-                'beds' => 4
-            ],
-            [
-                'event_site_id' => $eventSite->id,
-                'name' => 'Casa Brasilia',
-                'type' => 'Apartamento',
-                'beds' => 4
-            ],
-            [
-                'event_site_id' => $eventSite->id,
-                'name' => 'Maple Village',
+                'name' => 'Casas Premium',
                 'type' => 'Apartamento',
                 'beds' => 4
             ],
@@ -33624,13 +33612,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'event_site_id' => $eventSite->id,
-                'name' => 'Alojamento São Carlos',
-                'type' => 'Alojamento',
-                'beds' => 8
-            ],
-            [
-                'event_site_id' => $eventSite->id,
-                'name' => 'Alojamento Nelo Horizonte',
+                'name' => 'Alojamentos Comuns',
                 'type' => 'Alojamento',
                 'beds' => 8
             ]
