@@ -39,7 +39,7 @@ new class extends Component
 };
 ?>
 
-<x-pages::forms.layout>
+<div class="w-full">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl"
         x-data="{ 
         selectedEvent: @entangle('selectedEvent'), 
@@ -102,4 +102,4 @@ new class extends Component
 
         </div>
     </div>
-</x-pages::forms.layout>
+</div>
