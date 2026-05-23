@@ -13,6 +13,8 @@ new class extends GenericFormComponent {
 
     public EventParticipantAllocationForm $form;
 
+    public array $nonList;
+
     public function form()
     {
         return $this->form;
@@ -97,7 +99,7 @@ new class extends GenericFormComponent {
 
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
     @if($this->isPersonVisible())
-    <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" class="space-x-2" />
+    <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" :nonList="$this->nonList" class="space-x-2" />
     @endif
     <livewire:selects.room-types :readonly="$this->isReadonly()" :eventSiteId="$eventSiteId" :form="$form" class="space-x-2" />
 </livewire:pages::forms.generic-form>

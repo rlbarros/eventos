@@ -37,6 +37,7 @@ new class extends GenericIndexComponent
         <flux:table.columns>
             <flux:table.column sortable sorted direction="desc">#</flux:table.column>
             <flux:table.column sortable>Motorista</flux:table.column>
+            <flux:table.column sortable>Lotacão</flux:table.column>
             <flux:table.column sortable>Origem</flux:table.column>
             <flux:table.column sortable>Partida</flux:table.column>
             <flux:table.column sortable>Destino</flux:table.column>
@@ -49,6 +50,7 @@ new class extends GenericIndexComponent
             <flux:table.row :key="$trip->id">
                 <flux:table.cell>{{ $trip->id }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->event_driver->name }}</flux:table.cell>
+                <flux:table.cell>{{ $trip->capacity() }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->from }}</flux:table.cell>
                 <flux:table.cell>{{ App\Utils\DateUtil::formatDateTimeToBr($trip->start_date) }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->to }}</flux:table.cell>

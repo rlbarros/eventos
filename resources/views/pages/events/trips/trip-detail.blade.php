@@ -37,7 +37,7 @@ new class extends Component {
             <flux:callout inline class="mb-4" style="max-height: 50px;">
                 <flux:callout.heading>
                     <div class="flex flex-row" style="column-gap: 1rem; padding-bottom: 0px!important;padding-top: 10px!important;">
-                        <flux:heading size="sm" style="font-size:1.1rem;">{{ $this->trip->descriptor()  }}</flux:heading>
+                        <flux:heading size="sm" style="font-size:1.1rem;">{{ $this->trip->descriptor()  }} | lotação {{ $this->trip->capacity() }}</flux:heading>
                     </div>
                 </flux:callout.heading>
             </flux:callout>

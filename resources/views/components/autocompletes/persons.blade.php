@@ -14,6 +14,9 @@ new class extends Component {
     #[Reactive]
     public int $personId;
 
+    #[Reactive]
+    public array $nonList = [];
+
     public string $query;
 
     #[On('person-injected')]
@@ -33,6 +36,7 @@ new class extends Component {
             $query = trim(explode('|', $query)[1]);
         }
         $persons = Person::where('name', 'like', "%{$query}%")
+            ->whereNotIn('id', $this->nonList)
             ->limit(10)
             ->get();
 

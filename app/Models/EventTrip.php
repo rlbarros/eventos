@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\EventTripParticipant;
 use App\Utils\DateUtil;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EventTrip extends GenericModel
 {
@@ -39,5 +41,18 @@ class EventTrip extends GenericModel
     public function event_driver(): BelongsTo
     {
         return $this->belongsTo(EventDriver::class, 'event_driver_id');
+    }
+
+    public function event_trip_participants(): HasMany
+    {
+        return $this->hasMany(EventTripParticipant::class, 'event_trip_id');
+    }
+
+    public function capacity(): string
+    {
+        $count = $this->event_trip_participants()->count();
+        $capacity = $this->event_driver?->capacity ?? 0;
+
+        return $count . ' / ' . $capacity;
     }
 }

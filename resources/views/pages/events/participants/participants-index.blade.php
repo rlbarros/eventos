@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Components\GenericIndexComponent;
+use App\Models\EventParticipantAllocation;
 use App\Traits\Forms\Event\Participant\WithEventParticipantProperties;
 use Livewire\Attributes\On;
 
@@ -8,6 +9,16 @@ use Livewire\Attributes\On;
 new class extends GenericIndexComponent
 {
     use WithEventParticipantProperties;
+
+    public array $nonList;
+
+    public function mount()
+    {
+        $this->nonList = EventParticipantAllocation::where('event_id', $this->eventId)
+            ->pluck('person_id')
+            ->values()
+            ->toArray();
+    }
 
 
     public function indexArray(): array
@@ -30,7 +41,7 @@ new class extends GenericIndexComponent
 
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
-    <livewire:pages::events.participants.participant-form :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" />
+    <livewire:pages::events.participants.participant-form :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" :nonList="$this->nonList" />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>

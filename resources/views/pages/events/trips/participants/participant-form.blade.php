@@ -13,6 +13,8 @@ new class extends GenericFormComponent {
 
     public EventTripParticipantForm $form;
 
+    public array $nonList;
+
     #[Override]
     public function modalName(): string
     {
@@ -57,5 +59,5 @@ new class extends GenericFormComponent {
 ?>
 
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
-    <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" class="space-x-2" />
+    <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" class="space-x-2" :nonList="$nonList" />
 </livewire:pages::forms.generic-form>

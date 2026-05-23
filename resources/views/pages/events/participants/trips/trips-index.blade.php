@@ -10,6 +10,17 @@ new class extends GenericIndexComponent
 {
     use WithEventParticipantTripProperties;
 
+    public array $nonList;
+
+    public function mount()
+    {
+        $this->nonList = EventTripParticipant::where('event_id', $this->eventId)
+            ->where('person_id', $this->personId)
+            ->pluck('event_trip_id')
+            ->values()
+            ->toArray();
+    }
+
     public function indexArray(): array
     {
         return [
@@ -36,7 +47,8 @@ new class extends GenericIndexComponent
     <livewire:pages::events.participants.trips.trip-form
         :eventId="$this->eventId"
         :personId="$this->personId"
-        :allocationId="$this->allocationId" />
+        :allocationId="$this->allocationId"
+        :nonList="$this->nonList" />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>

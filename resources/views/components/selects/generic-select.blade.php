@@ -11,6 +11,7 @@ new class extends Component
     public array $selectArray = [];
     public string $pickLabel = '';
     public array $customWhereIndex = [];
+    public array $nonList = [];
     public string $customOrderingColumn = '';
     public string $formProperty = '';
 
@@ -49,6 +50,9 @@ new class extends Component
         $this->recordsLoading = true;
         try {
             $query = $this->model->query();
+            if (!empty($this->nonList)) {
+                $query->whereNotIn('id', $this->nonList);
+            }
             Log::info('1' . $query->toSql());
             foreach ($this->customWhereIndex() as $whereArray) {
                 [$column, $operator, $value] = $whereArray;

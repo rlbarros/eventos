@@ -12,6 +12,8 @@ new class extends Component {
 
     public bool $readonly;
 
+    public array $nonList = [];
+
     public array $selectArray = [
         'label' => 'Viagem',
         'pickLabel' => 'Selecione uma viagem ...',
@@ -33,7 +35,6 @@ new class extends Component {
 
 ?>
 
-
 <livewire:selects.generic-select :selectArray="$this->selectArray" :form="$this->form"
     :readonly="$this->readonly" :model="$this->model()" :customWhereIndex="$this->customWhereIndex()"
-    :customOrderingColumn="$this->customOrderingColumn()" />
+    :customOrderingColumn="$this->customOrderingColumn()" :nonList="$this->nonList" />
