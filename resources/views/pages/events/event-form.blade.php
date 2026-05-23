@@ -21,7 +21,6 @@ new class extends GenericFormComponent {
 
     public function submitDisabledCondition(): bool
     {
-
         $emptyName = empty($this->form->name);
         $emptyStartDate = empty($this->form->start_date);
         $emptyEndDate = empty($this->form->end_date);
@@ -55,7 +54,8 @@ new class extends GenericFormComponent {
     public function handleViewRequest(int $id)
     {
         $this->findModelByIdAndShowModal($id, FormModeEnum::View);
-        $this->dispatchStateCityExternalySelected();
+        $this->dispatchChurchExternalySelected();
+        $this->dispatchEventSiteExternalySelected();
     }
 
     #[On('church-selected')]
@@ -67,7 +67,7 @@ new class extends GenericFormComponent {
 
     public function dispatchChurchExternalySelected()
     {
-        $this->dispatch('church-externaly-selected', churchId: $this->form->church_id);
+        $this->dispatch('church-injected', churchId: $this->form->church_id);
     }
 
     #[On('event-site-selected')]
@@ -79,7 +79,7 @@ new class extends GenericFormComponent {
 
     public function dispatchEventSiteExternalySelected()
     {
-        $this->dispatch('event-site-externaly-selected', eventSiteId: $this->form->event_site_id);
+        $this->dispatch('event-site-injected', eventSiteId: $this->form->event_site_id);
     }
 };
 ?>
@@ -103,6 +103,12 @@ new class extends GenericFormComponent {
         <flux:label>Data de Fim *</flux:label>
         <flux:input type="date" wire:model="form.end_date" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.end_date" />
+    </flux:field>
+
+    <flux:field>
+        <flux:label>Idade Infantil Máxima</flux:label>
+        <flux:input type="number" placeholder="insira a idade infantil máxima" wire:model="form.children_age" :readonly="$this->isReadonly()" />
+        <flux:error name="form.children_age" />
     </flux:field>
 
     <livewire:autocompletes::churches :readonly="$this->isReadonly()" :form="$form" class="space-x-2" />

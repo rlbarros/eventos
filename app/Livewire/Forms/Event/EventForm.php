@@ -16,7 +16,7 @@ class EventForm extends GenericForm
     public string $end_date = '';
     public int $church_id = 0;
     public int $event_site_id = 0;
-
+    public int|null $children_age = 0;
     public function fixedRules(): array
     {
         return [
@@ -24,6 +24,7 @@ class EventForm extends GenericForm
             'end_date' => 'required|date|after:start_date',
             'church_id' => 'required|integer|exists:churches,id',
             'event_site_id' => 'required|integer|exists:event_sites,id',
+            'children_age' => 'nullable|integer|min:0|max:17',
         ];
     }
 
@@ -60,5 +61,6 @@ class EventForm extends GenericForm
         $this->end_date = $Event->end_date;
         $this->church_id = $Event->church_id;
         $this->event_site_id = $Event->event_site_id;
+        $this->children_age = $Event->children_age;
     }
 }

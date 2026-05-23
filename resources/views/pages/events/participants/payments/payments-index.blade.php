@@ -1,16 +1,18 @@
 <?php
 
 use App\Livewire\Components\GenericIndexComponent;
+use App\Models\Event;
 use App\Models\EventFee;
 use App\Models\EventParticipantPayment;
+use App\Models\Person;
 use App\Traits\Forms\Event\Participant\Payment\WithEventParticipantPaymentProperties;
+use App\Utils\AgeUtil;
 use Livewire\Attributes\On;
 
 
 new class extends GenericIndexComponent
 {
     use WithEventParticipantPaymentProperties;
-
 
     public string $totalPayed;
     public string $balance;
@@ -38,8 +40,37 @@ new class extends GenericIndexComponent
                 $lastBatchoffPayments = $eventFee->event_batch->batch;
             }
         }
-        $eventFeeOfLastBatchOffPayments = $eventFees->where('event_batch.batch', $lastBatchoffPayments)->first();
-        $this->balance += $eventFeeOfLastBatchOffPayments->fee - $this->totalPayed;
+
+        $lastFee = 0;
+        if (!empty($lastBatchoffPayments)) {
+            $eventFeeOfLastBatchOffPayments = $eventFees->where('event_batch.batch', $lastBatchoffPayments)->first();
+            $lastFee = $eventFeeOfLastBatchOffPayments->fee;
+        } else {
+            $currentDate = now()->toDateString();
+            $currentEventFees = $eventFees->filter(function ($item) use ($currentDate) {
+                $eventBatch = $item->event_batch;
+                return $eventBatch->start_date <= $currentDate &&  $currentDate <= $eventBatch->end_date;
+            })->values();
+
+            if (empty($currentEventFees) || $currentEventFees->count() === 0) {
+                $lastBatch = $eventFees->max(function ($item) {
+                    return $item->event_batch->batch;
+                });
+
+                $currentEventFees = $eventFees->filter(function ($item) use ($lastBatch) {
+                    return $item->event_batch->batch === $lastBatch;
+                })->values();
+            }
+
+            $event = Event::find($this->eventId);
+            $person = Person::find($this->personId);
+            $currentEventFees =  AgeUtil::filterEventFeesByAge($currentEventFees, $person, $event);
+            $eventFee = $currentEventFees->first();
+
+            $lastFee = $eventFee->fee;
+        }
+
+        $this->balance += $lastFee - $this->totalPayed;
     }
 
     public function indexArray(): array

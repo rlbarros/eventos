@@ -17,12 +17,12 @@ new class extends Component {
     public string $query;
 
     #[On('church-injected')]
-    public function handleChurchInjected()
+    public function handleChurchInjected(int $churchId)
     {
-        if (empty($this->churchId)) {
+        if (empty($churchId)) {
             $this->query = '';
         } else {
-            $this->query = Church::find($this->churchId)->name;
+            $this->query = Church::find($churchId)->name;
         }
     }
 

@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\Event;
 use App\Models\EventFee;
 use App\Models\EventParticipantAllocation;
+use App\Models\Person;
+use App\Utils\AgeUtil;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -13,7 +16,7 @@ new class extends Component {
     public int $allocationId;
 
     public object $allocation;
-    public object $person;
+    public Person $person;
     public object $roomType;
 
     public Collection $eventFees;
@@ -32,11 +35,17 @@ new class extends Component {
             ->get()->first();
 
         $this->person = $this->allocation->person;
+
         $this->roomType = $this->allocation->event_site_room_type;
-        $this->eventFees = EventFee::where('event_id', $this->eventId)
+
+        /* var Collectiom */
+        $eventFees = EventFee::where('event_id', $this->eventId)
             ->where('event_site_room_type_id', $this->roomType->id)
             ->with('event_batch')
             ->get();
+
+        $event = Event::find($this->eventId);
+        $this->eventFees = AgeUtil::filterEventFeesByAge($eventFees, $this->person, $event);
     }
 };
 

@@ -17,6 +17,7 @@ class Event extends GenericModel
         'end_date',
         'church_id',
         'event_site_id',
+        'children_age'
     ];
 
     public static function modelName(): string

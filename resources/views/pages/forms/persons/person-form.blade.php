@@ -65,7 +65,7 @@ new class extends GenericFormComponent {
 
     public function dispatchChurchInjected()
     {
-        $this->dispatch('church-injected');
+        $this->dispatch('church-injected', churchId: $this->form->church_id);
     }
 }
 

@@ -3,9 +3,12 @@
 use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Event\Participant\Payment\EventParticipantPaymentForm;
+use App\Models\Event;
 use App\Models\EventFee;
 use App\Models\EventParticipantPayment;
+use App\Models\Person;
 use App\Traits\Forms\Event\Participant\Payment\WithEventParticipantPaymentProperties;
+use App\Utils\AgeUtil;
 use App\Utils\CurrencyUtil;
 use Livewire\Attributes\On;
 
@@ -30,13 +33,17 @@ new class extends GenericFormComponent {
         $this->form->event_id = $this->eventId;
         $this->form->person_id = $this->personId;
         $paymentDate = $this->form->payment_date;
-        $eventFee = EventFee::where('event_id', $this->eventId)
+        $eventFees = EventFee::where('event_id', $this->eventId)
             ->where('event_site_room_type_id', $this->eventSiteRoomTypeId)
             ->with('event_batch')
             ->whereHas('event_batch', function ($query) use ($paymentDate) {
                 $query->where('start_date', '<=', $paymentDate)
                     ->where('end_date', '>=', $paymentDate);
-            })->first();
+            })->get();
+        $person = Person::find($this->personId);
+        $event = Event::find($this->eventId);
+        $eventFees = AgeUtil::filterEventFeesByAge($eventFees, $person, $event);
+        $eventFee = $eventFees->first();
         $this->form->event_fee_id = $eventFee->id;
         $this->form->amount = CurrencyUtil::formatCurrencyToDb($this->form->amount);
         $this->form->payment_date = $paymentDate;

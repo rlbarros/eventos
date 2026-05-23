@@ -1,74 +1,63 @@
 <?php
 
-namespace App\Livewire;
-
 use App\Models\EventSite;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Modelable;
+use Livewire\Attributes\Json;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
-use Masmerise\Toaster\Toaster;
 
-new class extends Component
-{
+new class extends Component {
+
+    #[Reactive]
     public bool $readonly;
 
-    #[Modelable]
-    public object $form;
+    #[Reactive]
+    public int $eventSiteId;
 
-    public Collection $eventSites;
-    public bool $eventSitesLoading = false;
+    public string $query;
 
-    public function mount()
+    #[On('event-site-injected')]
+    public function handleEventSiteInjected(int $eventSiteId)
     {
-        $this->loadEventSites();
-    }
-
-    public function loadEventSites()
-    {
-        $this->eventSitesLoading = true;
-        try {
-            $this->eventSites = EventSite::orderBy('name')->get();
-        } catch (\Exception $e) {
-            Toaster::warning('não foi possível consultar informações de locais de evento');
-            Log::error('error consulting eventSites ' . $e->getMessage(), $e->getTrace());
-        } finally {
-            $this->eventSitesLoading = false;
+        if (empty($eventSiteId)) {
+            $this->query = '';
+        } else {
+            $this->query = EventSite::find($eventSiteId)->name;
         }
     }
 
-
-    #[On('event-site-externaly-selected')]
-    public function handleEventSiteExternalySelected(int $eventSiteId)
+    #[Json]
+    public function search(string $query)
     {
-        $this->form->event_site_id = $eventSiteId;
-    }
+        $eventSites = EventSite::where('name', 'like', "%{$query}%")
+            ->limit(10)
+            ->get();
 
-    public function dispatchSelections()
-    {
-        $this->dispatch('event-site-selected', eventSiteId: $this->form->event_site_id);
+        if ($eventSites->count() === 1) {
+            $eventSite = $eventSites->first();
+            $this->dispatch('event-site-selected', $eventSite->id);
+        } else {
+        }
+
+        return $eventSites;
     }
-}
+};
 
 ?>
 
-<flux:field class="w-full">
-    <flux:label>Local de Evento</flux:label>
-    @if ($eventSitesLoading)
-    <flux:input readonly color="zinc">
-        <x-slot name="iconTrailing">
-            <svg class="mr-3 size-5 animate-spin text-shadow-blue-800" viewBox="0 0 24 24">
-            </svg>
-        </x-slot>
-    </flux:input>
-    @else
-    <flux:select wire:model.live="form.event_site_id" wire:change="dispatchSelections" required :disabled="$readonly">
-        <flux:select.option value="0">Selecione um local de evento...</flux:select.option>
-        @foreach ($eventSites as $eventSite)
-        <flux:select.option :wire:key="$eventSite->id" :value="$eventSite->id">{{ $eventSite->name }}</flux:select.option>
-        @endforeach
-    </flux:select>
-    @endif
-    <flux:error name="form.event_site_id" />
-</flux:field>
+<div x-data="{ query: @entangle('query'), datalistVisible: false, eventSites: [] }">
+
+    <flux:field class="w-full">
+        <flux:label>Local do Evento</flux:label>
+
+        <flux:input x-model.debounce.300ms="query" wire:model="query" x-on:input.debounce.300ms="$wire.search(query).then(data => {eventSites = data; datalistVisible = data.length > 1})"
+            list="event-sites-list" autocomplete="off" :readonly="$readonly" />
+
+        <datalist id="event-sites-list" class="w-full hide-only-child" style="max-height: 200px; overflow-y: auto;" x-show="datalistVisible" x-cloak>
+            <template x-for="eventSite in eventSites">
+                <option x-value="eventSite.id" x-text="eventSite.name"></option>
+            </template>
+        </datalist>
+
+    </flux:field>
+</div>
