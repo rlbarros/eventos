@@ -66,7 +66,7 @@ new class extends GenericFormComponent {
     <flux:field>
         <flux:label>Telefone</flux:label>
         <flux:input placeholder=" {{$this->placeHolder('(00) 00000-0000')}}" mask="(99) 99999-9999"
-            wire:model="form.phone" :readonly="$this->isReadonly()" />
+            wire:model="form.phone" :readonly="$this->isReadonly()" wire:change="checkSubmitButtonDisabled" />
         <flux:error name="form.phone" />
     </flux:field>
 
@@ -77,7 +77,7 @@ new class extends GenericFormComponent {
     </flux:field>
 
     <flux:field>
-        <flux:label>Capacidade</flux:label>
+        <flux:label>Capacidade de Passageiros</flux:label>
         <flux:input type="number" wire:model="form.capacity" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.capacity" />
     </flux:field>

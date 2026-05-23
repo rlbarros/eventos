@@ -37,6 +37,7 @@ new class extends GenericIndexComponent
         <flux:table.columns>
             <flux:table.column sortable sorted direction="desc">#</flux:table.column>
             <flux:table.column sortable>Motorista</flux:table.column>
+            <flux:table.column sortable>Veículo</flux:table.column>
             <flux:table.column sortable>Lotacão</flux:table.column>
             <flux:table.column sortable>Origem</flux:table.column>
             <flux:table.column sortable>Partida</flux:table.column>
@@ -50,6 +51,7 @@ new class extends GenericIndexComponent
             <flux:table.row :key="$trip->id">
                 <flux:table.cell>{{ $trip->id }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->event_driver->name }}</flux:table.cell>
+                <flux:table.cell>{{ $trip->event_driver->vehicle }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->capacity() }}</flux:table.cell>
                 <flux:table.cell>{{ $trip->from }}</flux:table.cell>
                 <flux:table.cell>{{ App\Utils\DateUtil::formatDateTimeToBr($trip->start_date) }}</flux:table.cell>
@@ -61,8 +63,10 @@ new class extends GenericIndexComponent
                             size="sm" />
                         <flux:button wire:click="$dispatch('events.trips.trip-edit', { id: {{ $trip->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
+                        @if (!$trip->hasPassengers())
                         <flux:button variant="danger" icon="trash" size="sm"
                             wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $trip->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$trip->descriptor()}}', callbackDeleteEvent: 'events.trips.trip-delete-confirmed' })" />
+                        @endif
                     </div>
                 </flux:table.cell>
             </flux:table.row>

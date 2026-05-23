@@ -30,7 +30,10 @@ class EventTrip extends GenericModel
         if (empty($this->event_driver_id) || empty($this->from) || empty($this->to) || empty($this->start_date) || empty($this->end_date)) {
             return '';
         }
-        return 'de ' . $this->from . ' (' . DateUtil::formatDateTimeToBr($this->start_date) . ') para ' . $this->to . ' (' . DateUtil::formatDateTimeToBr($this->end_date) . ') | motorista: ' . $this->event_driver->name;
+        return 'de ' . $this->from . ' (' . DateUtil::formatDateTimeToBr($this->start_date)
+            . ') para ' . $this->to . ' (' . DateUtil::formatDateTimeToBr($this->end_date)
+            . ' | motorista: ' . $this->event_driver->name
+            . ' | veículo: ' . $this->event_driver->vehicle;
     }
 
     public function event(): BelongsTo
@@ -46,6 +49,11 @@ class EventTrip extends GenericModel
     public function event_trip_participants(): HasMany
     {
         return $this->hasMany(EventTripParticipant::class, 'event_trip_id');
+    }
+
+    public function hasPassengers(): bool
+    {
+        return EventTripParticipant::where('event_trip_id', $this->id)->exists();
     }
 
     public function capacity(): string

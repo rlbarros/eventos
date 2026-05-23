@@ -82,11 +82,8 @@ new class extends Component {
     <livewire:dialogs::delete-confirmation />
     <div class="flex items-start max-md:flex-col">
         <div class="flex-1">
-            <flux:heading size="lg" class="mb-4">Detalhamento de Evento</flux:heading>
-            <flux:heading size="sm" class="mb-4">{{ $this->event()->name }}</flux:heading>
-            <flux:heading size="sm" class="mb-4">{{ $this->event()->event_site->name }}</flux:heading>
-            <flux:heading size="sm" class="mb-4">{{ $this->eventSiteLocation() }}</flux:heading>
-            <flux:heading size="sm" class="mb-4">{{ $this->eventDates() }}</flux:heading>
+            <flux:heading size="lg" class="mb-4">Detalhamento de Evento | {{ $this->event()->name }}</flux:heading>
+            <flux:heading size="sm" class="mb-4">{{ $this->event()->event_site->name }} | {{ $this->eventSiteLocation() }} | {{ $this->eventDates() }}</flux:heading>
         </div>
     </div>
     <flux:separator variant="subtle" />

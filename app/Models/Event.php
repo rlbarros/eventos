@@ -34,4 +34,15 @@ class Event extends GenericModel
     {
         return $this->belongsTo(EventSite::class, 'event_site_id');
     }
+
+    public function hasDependencies()
+    {
+        $hasParticipants = EventParticipantAllocation::where('event_id', $this->id)->exists();
+        $hasBatches = EventBatch::where('event_id', $this->id)->exists();
+        $hasFees = EventFee::where('event_id', $this->id)->exists();
+        $hasServices = EventService::where('event_id', $this->id)->exists();
+        $hasTrips = EventTrip::where('event_id', $this->id)->exists();
+
+        return $hasParticipants || $hasBatches || $hasFees || $hasServices || $hasTrips;
+    }
 }

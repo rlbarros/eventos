@@ -2,9 +2,8 @@
 
 use App\Models\EventService;
 use App\Models\EventServiceParticipantConsumption;
-use App\Utils\CurrencyUtil;
+use App\Models\EventServiceParticipantPayment;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,6 +21,8 @@ new class extends Component {
     public string $totalPayed;
     public string $balance;
 
+    public array $nonList;
+
     #[Url(history: true)]
     public string $search = '';
 
@@ -31,18 +32,7 @@ new class extends Component {
     {
         $this->service = EventService::where('id', '=', $this->serviceId)->get()->first();
 
-        $totalParticipantsPayed = EventServiceParticipantConsumption::where('event_service_id', $this->serviceId)
-            ->whereNotNull('amount')
-            ->sum('amount');
-
-        $this->participants = EventServiceParticipantConsumption::select(
-            DB::raw('MIN(id) as id'),
-            'event_service_id',
-            'person_id',
-            DB::raw('SUM(amount) as amount')
-        )
-            ->where('event_service_id', $this->serviceId)
-            ->groupBy('event_service_id', 'person_id')
+        $this->participants = EventServiceParticipantConsumption::where('event_service_id', $this->serviceId)
             ->with('person')
             ->whereHas('person', function ($whereHasQuery) {
                 if (empty($this->search)) {
@@ -51,7 +41,30 @@ new class extends Component {
                 $whereHasQuery->whereRaw('LOWER(name) LIKE \'%' . strtolower($this->search) . '%\'');
             })
             ->get();
-        $this->totalInServices = (count($this->participants) * $this->service->fee);
+
+        $consumptionsIds = $this->participants->map(function ($item) {
+            return $item['id'];
+        })->toArray();
+
+        $nonList = $this->participants->map(function ($item) {
+            return $item['person_id'];
+        })->toArray();
+
+        if (empty($nonList)) {
+            $nonList = [];
+        }
+
+        $this->nonList = $nonList;
+
+        $totalParticipantsPayed = EventServiceParticipantPayment::whereIn('consumption_id', $consumptionsIds)
+            ->sum('amount');
+
+
+        $this->totalInServices = 0;
+        foreach ($this->participants as $participant) {
+            $this->totalInServices += $participant->event_service->fee * $participant->quantity;
+        }
+
         $this->totalPayed = $totalParticipantsPayed;
         $this->balance = $this->totalInServices - $totalParticipantsPayed;
     }
@@ -66,7 +79,7 @@ new class extends Component {
                 <flux:callout.heading>
                     <flux:breadcrumbs>
                         <flux:breadcrumbs.item icon="calendar" href="{{ route('events') }}">Eventos </flux:breadcrumbs.item>
-                        <flux:breadcrumbs.item separator="slash" href="{{ route('event-detail', ['eventId' => $this->eventId]) }}" separator="slash">Evento {{ $this->eventId }}</flux:breadcrumbs.item>
+                        <flux:breadcrumbs.item separator="slash" href="{{ route('event-detail', ['eventId' => $this->eventId, 'selectedTab' => 'services-tab']) }}" separator="slash">Evento {{ $this->eventId }}</flux:breadcrumbs.item>
                         <flux:breadcrumbs.item separator="slash">Serviço {{ $this->serviceId }}</flux:breadcrumbs.item>
                     </flux:breadcrumbs>
                 </flux:callout.heading>
@@ -93,6 +106,7 @@ new class extends Component {
     <livewire:pages::events.services.participants.participants-index
         :eventId="$this->eventId"
         :serviceId="$this->serviceId"
-        :participants="$this->participants" />
+        :participants="$this->participants"
+        :nonList="$this->nonList" />
 
 </div>

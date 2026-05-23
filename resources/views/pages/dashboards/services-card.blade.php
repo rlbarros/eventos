@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\EventService;
-use App\Models\EventParticipantAllocation;
-use App\Models\EventParticipantPayment;
 use App\Models\EventServiceParticipantConsumption;
 
 new class extends \Livewire\Component

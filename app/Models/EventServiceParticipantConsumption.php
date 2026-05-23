@@ -6,14 +6,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventServiceParticipantConsumption extends GenericModel
 {
-    protected $table = 'events_services_participants_comsuption';
+    protected $table = 'events_services_participants_consumption';
 
     protected $fillable = [
         'event_id',
         'event_service_id',
         'person_id',
-        'payment_date',
-        'amount'
+        'quantity'
     ];
 
     public static function modelName(): string
@@ -43,5 +42,10 @@ class EventServiceParticipantConsumption extends GenericModel
     public function event_service(): BelongsTo
     {
         return $this->belongsTo(EventService::class, 'event_service_id');
+    }
+
+    public function hasPayments(): bool
+    {
+        return EventServiceParticipantPayment::where('consumption_id', $this->id)->exists();
     }
 }

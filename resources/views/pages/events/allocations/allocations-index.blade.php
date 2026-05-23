@@ -217,8 +217,8 @@ new class extends Component
 <div>
     <livewire:pages::events.allocations.allocate-participants-form />
 
-    <div class="grid grid-cols-3 w-full justify-items-center items-center">
-        <flux:card class="space-y-6 w-140">
+    <div class="grid grid-cols-3 w-full justify-items-center">
+        <flux:card class="space-y-2 space-x-1 pl-1 pr-1 ml-8 w-130">
             <div>
                 <flux:heading size="lg" class="ml-2">
                     <flux:callout inline>
@@ -240,7 +240,7 @@ new class extends Component
         </flux:card>
 
 
-        <flux:card class="flex flex-col gap-8 w-90">
+        <flux:card class="flex flex-col gap-8 w-82">
 
             <flux:callout variant="warning" icon="information-circle" inline>
                 <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Total de Participantes</flux:callout.heading>
@@ -278,7 +278,7 @@ new class extends Component
         </flux:card>
 
 
-        <flux:card class="space-y-6 w-140">
+        <flux:card class="space-y-6 space-x-1 pl-1 pr-1 mr-8 w-130">
             <x=mary-accordion>
                 @foreach($this->eventSiteRooms as $roomTypeArray)
                 <livewire:pages::events.allocations.available-room-type :room-type="$roomTypeArray['roomType']" :rooms="$roomTypeArray['rooms']" :wire:key="$roomTypeArray['roomType']->id" />

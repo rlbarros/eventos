@@ -13,6 +13,8 @@ new class extends GenericFormComponent {
 
     public EventParticipantServiceForm $form;
 
+    public array $nonList;
+
     public function form()
     {
         return $this->form;
@@ -27,12 +29,6 @@ new class extends GenericFormComponent {
     {
         $this->form->event_id = $this->eventId;
         $this->form->event_service_id = $this->serviceId;
-        if (empty($this->form->payment_date)) {
-            $this->form->payment_date = null;
-        }
-        if (empty($this->form->amount)) {
-            $this->form->amount = null;
-        }
     }
 
     #[On('events.services.participants.participant-create')]
@@ -62,5 +58,11 @@ new class extends GenericFormComponent {
 ?>
 
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
-    <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" class="space-x-2" />
+    <livewire:autocompletes::persons :fieldName="'person_id'" :label="'Pessoa'" :readonly="$this->isReadonly()" :form="$form" :nonList="$nonList" class="space-x-2" />
+
+    <flux:field>
+        <flux:label>quantidade</flux:label>
+        <flux:input placeholder="insira a quantidade" wire:model.live="form.quantity" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
+        <flux:error name="form.quantity" />
+    </flux:field>
 </livewire:pages::forms.generic-form>

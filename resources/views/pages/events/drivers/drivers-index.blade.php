@@ -38,6 +38,7 @@ new class extends GenericIndexComponent
             <flux:table.column sortable>Nome</flux:table.column>
             <flux:table.column sortable>Telefone</flux:table.column>
             <flux:table.column sortable>Veículo</flux:table.column>
+            <flux:table.column sortable>Capacidade de Passageiros</flux:table.column>
             <flux:table.column sortable>Ações</flux:table.column>
         </flux:table.columns>
 
@@ -47,7 +48,8 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $driver->id }}</flux:table.cell>
                 <flux:table.cell>{{ $driver->name }}</flux:table.cell>
                 <flux:table.cell>{{ $driver->phone }}</flux:table.cell>
-                <flux:table.cell>{{ $driver->vehicle }} ({{ $driver->capacity }} Lugares)</flux:table.cell>
+                <flux:table.cell>{{ $driver->vehicle }}</flux:table.cell>
+                <flux:table.cell>{{ $driver->capacity }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
                         <flux:button wire:click="$dispatch('events.drivers.driver-edit', { id: {{ $driver->id }} })" icon="pencil-square" style="cursor: pointer;"

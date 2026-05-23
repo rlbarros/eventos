@@ -23,7 +23,8 @@ class EventDriverForm extends GenericForm
             'event_id' => 'required|integer|exists:events,id',
             'name' => 'required|string',
             'phone' => 'required|string',
-            'vehicle' => 'required|string'
+            'vehicle' => 'required|string',
+            'capacity' => 'required|integer'
         ];
     }
 

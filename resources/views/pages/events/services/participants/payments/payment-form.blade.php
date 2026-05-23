@@ -2,16 +2,16 @@
 
 use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
-use App\Livewire\Forms\Event\Participant\Service\EventParticipantServiceForm;
-use App\Traits\Forms\Event\Service\Partipants\WithEventServiceParticipantsProperties;
+use App\Livewire\Forms\Event\Participant\Service\EventParticipantServicePaymentForm;
+use App\Traits\Forms\Event\Service\Partipants\WithEventServiceParticipantsPaymentsProperties;
 use App\Utils\CurrencyUtil;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
 
-    use WithEventServiceParticipantsProperties;
+    use WithEventServiceParticipantsPaymentsProperties;
 
-    public EventParticipantServiceForm $form;
+    public EventParticipantServicePaymentForm $form;
 
     public function form()
     {
@@ -26,8 +26,7 @@ new class extends GenericFormComponent {
     public function beforeSave(): void
     {
         $this->form->event_id = $this->eventId;
-        $this->form->event_service_id = $this->serviceId;
-        $this->form->person_id = $this->personId;
+        $this->form->consumption_id = $this->serviceId;
         $this->form->amount = CurrencyUtil::formatCurrencyToDb($this->form->amount);
     }
 
@@ -38,9 +37,9 @@ new class extends GenericFormComponent {
     }
 
     #[On('events.services.participants.payment-edit')]
-    public function handleEventSiteEditRequest(int $id, int $personId)
+    public function handleEventSiteEditRequest(int $id, int $consumptionId)
     {
-        $this->personId = $personId;
+        $this->consumptionId = $consumptionId;
         $this->findModelByIdAndShowModal($id, FormModeEnum::Edit);
     }
 

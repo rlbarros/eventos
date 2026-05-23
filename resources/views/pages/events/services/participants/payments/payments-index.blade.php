@@ -1,8 +1,8 @@
 <?php
 
 use App\Livewire\Components\GenericIndexComponent;
-use App\Models\EventServiceParticipantConsumption;
-use App\Traits\Forms\Event\Service\Partipants\WithEventServiceParticipantsProperties;
+use App\Models\EventServiceParticipantPayment;
+use App\Traits\Forms\Event\Service\Partipants\WithEventServiceParticipantsPaymentsProperties;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\On;
@@ -10,7 +10,7 @@ use Livewire\Attributes\On;
 
 new class extends GenericIndexComponent
 {
-    use WithEventServiceParticipantsProperties;
+    use WithEventServiceParticipantsPaymentsProperties;
 
     public Collection $payments;
 
@@ -25,12 +25,11 @@ new class extends GenericIndexComponent
     }
 
     #[On('events.services.participants.payments-view')]
-    public function handleEventSiteViewRequest(int $personId)
+    public function handleEventSiteViewRequest(int $consumptionId)
     {
-        $this->personId = $personId;
-        $this->payments = EventServiceParticipantConsumption
-            ::where('event_service_id', $this->serviceId)
-            ->where('person_id', $this->personId)
+        $this->consumptionId = $consumptionId;
+        $this->payments = EventServiceParticipantPayment
+            ::where('consumption_id', $this->consumptionId)
             ->get();
         Flux::modal($this->modalName())->show();
     }
@@ -59,7 +58,7 @@ new class extends GenericIndexComponent
 <flux:modal :name="$this->modalName()" class="md:w-650">
     <livewire:dialogs::delete-confirmation />
     <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
-        <livewire:pages::events.services.participants.payments.payment-form :eventId="$this->eventId" :serviceId="$this->serviceId" :personId="$this->personId" />
+        <livewire:pages::events.services.participants.payments.payment-form :eventId="$this->eventId" :serviceId="$this->serviceId" :consumptionId="$this->consumptionId" />
 
         <flux:table :paginate="$this->index()" pagination:scroll-to>
             <flux:table.columns>
@@ -70,7 +69,7 @@ new class extends GenericIndexComponent
             </flux:table.columns>
 
             <flux:table.rows>
-                @foreach ($this->payments as $payment)
+                @forelse ($this->payments as $payment)
                 <flux:table.row :key="$payment->id">
                     <flux:table.cell>{{ $payment->id }}</flux:table.cell>
                     <flux:table.cell>{{ \App\Utils\DateUtil::formatDateToBr($payment->payment_date) }}</flux:table.cell>
@@ -84,7 +83,13 @@ new class extends GenericIndexComponent
                         </div>
                     </flux:table.cell>
                 </flux:table.row>
-                @endforeach
+                @empty
+                <flux:table.row>
+                    <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
+                        Sem pagamentos realizados
+                    </flux:table.cell>
+                </flux:table.row>
+                @endforelse
             </flux:table.rows>
         </flux:table>
     </livewire:pages::forms.generic-list>

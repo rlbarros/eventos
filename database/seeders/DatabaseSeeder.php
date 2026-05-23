@@ -33583,6 +33583,8 @@ class DatabaseSeeder extends Seeder
 
         DB::table('cities')->insert($cities);
 
+        $this->command->info("Seeded states and cities successfully.");
+
         $eventSites = [
             'name' => 'Estância Árvore da Vida',
             'phone' => '(19) 98424-3403',
@@ -33638,5 +33640,10 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         DB::table('events')->insert($events);
+
+        $this->command->info("Seeded conference successfully.");
+
+        // Call ChurchesPersonsSeeder to import churches and persons from CSV
+        $this->call(ChurchesPersonsSeeder::class);
     }
 }

@@ -12,6 +12,8 @@ new class extends GenericIndexComponent
 
     public Collection $participants;
 
+    public array $nonList;
+
     public function indexArray(): array
     {
         return [
@@ -48,14 +50,14 @@ new class extends GenericIndexComponent
 
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
-    <livewire:pages::events.services.participants.participant-form :eventId="$this->eventId" :serviceId="$this->serviceId" />
+    <livewire:pages::events.services.participants.participant-form :eventId="$this->eventId" :serviceId="$this->serviceId" :nonList="$this->nonList" />
     <livewire:pages::events.services.participants.payments.payments-index :eventId="$this->eventId" :serviceId="$this->serviceId" />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>
             <flux:table.column sortable sorted direction="desc">#</flux:table.column>
             <flux:table.column sortable>Participante</flux:table.column>
-            <flux:table.column sortable>Valor Pago</flux:table.column>
+            <flux:table.column sortable>Quantidade</flux:table.column>
             <flux:table.column sortable>Ações</flux:table.column>
         </flux:table.columns>
 
@@ -64,11 +66,15 @@ new class extends GenericIndexComponent
             <flux:table.row :key="$participant->id">
                 <flux:table.cell>{{ $participant->id }}</flux:table.cell>
                 <flux:table.cell>{{ $participant->person->descriptor() }}</flux:table.cell>
-                <flux:table.cell>{{ \App\Utils\CurrencyUtil::formatCurrencyToBr($participant->amount, true) }}</flux:table.cell>
+                <flux:table.cell>{{ intval($participant->quantity) }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
-                        <flux:button wire:click="$dispatch('events.services.participants.payments-view', { personId: {{ $participant->person_id }} })" icon="pencil-square" style="cursor: pointer;"
+                        <flux:button wire:click="$dispatch('events.services.participants.payments-view', { consumptionId: {{ $participant->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
+                        @if (!$participant->hasPayments())
+                        <flux:button variant="danger" icon="trash" size="sm"
+                            wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $participant->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$participant->descriptor()}}', callbackDeleteEvent: 'events.services.participants.participant-delete-confirmed' })" />
+                        @endif
                     </div>
                 </flux:table.cell>
             </flux:table.row>

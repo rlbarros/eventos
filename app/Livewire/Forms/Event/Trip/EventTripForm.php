@@ -26,7 +26,7 @@ class EventTripForm extends GenericForm
             'event_id' => 'required|integer|exists:events,id',
             'event_driver_id' => 'required|exists:events_drivers,id',
             'start_date' => 'required|date',
-            'end_date' => 'required|date'
+            'end_date' => 'required|date|after:start_date'
         ];
     }
 

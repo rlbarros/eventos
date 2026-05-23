@@ -45,15 +45,17 @@ new class extends GenericIndexComponent
             <flux:table.row :key="$service->id">
                 <flux:table.cell>{{ $service->id }}</flux:table.cell>
                 <flux:table.cell>{{ $service->name }}</flux:table.cell>
-                <flux:table.cell>{{ $service->fee }}</flux:table.cell>
+                <flux:table.cell>{{ \App\Utils\CurrencyUtil::formatCurrencyToBr($service->fee) }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
                         <flux:button href="{{ $eventId }}/service/{{ $service->id }}" icon="document-text" style="cursor: pointer;" wire:navigate
                             size="sm" />
                         <flux:button wire:click="$dispatch('events.services.service-edit', { id: {{ $service->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
+                        @if (!$service->hasRequesters())
                         <flux:button variant="danger" icon="trash" size="sm"
                             wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $service->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$service->descriptor()}}', callbackDeleteEvent: 'events.services.service-delete-confirmed' })" />
+                        @endif
                     </div>
                 </flux:table.cell>
             </flux:table.row>

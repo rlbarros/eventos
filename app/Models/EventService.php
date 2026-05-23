@@ -28,9 +28,13 @@ class EventService extends GenericModel
         return $this->id . ' - ' . $this->name . ' - ' . CurrencyUtil::formatCurrencyToBr($this->fee, true);
     }
 
-
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    public function hasRequesters(): bool
+    {
+        return EventServiceParticipantConsumption::where('event_service_id', $this->id)->exists();
     }
 }
