@@ -62,7 +62,7 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
                     </div>
                 </flux:table.cell>
             </flux:table.row>
-            @@empty
+            @empty
             <flux:table.row>
                 <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
                     Sem igrejas cadastradas

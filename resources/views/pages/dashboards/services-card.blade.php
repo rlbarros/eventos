@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\EventServiceParticipantConsumption;
+use App\Models\EventServiceParticipantPayment;
 
 new class extends \Livewire\Component
 {
@@ -15,14 +16,10 @@ new class extends \Livewire\Component
         $eventServiceParticipantConsumptions = EventServiceParticipantConsumption::where('event_id', $this->eventId)->get();
         $this->totalServices = 0;
         $this->totalPaidServices = 0;
-        foreach ($eventServiceParticipantConsumptions as $comsuption) {
+        foreach ($eventServiceParticipantConsumptions as $consumption) {
 
-            $eventService = $comsuption->event_service;
-            $this->totalServices += $eventService->fee;
-
-            if (!empty($comsuption->amount)) {
-                $this->totalPaidServices += $comsuption->amount;
-            }
+            $this->totalServices += $consumption->totalFee();
+            $this->totalPaidServices += $consumption->totalPaid();
         }
         $this->totalPendingServices = $this->totalServices - $this->totalPaidServices;
     }

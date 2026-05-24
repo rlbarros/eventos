@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Event;
 use App\Models\EventFee;
 use App\Models\EventParticipantAllocation;
 use App\Models\EventParticipantPayment;
+use App\Utils\AgeUtil;
 
 new class extends \Livewire\Component
 {
@@ -14,6 +16,7 @@ new class extends \Livewire\Component
 
     public function mount()
     {
+        $event = Event::find($this->eventId);
         $eventAllocations = EventParticipantAllocation::where('event_id', $this->eventId)->get();
         $eventFees = EventFee::where('event_id', $this->eventId)->get();
         $this->totalFees = 0;
@@ -36,7 +39,22 @@ new class extends \Livewire\Component
                 }
                 $this->totalPaidFees += $paymetnsOfAllocation->sum('amount');
             } else {
-                $eventFeeForRoomType = $eventFees->where('event_site_room_type_id', $eventSiteRoomType->id)->sortByDesc('batch')->first();
+                $eventFeesForRoomType = $eventFees->where('event_site_room_type_id', $eventSiteRoomType->id);
+                $maxBatch = 0;
+                foreach ($eventFeesForRoomType as $eventFee) {
+                    if ($eventFee->event_batch->batch > $maxBatch) {
+                        $maxBatch = $eventFee->event_batch->batch;
+                    }
+                }
+                $filterEventFeesByBatch = $eventFeesForRoomType->filter(function ($item) use ($maxBatch) {
+                    return $item->event_batch->batch == $maxBatch;
+                })->values();
+
+                $person =  $allocation->person;
+
+
+                $filteredEventFees = AgeUtil::filterEventFeesByAge($filterEventFeesByBatch, $person, $event);
+                $eventFeeForRoomType =  $filteredEventFees->first();
                 if ($eventFeeForRoomType) {
                     $this->totalFees += $eventFeeForRoomType->fee;
                 }

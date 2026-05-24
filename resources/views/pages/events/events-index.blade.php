@@ -31,6 +31,7 @@ new #[Title('Eventos')] class extends GenericIndexComponent {
 
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
+    <livewire:dialogs::delete-confirmation />
     <livewire:pages::events.event-form />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>

@@ -16,10 +16,13 @@
             border: 1px solid #ccc;
             padding: 8px;
             text-align: left;
+            font-size: .8em;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
 
         th {
             background: #f5f5f5;
+            font-weight: bold;
         }
     </style>
 </head>

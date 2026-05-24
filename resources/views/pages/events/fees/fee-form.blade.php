@@ -59,11 +59,6 @@ new class extends GenericFormComponent {
         $emptyCategory = empty($this->form->category);
         $emptyFee = empty($this->form->fee);
 
-        $this->dispatch('log-event', ['obj' => 'rt' . $emptyEventSiteRoomTypeId, 'level' => 'info']);
-        $this->dispatch('log-event', ['obj' => 'b' . $emptyBatchId, 'level' => 'info']);
-        $this->dispatch('log-event', ['obj' => 'c' . $emptyCategory, 'level' => 'info']);
-        $this->dispatch('log-event', ['obj' => 'f' . $emptyFee, 'level' => 'info']);
-
         return $emptyEventSiteRoomTypeId || $emptyBatchId || $emptyCategory || $emptyFee;
     }
 
