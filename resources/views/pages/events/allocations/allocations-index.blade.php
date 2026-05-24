@@ -87,7 +87,6 @@ new class extends Component
         $this->delete($id);
     }
 
-    #[Computed()]
     public function deallocatedRoomTypeChurchesParticipants()
     {
         $eventParticipants = EventParticipantAllocation::where('event_id', $this->eventId)->get();
@@ -139,8 +138,6 @@ new class extends Component
         return $roomTypesChurchesValues;
     }
 
-
-    #[Computed()]
     public function eventSiteRooms()
     {
         $event = Event::find($this->eventId);

@@ -134,8 +134,8 @@ abstract class GenericFormComponent extends Component implements IProperties
         $model = $this->form()->getModel();
         try {
             $this->form()->store();
-            Toaster::success($this->successMessage($model));
             $this->closeAndRedirectIndex();
+            Toaster::success($this->successMessage($model));
         } catch (\Illuminate\Validation\ValidationException $e) {
             dd($e);
             Toaster::error('Erro de validação: ' . implode(', ', $e->validator->errors()->all()));
