@@ -32,4 +32,11 @@ class Church extends GenericModel
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    public function hasDependencies()
+    {
+        $hasPersons = Person::where('church_id', $this->id)->exists();
+        $hasEvents = Event::where('church_id', $this->id)->exists();
+        return $hasPersons || $hasEvents;
+    }
 }

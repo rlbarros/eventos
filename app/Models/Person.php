@@ -71,4 +71,12 @@ class Person extends GenericModel
 
         return $birthDate->diffInYears($comparisonDate);
     }
+
+    public function hasDependencies()
+    {
+        $hasAllocations = EventParticipantAllocation::where('person_id', $this->id)->exists();
+        $hasServices = EventServiceParticipantConsumption::where('person_id', $this->id)->exists();
+        $hasTrips = EventTripParticipant::where('person_id', $this->id)->exists();
+        return $hasAllocations || $hasServices || $hasTrips;
+    }
 }

@@ -43,7 +43,7 @@ new class extends GenericIndexComponent
         </flux:table.columns>
 
         <flux:table.rows>
-            @foreach ($this->index() as $batch)
+            @forelse ($this->index() as $batch)
             <flux:table.row :key="$batch->id">
                 <flux:table.cell>{{ $batch->id }}</flux:table.cell>
                 <flux:table.cell>{{ $batch->batch }}</flux:table.cell>
@@ -58,7 +58,13 @@ new class extends GenericIndexComponent
                     </div>
                 </flux:table.cell>
             </flux:table.row>
-            @endforeach
+            @empty
+            <flux:table.row>
+                <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
+                    Sem lotes programados
+                </flux:table.cell>
+            </flux:table.row>
+            @endforelse
         </flux:table.rows>
     </flux:table>
 </livewire:pages::forms.generic-list>

@@ -62,7 +62,7 @@ new class extends GenericIndexComponent
         </flux:table.columns>
 
         <flux:table.rows>
-            @foreach ($this->participants as $participant)
+            @forelse ($this->participants as $participant)
             <flux:table.row :key="$participant->id">
                 <flux:table.cell>{{ $participant->id }}</flux:table.cell>
                 <flux:table.cell>{{ $participant->person->descriptor() }}</flux:table.cell>
@@ -78,7 +78,13 @@ new class extends GenericIndexComponent
                     </div>
                 </flux:table.cell>
             </flux:table.row>
-            @endforeach
+            @empty
+            <flux:table.row>
+                <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
+                    Sem requisitantes neste serviço
+                </flux:table.cell>
+            </flux:table.row>
+            @endforelse
         </flux:table.rows>
     </flux:table>
 </livewire:pages::forms.generic-list>

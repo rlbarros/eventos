@@ -31,4 +31,11 @@ class EventSiteRoomType extends GenericModel
     {
         return $this->belongsTo(EventSite::class, 'event_site_id');
     }
+
+    public function hasDependencies()
+    {
+        $hasEventSiteRooms = EventSiteRoom::where('event_site_room_type_id', $this->id)->exists();
+        $hasFees = EventFee::where('event_site_room_type_id', $this->id)->exists();
+        return $hasEventSiteRooms || $hasFees;
+    }
 }

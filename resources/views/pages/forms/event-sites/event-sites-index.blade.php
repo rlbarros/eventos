@@ -43,7 +43,7 @@ new #[Title('Locais de Evento')] class extends GenericIndexComponent
         </flux:table.columns>
 
         <flux:table.rows>
-            @foreach ($this->index() as $eventSite)
+            @forelse ($this->index() as $eventSite)
             <flux:table.row :key="$eventSite->id">
                 <flux:table.cell>{{ $eventSite->id }}</flux:table.cell>
                 <flux:table.cell>{{ $eventSite->name }}</flux:table.cell>
@@ -59,12 +59,20 @@ new #[Title('Locais de Evento')] class extends GenericIndexComponent
                             size="sm" />
                         <flux:button wire:click="$dispatch('forms.event-sites.event-site-edit', { id: {{ $eventSite->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
+                        @if(!$eventSite->hasDependencies())
                         <flux:button variant="danger" icon="trash" size="sm"
                             wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $eventSite->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$eventSite->descriptor()}}', callbackDeleteEvent: 'forms.event-sites.event-site-delete-confirmed' })" />
+                        @endif
                     </div>
                 </flux:table.cell>
             </flux:table.row>
-            @endforeach
+            @@empty
+            <flux:table.row>
+                <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
+                    Sem locais de evento cadastrados
+                </flux:table.cell>
+            </flux:table.row>
+            @endforelse
         </flux:table.rows>
     </flux:table>
 </livewire:pages::forms.generic-index>

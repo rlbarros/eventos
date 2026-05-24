@@ -52,7 +52,7 @@ new class extends GenericIndexComponent
         </flux:table.columns>
 
         <flux:table.rows>
-            @foreach ($this->index() as $roomType)
+            @forelse ($this->index() as $roomType)
             <flux:table.row :key="$roomType->id">
                 <flux:table.cell>{{ $roomType->id }}</flux:table.cell>
                 <flux:table.cell>{{ $roomType->name }}</flux:table.cell>
@@ -64,12 +64,20 @@ new class extends GenericIndexComponent
                             size="sm" />
                         <flux:button wire:click="$dispatch('forms.event-sites.event-site-room-type-edit', { id: {{ $roomType->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
+                        @if(!$roomType->hasDependencies())
                         <flux:button variant="danger" icon="trash" size="sm"
                             wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $roomType->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$roomType->descriptor()}}', callbackDeleteEvent: 'forms.event-sites.event-site-room-type-delete-confirmed' })" />
+                        @endif
                     </div>
                 </flux:table.cell>
             </flux:table.row>
-            @endforeach
+            @empty
+            <flux:table.row>
+                <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
+                    Sem tipos de quartos cadastrados
+                </flux:table.cell>
+            </flux:table.row>
+            @endforelse
         </flux:table.rows>
     </flux:table>
 </livewire:pages::forms.generic-list>

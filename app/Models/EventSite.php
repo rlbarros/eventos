@@ -36,4 +36,9 @@ class EventSite extends GenericModel
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    public function hasDependencies()
+    {
+        return EventSiteRoomType::where('event_site_id', $this->id)->exists();
+    }
 }

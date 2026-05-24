@@ -44,7 +44,7 @@ new #[Title('Pessoas')] class extends GenericIndexComponent {
         </flux:table.columns>
 
         <flux:table.rows>
-            @foreach ($this->index() as $person)
+            @forelse ($this->index() as $person)
             <flux:table.row :key="$person->id">
                 <flux:table.cell>{{ $person->id }}</flux:table.cell>
                 <flux:table.cell>{{ $person->church->name }}</flux:table.cell>
@@ -57,12 +57,20 @@ new #[Title('Pessoas')] class extends GenericIndexComponent {
                             size="sm" />
                         <flux:button wire:click="$dispatch('forms.persons.person-edit', { id: {{ $person->id }} })" icon="pencil-square" style="cursor: pointer;"
                             size="sm" />
+                        @if(!$person->hasDependencies())
                         <flux:button variant="danger" icon="trash" size="sm"
                             wire:click="$dispatch('dialogs.delete-confirmation', { objectId: {{ $person->id }}, modelName: '{{$this->modelName()}}', descriptor: '{{$person->descriptor()}}', callbackDeleteEvent: 'forms.person-delete-confirmed' })" />
+                        @endif
                     </div>
                 </flux:table.cell>
             </flux:table.row>
-            @endforeach
+            @empty
+            <flux:table.row>
+                <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
+                    Sem pessoas cadastradas
+                </flux:table.cell>
+            </flux:table.row>
+            @endforelse
         </flux:table.rows>
     </flux:table>
 </livewire:pages::forms.generic-index>

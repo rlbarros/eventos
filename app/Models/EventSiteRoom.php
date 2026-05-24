@@ -45,4 +45,9 @@ class EventSiteRoom extends GenericModel
     {
         return $this->belongsTo(EventSiteRoomType::class, 'event_site_room_type_id');
     }
+
+    public function hasDependencies()
+    {
+        return EventParticipantAllocation::where('event_site_room_id', $this->id)->exists();
+    }
 }

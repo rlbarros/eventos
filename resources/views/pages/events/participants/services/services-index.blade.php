@@ -80,7 +80,7 @@ new class extends GenericIndexComponent
             </flux:table.columns>
 
             <flux:table.rows>
-                @foreach ($this->index() as $consumption)
+                @forelse ($this->index() as $consumption)
                 <flux:table.row :key="$consumption->id">
                     <flux:table.cell>{{ $consumption->id }}</flux:table.cell>
                     <flux:table.cell>{{ $consumption->event_service->descriptor() }}</flux:table.cell>
@@ -100,7 +100,13 @@ new class extends GenericIndexComponent
                         </div>
                     </flux:table.cell>
                 </flux:table.row>
-                @endforeach
+                @empty
+                <flux:table.row>
+                    <flux:table.cell colspan="2" class="text-center py-10 text-zinc-500 dark:text-zinc-400">
+                        Sem serviços requisitados
+                    </flux:table.cell>
+                </flux:table.row>
+                @endforelse
             </flux:table.rows>
         </flux:table>
     </livewire:pages::forms.generic-list>
