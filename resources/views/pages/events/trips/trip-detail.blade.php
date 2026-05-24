@@ -28,7 +28,7 @@ new class extends Component {
                 <flux:callout.heading>
                     <flux:breadcrumbs>
                         <flux:breadcrumbs.item icon="calendar" href="{{ route('events') }}">Eventos </flux:breadcrumbs.item>
-                        <flux:breadcrumbs.item separator="slash" href="{{ route('event-detail', ['eventId' => $this->eventId]) }}" separator="slash">Evento {{ $this->eventId }}</flux:breadcrumbs.item>
+                        <flux:breadcrumbs.item separator="slash" href="{{ route('event-detail', ['eventId' => $this->eventId, 'selectedTab' => 'trips-tab']) }}" separator="slash">Evento {{ $this->eventId }}</flux:breadcrumbs.item>
                         <flux:breadcrumbs.item separator="slash">Viagem {{ $this->tripId }}</flux:breadcrumbs.item>
                     </flux:breadcrumbs>
                 </flux:callout.heading>

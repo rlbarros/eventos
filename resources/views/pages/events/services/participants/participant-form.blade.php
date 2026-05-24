@@ -62,7 +62,7 @@ new class extends GenericFormComponent {
 
     <flux:field>
         <flux:label>quantidade</flux:label>
-        <flux:input placeholder="insira a quantidade" wire:model.live="form.quantity" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
+        <flux:input type="number" placeholder="insira a quantidade" wire:model.live="form.quantity" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.quantity" />
     </flux:field>
 </livewire:pages::forms.generic-form>

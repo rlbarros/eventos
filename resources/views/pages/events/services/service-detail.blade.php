@@ -66,7 +66,7 @@ new class extends Component {
         }
 
         $this->totalPayed = $totalParticipantsPayed;
-        $this->balance = $this->totalInServices - $totalParticipantsPayed;
+        $this->balance = max(0, $this->totalInServices - $totalParticipantsPayed);
     }
 };
 

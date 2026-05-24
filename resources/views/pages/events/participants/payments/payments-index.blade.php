@@ -70,7 +70,7 @@ new class extends GenericIndexComponent
             $lastFee = $eventFee->fee;
         }
 
-        $this->balance += $lastFee - $this->totalPayed;
+        $this->balance += max(0, $lastFee - $this->totalPayed);
     }
 
     public function indexArray(): array

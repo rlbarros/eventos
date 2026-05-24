@@ -48,4 +48,14 @@ class EventServiceParticipantConsumption extends GenericModel
     {
         return EventServiceParticipantPayment::where('consumption_id', $this->id)->exists();
     }
+
+    public function totalFee()
+    {
+        return $this->event_service->fee * $this->quantity;
+    }
+
+    public function totalPaid()
+    {
+        return EventServiceParticipantPayment::where('consumption_id', $this->id)->sum('amount');
+    }
 }

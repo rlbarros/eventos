@@ -53,6 +53,6 @@ class EventParticipantServiceForm extends GenericForm
         $this->person_id = $eventServiceParticipantComsumption->person_id;
         $this->event_id = $eventServiceParticipantComsumption->event_id;
         $this->event_service_id = $eventServiceParticipantComsumption->event_service_id;
-        $this->quantity = $eventServiceParticipantComsumption->quantity;
+        $this->quantity = intvaL($eventServiceParticipantComsumption->quantity);
     }
 }

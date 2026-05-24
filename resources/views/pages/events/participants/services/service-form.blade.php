@@ -28,7 +28,7 @@ new class extends GenericFormComponent {
     {
         $this->form->event_id = $this->eventId;
         $this->form->person_id = $this->personId;
-        $this->form->amount = CurrencyUtil::formatCurrencyToDb($this->form->amount);
+        $this->form->quantity = CurrencyUtil::formatCurrencyToDb($this->form->quantity);
     }
 
     #[On('event-service-selected')]
@@ -65,10 +65,9 @@ new class extends GenericFormComponent {
     {
 
         $emptyEventServiceId = empty($this->form->event_service_id);
-        $emptyPaymentDate = empty($this->form->payment_date);
-        $emptyAmount = empty($this->form->amount);
+        $emptyQuantity = empty($this->form->quantity);
 
-        return $emptyEventServiceId || $emptyPaymentDate || $emptyAmount;
+        return $emptyEventServiceId || $emptyQuantity;
     }
 };
 
@@ -77,18 +76,8 @@ new class extends GenericFormComponent {
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">
     <livewire:selects.services :readonly="$this->isReadonly()" :eventId="$eventId" :form="$form" class="space-x-2" />
     <flux:field>
-        <flux:label>Data de Pagamento *</flux:label>
-        <flux:input type="date" wire:model="form.payment_date" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
-        <flux:error name="form.payment_date" />
-    </flux:field>
-
-    <flux:field>
-        <flux:label>Valor Pago</flux:label>
-        <flux:input placeholder="insira o valor" wire:model.live="form.amount" placeholder="0,00" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()">
-            <x-slot name="prefix">
-                R$
-            </x-slot>
-        </flux:input>
-        <flux:error name="form.amount" />
+        <flux:label>quantidade</flux:label>
+        <flux:input type="number" placeholder="insira a quantidade" wire:model.live="form.quantity" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
+        <flux:error name="form.quantity" />
     </flux:field>
 </livewire:pages::forms.generic-form>

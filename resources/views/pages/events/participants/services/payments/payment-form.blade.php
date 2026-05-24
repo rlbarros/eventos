@@ -3,13 +3,13 @@
 use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Event\Participant\Service\EventParticipantServicePaymentForm;
-use App\Traits\Forms\Event\Service\Partipants\WithEventServiceParticipantsPaymentsProperties;
+use App\Traits\Forms\Event\Participant\Service\WithEventParticipantServicePaymentProperties;
 use App\Utils\CurrencyUtil;
 use Livewire\Attributes\On;
 
 new class extends GenericFormComponent {
 
-    use WithEventServiceParticipantsPaymentsProperties;
+    use WithEventParticipantServicePaymentProperties;
 
     public EventParticipantServicePaymentForm $form;
 
