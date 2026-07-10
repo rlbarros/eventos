@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Livewire\Forms\church;
+namespace App\Livewire\Forms\Church;
 
 use App\Enum\FormModeEnum;
 use App\Livewire\Forms\GenericForm;
-use App\Models\church;
+use App\Models\Church;
 use App\Models\GenericModel;
 
 class ChurchForm extends GenericForm
 {
 
     public $name = '';
-    public $state_id = 12;
-    public $city_id = 53;
+    public $state_id = '';
+    public $city_id = '';
 
     public function fixedRules(): array
     {
@@ -51,8 +51,6 @@ class ChurchForm extends GenericForm
 
         $this->id = $church->id;
         $this->name = $church->name;
-
-
         $this->state_id = $church->state_id;
         $this->city_id = $church->city_id;
     }

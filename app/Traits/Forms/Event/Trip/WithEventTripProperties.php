@@ -8,6 +8,7 @@ use App\Models\EventTrip;
 trait WithEventTripProperties
 {
     public int $eventId = 0;
+    public bool $searchVisible = false;
 
     public function model()
     {

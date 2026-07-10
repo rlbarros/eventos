@@ -10,6 +10,8 @@ trait WithEventFeeProperties
     public int $eventId = 0;
     public int $eventSiteId = 0;
 
+    public bool $searchVisible = false;
+
     public function model()
     {
         return new EventFee();

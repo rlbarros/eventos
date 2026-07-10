@@ -9,6 +9,8 @@ trait WithEventBatchProperties
 {
     public int $eventId = 0;
 
+    public bool $searchVisible = false;
+
     public function model()
     {
         return new EventBatch();

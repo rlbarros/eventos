@@ -3,7 +3,6 @@
 use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Church\ChurchForm;
-use App\Models\Church;
 use App\Traits\Forms\Church\WithChurchProperties;
 use Livewire\Attributes\On;
 
@@ -11,9 +10,7 @@ new class extends GenericFormComponent {
 
     use WithChurchProperties;
 
-    public $churchId;
     public ChurchForm $form;
-    public Church $model;
 
     public function form()
     {
@@ -27,7 +24,6 @@ new class extends GenericFormComponent {
         $emptyState = empty($this->form->state_id);
         $emptyCity = empty($this->form->city_id);
         return $emptyName || $emptyState || $emptyCity;
-        return $emptyName;
     }
 
     public function beforeSave(): void {}
@@ -58,7 +54,7 @@ new class extends GenericFormComponent {
     }
 
     #[On('state-city-selected')]
-    public function handleStateCitySelected($stateId, $cityId)
+    public function handleStateCitySelected(int $stateId, int $cityId)
     {
         $this->form->state_id = $stateId;
         $this->form->city_id = $cityId;
@@ -68,7 +64,8 @@ new class extends GenericFormComponent {
     {
         $this->dispatch('state-city-externaly-selected', stateId: $this->form->state_id, cityId: $this->form->city_id);
     }
-};
+}
+
 ?>
 
 <livewire:pages::forms.generic-form :modalArray="$this->modalArray()" :submitDisabled="$this->submitDisabled">

@@ -26,6 +26,8 @@ abstract class GenericIndexComponent extends Component implements IProperties
     #[Url(history: true)]
     public string $search = '';
 
+    public bool $searchVisible = true;
+
     public function modelName(): string
     {
         return $this->model()::modelName();
@@ -53,7 +55,7 @@ abstract class GenericIndexComponent extends Component implements IProperties
             $query->where($column, $operator, $value);
         }
 
-        if (!empty($this->search)) {
+        if (!empty($this->search) && $this->searchVisible) {
             if (empty($this->whereHasTable())) {
                 $query->whereRaw('LOWER(' . $this->columnFilter() . ') LIKE \'%' . strtolower($this->search) . '%\'');
             } else {
