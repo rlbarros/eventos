@@ -12,6 +12,7 @@ class Church extends GenericModel
     protected $table = 'churches';
 
     protected $fillable = [
+        'administration_system_id',
         'name',
         'state_id',
         'city_id',

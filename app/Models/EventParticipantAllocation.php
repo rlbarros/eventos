@@ -9,8 +9,7 @@ class EventParticipantAllocation extends GenericModel
 {
     protected $table = 'events_participants_allocations';
 
-    public $timestamps = false;
-
+    // timestamps habilitados para a sincronização incremental (?desde=)
     protected $fillable = [
         'event_id',
         'person_id',

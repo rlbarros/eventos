@@ -13,6 +13,7 @@ class Event extends GenericModel
 
     protected $fillable = [
         'name',
+        'scope',
         'start_date',
         'end_date',
         'church_id',
