@@ -29,7 +29,7 @@ new class extends \Livewire\Component
             if ($paymetnsOfAllocation->count() > 0) {
                 foreach ($paymetnsOfAllocation as $payment) {
                     $this->totalPaidFees += $payment->amount;
-                    if (!$addedFee) {
+                    if (!$addedFee && $eventSiteRoomType) {
                         $eventFeeForRoomType = $eventFees->where('event_site_room_type_id', $eventSiteRoomType->id)->sortByDesc('batch')->first();
                         if ($eventFeeForRoomType) {
                             $this->totalFees += $eventFeeForRoomType->fee;
@@ -38,7 +38,7 @@ new class extends \Livewire\Component
                     }
                 }
                 $this->totalPaidFees += $paymetnsOfAllocation->sum('amount');
-            } else {
+            } elseif ($eventSiteRoomType) {
                 $eventFeesForRoomType = $eventFees->where('event_site_room_type_id', $eventSiteRoomType->id);
                 $maxBatch = 0;
                 foreach ($eventFeesForRoomType as $eventFee) {

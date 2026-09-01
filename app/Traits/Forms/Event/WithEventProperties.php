@@ -36,4 +36,9 @@ trait WithEventProperties
     {
         return [];
     }
+
+    public function customQueryScope($query)
+    {
+        return $query->visibleTo(auth()->user());
+    }
 }

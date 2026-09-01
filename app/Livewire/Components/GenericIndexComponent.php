@@ -43,6 +43,11 @@ abstract class GenericIndexComponent extends Component implements IProperties
         return '';
     }
 
+    public function customQueryScope($query)
+    {
+        return $query;
+    }
+
     protected $listeners = ['search-updated' => '$refresh'];
 
 
@@ -50,6 +55,7 @@ abstract class GenericIndexComponent extends Component implements IProperties
     public function index()
     {
         $query = $this->model()->query();
+        $query = $this->customQueryScope($query);
         foreach ($this->customWhereIndex() as $whereArray) {
             [$column, $operator, $value] = $whereArray;
             $query->where($column, $operator, $value);

@@ -17,7 +17,7 @@ new class extends Component
 
     public function mount()
     {
-        $this->events = Event::all()->toArray();
+        $this->events = Event::visibleTo(auth()->user())->get()->toArray();
         $this->selectedEvent = 0;
         if (count($this->events) > 0) {
             $this->selectedEvent = $this->events[0]['id'];
@@ -36,22 +36,23 @@ new class extends Component
         $eventSite = $event->event_site;
         $this->eventSiteName = $eventSite->name ?? '';
     }
+
+    public function updatedSelectedEvent(): void
+    {
+        $this->eventSiteName();
+    }
 };
 ?>
 
 <div class="w-full">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl"
-        x-data="{ 
-        selectedEvent: @entangle('selectedEvent'), 
-        events: @entangle('events')
-        }">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <div class="flex items-center justify-between gap-4">
             <flux:callout inline style="width:100%;">
                 <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start" style="font-size: 1rem; font-weight:bold;">
-                    <flux:select x-model="selectedEvent" placeholder="Selecione um evento..." style="width:500px;">
-                        <template x-for="event in events" :key="event.id">
-                            <option :value="event.id" x-text="event.name"></option>
-                        </template>
+                    <flux:select wire:model.live="selectedEvent" placeholder="Selecione um evento..." style="width:500px;">
+                        @foreach ($events as $event)
+                            <option value="{{ $event['id'] }}">{{ $event['name'] }}</option>
+                        @endforeach
                     </flux:select>
 
                 </flux:callout.heading>
@@ -68,15 +69,15 @@ new class extends Component
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700" style="max-height:260px">
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-                <livewire:pages::dashboards.participants-card :eventId="$selectedEvent" />
+                <livewire:pages::dashboards.participants-card :eventId="$selectedEvent" :key="'participants-card-'.$selectedEvent" />
             </div>
             <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700" style="max-height:260px">
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-                <livewire:pages::dashboards.fees-card :eventId="$selectedEvent" />
+                <livewire:pages::dashboards.fees-card :eventId="$selectedEvent" :key="'fees-card-'.$selectedEvent" />
             </div>
             <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700" style="max-height:260px">
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-                <livewire:pages::dashboards.services-card :eventId="$selectedEvent" />
+                <livewire:pages::dashboards.services-card :eventId="$selectedEvent" :key="'services-card-'.$selectedEvent" />
             </div>
         </div>
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
@@ -85,19 +86,19 @@ new class extends Component
                     <x-slot:label>
                         alocações
                     </x-slot:label>
-                    <livewire:pages::dashboards.allocations-index :eventId="$selectedEvent" class="pt=2" />
+                    <livewire:pages::dashboards.allocations-index :eventId="$selectedEvent" :key="'allocations-index-'.$selectedEvent" class="pt=2" />
                 </x-mary-tab>
                 <x-mary-tab name="services-tab" icon="o-building-office">
                     <x-slot:label>
                         serviços
                     </x-slot:label>
-                    <livewire:pages::dashboards.services-index :eventId="$selectedEvent" class="pt=2" />
+                    <livewire:pages::dashboards.services-index :eventId="$selectedEvent" :key="'services-index-'.$selectedEvent" class="pt=2" />
                 </x-mary-tab>
                 <x-mary-tab name="trips-tab" icon="o-building-office">
                     <x-slot:label>
                         viagens
                     </x-slot:label>
-                    <livewire:pages::dashboards.trips-index :eventId="$selectedEvent" class="pt=2" />
+                    <livewire:pages::dashboards.trips-index :eventId="$selectedEvent" :key="'trips-index-'.$selectedEvent" class="pt=2" />
             </x-mary-tabs>
 
         </div>

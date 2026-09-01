@@ -18,6 +18,7 @@ new class extends Component {
     public string $eventSiteName;
     public string $eventSiteLocation;
     public string $eventDates;
+    public bool $isOwner;
 
     #[Url]
     public string $selectedTab = 'participants-tab';
@@ -25,6 +26,10 @@ new class extends Component {
     public function mount()
     {
         $event = Event::findOrFail($this->eventId);
+
+        abort_unless($event->isAllowedUser(auth()->user()), 403);
+
+        $this->isOwner = $event->isOwner(auth()->user());
 
         $this->eventName = $event->name;
         $this->eventSiteId = $event->event_site->id;
@@ -186,6 +191,23 @@ new class extends Component {
                 @endif
             </div>
         </x-mary-tab>
+
+        <!-- USUÁRIOS PERMITIDOS -->
+        @if ($this->isOwner)
+        <x-mary-tab name="allowed-users-tab" icon="o-user-group">
+            <x-slot:label>Usuários Permitidos</x-slot:label>
+
+            <div wire:loading wire:target="selectedTab" class="w-full p-4">
+                <flux:progress indeterminate />
+            </div>
+
+            <div wire:loading.remove wire:target="selectedTab">
+                @if($this->selectedTab === 'allowed-users-tab')
+                <livewire:pages::events.allowed-users.allowed-users-index :eventId="$this->eventId" />
+                @endif
+            </div>
+        </x-mary-tab>
+        @endif
 
     </x-mary-tabs>
 </div>
