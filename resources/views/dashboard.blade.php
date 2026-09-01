@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Event;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -15,12 +16,24 @@ new class extends Component
     #[Url]
     public string $selectedTab = 'allocations-tab';
 
-    public function mount()
+    public function mount(): void
     {
-        $this->events = Event::visibleTo(auth()->user())->get()->toArray();
-        $this->selectedEvent = 0;
+        /*
+         * var \App\Models\User|null $user
+         */
+        $user =  Auth::user();
+
+        if (! $user instanceof \App\Models\User) {
+            $this->events = [];
+            $this->selectedEvent = '';
+            return;
+        }
+
+        $this->events = Event::visibleTo($user)->get()->toArray();
+        $this->selectedEvent = '';
+
         if (count($this->events) > 0) {
-            $this->selectedEvent = $this->events[0]['id'];
+            $this->selectedEvent = (string) $this->events[0]['id'];
             $this->eventSiteName();
         }
     }
@@ -51,7 +64,7 @@ new class extends Component
                 <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start" style="font-size: 1rem; font-weight:bold;">
                     <flux:select wire:model.live="selectedEvent" placeholder="Selecione um evento..." style="width:500px;">
                         @foreach ($events as $event)
-                            <option value="{{ $event['id'] }}">{{ $event['name'] }}</option>
+                        <option value="{{ $event['id'] }}">{{ $event['name'] }}</option>
                         @endforeach
                     </flux:select>
 

@@ -6,6 +6,7 @@ use App\Traits\WithNameDescriptor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Auth;
 
 class Event extends GenericModel
 {
@@ -27,8 +28,8 @@ class Event extends GenericModel
     protected static function booted(): void
     {
         static::creating(function (Event $event) {
-            if (empty($event->owner_id) && auth()->check()) {
-                $event->owner_id = auth()->id();
+            if (empty($event->owner_id) && Auth::check()) {
+                $event->owner_id = Auth::id();
             }
         });
     }
@@ -72,11 +73,15 @@ class Event extends GenericModel
         return $this->isOwner($user) || $this->allowedUsers()->whereKey($user->id)->exists();
     }
 
-    public function scopeVisibleTo(Builder $query, User $user): Builder
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
+        if (! $user) {
+            return $query->whereRaw('0 = 1');
+        }
+
         return $query->where(function (Builder $query) use ($user) {
             $query->where('owner_id', $user->id)
-                ->orWhereHas('allowedUsers', fn (Builder $query) => $query->whereKey($user->id));
+                ->orWhereHas('allowedUsers', fn(Builder $query) => $query->whereKey($user->id));
         });
     }
 
