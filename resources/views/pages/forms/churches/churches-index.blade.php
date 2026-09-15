@@ -32,6 +32,7 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
 
 <livewire:pages::forms.generic-index :indexArray="$this->indexArray()">
     <livewire:pages::forms.churches.church-form />
+    <livewire:pages::forms.churches.church-list />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>
@@ -74,5 +75,3 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
         </flux:table.rows>
     </flux:table>
 </livewire:pages::forms.generic-index>
-
-<livewire:pages::forms.churches.church-list />
