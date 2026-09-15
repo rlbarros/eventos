@@ -51,6 +51,8 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
                 <flux:table.cell>{{ $church->state->name }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
+                        <flux:button wire:click="$dispatch('forms.churchs.church-list', { id: {{ $church->id }} })" icon="list-bullet" style="cursor: pointer;"
+                            size="sm" />
                         <flux:button wire:click="$dispatch('forms.churchs.church-view', { id: {{ $church->id }} })" icon="document-magnifying-glass" style="cursor: pointer;"
                             size="sm" />
                         <flux:button wire:click="$dispatch('forms.churchs.church-edit', { id: {{ $church->id }} })" icon="pencil-square" style="cursor: pointer;"
@@ -72,3 +74,5 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
         </flux:table.rows>
     </flux:table>
 </livewire:pages::forms.generic-index>
+
+<livewire:pages::forms.churches.church-list />
