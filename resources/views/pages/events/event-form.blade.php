@@ -106,6 +106,16 @@ new class extends GenericFormComponent {
     </flux:field>
 
     <flux:field>
+        <flux:label>Abrangência *</flux:label>
+        <flux:select wire:model="form.scope" :disabled="$this->isReadonly()">
+            <flux:select.option value="nacional">Nacional</flux:select.option>
+            <flux:select.option value="superintendencia">Superintendência</flux:select.option>
+            <flux:select.option value="igreja">Igreja</flux:select.option>
+        </flux:select>
+        <flux:error name="form.scope" />
+    </flux:field>
+
+    <flux:field>
         <flux:label>Idade Infantil Máxima</flux:label>
         <flux:input type="number" placeholder="insira a idade infantil máxima" wire:model="form.children_age" :readonly="$this->isReadonly()" />
         <flux:error name="form.children_age" />
