@@ -12,12 +12,36 @@ new class extends GenericIndexComponent
 
     public array $nonList;
 
+    public int $churchId = 0;
+
     public function mount()
     {
         $this->nonList = EventParticipantAllocation::where('event_id', $this->eventId)
             ->pluck('person_id')
             ->values()
             ->toArray();
+    }
+
+    public function customQueryScope($query)
+    {
+        if (!empty($this->churchId)) {
+            $query->whereHas('person', function ($personQuery) {
+                $personQuery->where('church_id', $this->churchId);
+            });
+        }
+        return $query;
+    }
+
+    #[On('church-selected')]
+    public function handleChurchSelected(int $churchId)
+    {
+        $this->churchId = $churchId;
+    }
+
+    public function limparFiltroIgreja()
+    {
+        $this->churchId = 0;
+        $this->dispatch('church-injected', churchId: 0);
     }
 
 
@@ -42,6 +66,13 @@ new class extends GenericIndexComponent
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
     <livewire:pages::events.participants.participant-form :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" :nonList="$this->nonList" />
+
+    <div class="flex items-end gap-3 mb-4">
+        <livewire:autocompletes::churches :readonly="false" :churchId="$this->churchId" class="w-full max-w-sm" />
+        @if ($churchId)
+        <flux:button wire:click="limparFiltroIgreja" icon="x-mark" size="sm">Limpar</flux:button>
+        @endif
+    </div>
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>

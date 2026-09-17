@@ -62,11 +62,15 @@ abstract class GenericIndexComponent extends Component implements IProperties
         }
 
         if (!empty($this->search) && $this->searchVisible) {
+            // columnFilter() é fixo no código (nunca vem do usuário) — só o valor da busca
+            // precisa de bind; por isso o "?" em vez de concatenar strtolower($this->search)
+            // direto na string crua (era SQL injection: LOWER(...) LIKE '%<busca>%').
+            $termo = '%' . strtolower($this->search) . '%';
             if (empty($this->whereHasTable())) {
-                $query->whereRaw('LOWER(' . $this->columnFilter() . ') LIKE \'%' . strtolower($this->search) . '%\'');
+                $query->whereRaw('LOWER(' . $this->columnFilter() . ') LIKE ?', [$termo]);
             } else {
-                $query->whereHas($this->whereHasTable(), function ($whereHasQuery) {
-                    $whereHasQuery->whereRaw('LOWER(' . $this->columnFilter() . ') LIKE \'%' . strtolower($this->search) . '%\'');
+                $query->whereHas($this->whereHasTable(), function ($whereHasQuery) use ($termo) {
+                    $whereHasQuery->whereRaw('LOWER(' . $this->columnFilter() . ') LIKE ?', [$termo]);
                 });
             }
         }
