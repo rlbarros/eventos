@@ -52,9 +52,9 @@ new class extends Component {
             <flux:subheading size="lg" class="mb-4">{{ $subHeader }}</flux:subheading>
         </div>
 
-        @isset($extraFilters)
-        {{ $extraFilters }}
-        @endisset
+        @if($slots->has('extraFilters'))
+        {{ $slots->get('extraFilters') }}
+        @endif
 
         @if($this->searchVisihle)
         <div class="w-50">
