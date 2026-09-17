@@ -52,6 +52,10 @@ new class extends Component {
             <flux:subheading size="lg" class="mb-4">{{ $subHeader }}</flux:subheading>
         </div>
 
+        @isset($extraFilters)
+        {{ $extraFilters }}
+        @endisset
+
         @if($this->searchVisihle)
         <div class="w-50">
             <flux:input wire:model.live.debounce.300ms="search" wire:island="list" type="text" icon="magnifying-glass" placeholder="filtre aqui" />

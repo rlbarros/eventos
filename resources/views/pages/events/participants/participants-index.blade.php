@@ -1,9 +1,11 @@
 <?php
 
 use App\Livewire\Components\GenericIndexComponent;
+use App\Models\Church;
 use App\Models\EventParticipantAllocation;
 use App\Traits\Forms\Event\Participant\WithEventParticipantProperties;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 
 
 new class extends GenericIndexComponent
@@ -12,6 +14,9 @@ new class extends GenericIndexComponent
 
     public array $nonList;
 
+    public \Illuminate\Support\Collection $churches;
+
+    #[Url(history: true)]
     public int $churchId = 0;
 
     public function mount()
@@ -20,6 +25,8 @@ new class extends GenericIndexComponent
             ->pluck('person_id')
             ->values()
             ->toArray();
+
+        $this->churches = Church::orderBy('name')->get(['id', 'name']);
     }
 
     public function customQueryScope($query)
@@ -32,16 +39,9 @@ new class extends GenericIndexComponent
         return $query;
     }
 
-    #[On('church-selected')]
-    public function handleChurchSelected(int $churchId)
+    public function updatedChurchId()
     {
-        $this->churchId = $churchId;
-    }
-
-    public function limparFiltroIgreja()
-    {
-        $this->churchId = 0;
-        $this->dispatch('church-injected', churchId: 0);
+        $this->resetPage();
     }
 
 
@@ -65,14 +65,18 @@ new class extends GenericIndexComponent
 
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
-    <livewire:pages::events.participants.participant-form :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" :nonList="$this->nonList" />
+    <x-slot:extraFilters>
+        <div class="w-64">
+            <flux:select wire:model.live="churchId" wire:island="list">
+                <flux:select.option value="0">Todas as igrejas</flux:select.option>
+                @foreach ($churches as $church)
+                <flux:select.option value="{{ $church->id }}">{{ $church->name }}</flux:select.option>
+                @endforeach
+            </flux:select>
+        </div>
+    </x-slot:extraFilters>
 
-    <div class="flex items-end gap-3 mb-4">
-        <livewire:autocompletes::churches :readonly="false" :churchId="$this->churchId" class="w-full max-w-sm" />
-        @if ($churchId)
-        <flux:button wire:click="limparFiltroIgreja" icon="x-mark" size="sm">Limpar</flux:button>
-        @endif
-    </div>
+    <livewire:pages::events.participants.participant-form :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" :nonList="$this->nonList" />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
         <flux:table.columns>
