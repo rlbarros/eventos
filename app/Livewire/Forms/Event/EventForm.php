@@ -27,7 +27,7 @@ class EventForm extends GenericForm
             'contact_phone' => 'nullable|string|max:20',
             'scope' => 'required|in:nacional,superintendencia,igreja',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'church_id' => 'required|integer|exists:churches,id',
             'event_site_id' => 'required|integer|exists:event_sites,id',
             'children_age' => 'nullable|integer|min:0|max:17',
