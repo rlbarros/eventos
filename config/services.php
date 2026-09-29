@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // usuário do worker data-sync: único que grava as réplicas da administração (ADR-008)
+    'data_sync' => [
+        'email' => env('DATA_SYNC_EMAIL'),
+    ],
+
 ];

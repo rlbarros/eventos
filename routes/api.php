@@ -15,4 +15,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sync', [SyncController::class, 'deltas']);
     Route::get('/events-sync', [SyncController::class, 'events']);
     Route::get('/participants-sync', [SyncController::class, 'participants']);
+
+    // sincronização administração -> eventos (esta API é o destino/dest; ADR-008)
+    Route::middleware('data-sync')->group(function () {
+        Route::post('/anfitrioes-sync', [SyncController::class, 'receiveHost']);
+        Route::post('/igrejas-sync', [SyncController::class, 'receiveChurch']);
+    });
 });

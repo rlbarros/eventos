@@ -3,6 +3,7 @@
 use App\Enum\FormModeEnum;
 use App\Livewire\Components\GenericFormComponent;
 use App\Livewire\Forms\Church\ChurchForm;
+use App\Models\AdministrationChurch;
 use App\Traits\Forms\Church\WithChurchProperties;
 use Livewire\Attributes\On;
 
@@ -26,7 +27,21 @@ new class extends GenericFormComponent {
         return $emptyName || $emptyState || $emptyCity;
     }
 
-    public function beforeSave(): void {}
+    public function beforeSave(): void
+    {
+        if ($this->form->administration_system_id === '') {
+            $this->form->administration_system_id = null;
+        }
+    }
+
+    /** Igrejas da administração para o vínculo (ativas, e a já vinculada mesmo se inativa). */
+    public function administrationChurches()
+    {
+        return AdministrationChurch::query()
+            ->where(fn ($q) => $q->where('active', true)->orWhere('id', $this->form->administration_system_id ?: 0))
+            ->orderBy('superintendence_name')->orderBy('name')
+            ->get();
+    }
 
     public function modalName(): string
     {
@@ -77,4 +92,16 @@ new class extends GenericFormComponent {
     </flux:field>
 
     <livewire:autocompletes::states-cities :readonly="$this->isReadonly()" class="space-x-2" />
+
+    <flux:field>
+        <flux:label>Igreja na administração</flux:label>
+        <flux:select wire:model="form.administration_system_id" :disabled="$this->isReadonly() || ! $this->form->canEditAdministrationLink()">
+            <flux:select.option value="">Sem vínculo</flux:select.option>
+            @foreach ($this->administrationChurches() as $administrationChurch)
+                <flux:select.option :value="$administrationChurch->id">{{ $administrationChurch->label() }}</flux:select.option>
+            @endforeach
+        </flux:select>
+        <flux:description>É por este vínculo que os anfitriões de igreja e de superintendência enxergam os eventos desta igreja.</flux:description>
+        <flux:error name="form.administration_system_id" />
+    </flux:field>
 </livewire:pages::forms.generic-form>
