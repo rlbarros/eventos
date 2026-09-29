@@ -103,3 +103,134 @@ select:focus[data-flux-control] {
   cursor: pointer !important;
 }
 
+
+/* =========================================================================
+ * Celular (abaixo de 768px)
+ * ========================================================================= */
+
+/*
+ * Tabelas em cartões: cada linha vira um cartão e cada célula mostra o nome
+ * da coluna (data-label, preenchido em resources/js/app.js). Assim nada fica
+ * cortado à direita e as ações ficam sempre à vista, no rodapé do cartão.
+ * Para manter uma tabela como tabela, use class="keep-table" no flux:table.
+ */
+@media (max-width: 767.98px) {
+  table[data-flux-table]:not(.keep-table) {
+    display: block;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  table[data-flux-table]:not(.keep-table) thead {
+    display: none;
+  }
+
+  table[data-flux-table]:not(.keep-table) tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  table[data-flux-table]:not(.keep-table) tr {
+    display: block;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid var(--color-zinc-200);
+    border-radius: 0.75rem;
+  }
+
+  .dark table[data-flux-table]:not(.keep-table) tr {
+    border-color: rgb(255 255 255 / 0.15);
+  }
+
+  table[data-flux-table]:not(.keep-table) td {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.375rem 0 !important;
+    border: 0 !important;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  table[data-flux-table]:not(.keep-table) td[data-label]:not([data-label=""])::before {
+    content: attr(data-label);
+    flex: 0 0 6.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-zinc-500);
+  }
+
+  /* A coluna "#" vira só um número discreto no topo do cartão. */
+  table[data-flux-table]:not(.keep-table) td[data-label="#"] {
+    font-size: 0.75rem;
+    padding-bottom: 0 !important;
+  }
+
+  table[data-flux-table]:not(.keep-table) td[data-label="#"]::before {
+    content: "#" !important;
+    flex: 0 0 auto !important;
+    margin-right: -0.625rem;
+  }
+
+  table[data-flux-table]:not(.keep-table) td[data-cell-full] {
+    display: block;
+  }
+
+  table[data-flux-table]:not(.keep-table) td[data-cell-actions] {
+    display: block;
+    margin-top: 0.25rem;
+    padding-top: 0.625rem !important;
+    border-top: 1px solid var(--color-zinc-100) !important;
+  }
+
+  .dark table[data-flux-table]:not(.keep-table) td[data-cell-actions] {
+    border-top-color: rgb(255 255 255 / 0.1) !important;
+  }
+
+  table[data-flux-table]:not(.keep-table) td[data-cell-actions]::before {
+    display: none;
+  }
+
+  table[data-flux-table]:not(.keep-table) td[data-cell-actions] > div {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* Alvos de toque de pelo menos 40px nos botões pequenos das listas. */
+  table[data-flux-table] [data-flux-button] {
+    min-height: 2.5rem;
+    min-width: 2.5rem;
+  }
+
+  /* Abas (maryUI) roláveis na horizontal em vez de cortadas. */
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs > .tab {
+    flex-shrink: 0;
+  }
+
+  /* Modais ocupam a largura da tela, com rolagem própria. */
+  [data-flux-modal] > dialog:not([data-flux-flyout]) {
+    width: calc(100vw - 1rem);
+    min-width: 0;
+    padding: 1.25rem 1rem;
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 1rem);
+    overflow-y: auto;
+  }
+
+  /* Paginação: evita que o "Showing x to y" empurre os botões para fora. */
+  [data-flux-pagination] {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}

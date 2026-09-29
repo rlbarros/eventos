@@ -60,17 +60,17 @@ new class extends Component
 <div class="w-full">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <div class="flex items-center justify-between gap-4">
-            <flux:callout inline style="width:100%;">
+            <flux:callout inline class="w-full max-md:flex-wrap">
                 <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start" style="font-size: 1rem; font-weight:bold;">
-                    <flux:select wire:model.live="selectedEvent" placeholder="Selecione um evento..." style="width:500px;">
+                    <flux:select wire:model.live="selectedEvent" placeholder="Selecione um evento..." class="w-full md:w-[500px]">
                         @foreach ($events as $event)
                         <option value="{{ $event['id'] }}">{{ $event['name'] }}</option>
                         @endforeach
                     </flux:select>
 
                 </flux:callout.heading>
-                <x-slot name="controls" class="mt-2">
-                    <div class="flex items-center flex-row gap-4">
+                <x-slot name="controls" class="mt-2 max-md:w-full max-md:pb-2">
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
                         <flux:heading size="lg">local de evento</flux:heading>
                         <flux:field>
                             <flux:input wire:model="eventSiteName" />
@@ -80,15 +80,15 @@ new class extends Component
             </flux:callout>
         </div>
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700" style="max-height:260px">
+            <div class="relative md:aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 md:max-h-[260px]">
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
                 <livewire:pages::dashboards.participants-card :eventId="$selectedEvent" :key="'participants-card-'.$selectedEvent" />
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700" style="max-height:260px">
+            <div class="relative md:aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 md:max-h-[260px]">
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
                 <livewire:pages::dashboards.fees-card :eventId="$selectedEvent" :key="'fees-card-'.$selectedEvent" />
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700" style="max-height:260px">
+            <div class="relative md:aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 md:max-h-[260px]">
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
                 <livewire:pages::dashboards.services-card :eventId="$selectedEvent" :key="'services-card-'.$selectedEvent" />
             </div>

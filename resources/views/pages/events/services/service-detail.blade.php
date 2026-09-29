@@ -73,7 +73,7 @@ new class extends Component {
 ?>
 
 <div class="w-full mx-auto space-y-4">
-    <div class="flex items-start max-md:flex-col">
+    <div class="flex items-start max-md:flex-col max-md:items-stretch">
         <div class="flex-1">
             <flux:callout inline class="mb-4">
                 <flux:callout.heading>
@@ -85,9 +85,9 @@ new class extends Component {
                 </flux:callout.heading>
             </flux:callout>
 
-            <flux:callout inline class="mb-4" style="max-height: 50px;">
+            <flux:callout inline class="mb-4">
                 <flux:callout.heading>
-                    <div class="flex flex-row" style="column-gap: 1rem; padding-bottom: 0px!important;padding-top: 10px!important;">
+                    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 pt-2">
                         <flux:heading size="sm" style="font-size:1.1rem;">{{ $this->service->descriptor()  }}</flux:heading>
                     </div>
                 </flux:callout.heading>

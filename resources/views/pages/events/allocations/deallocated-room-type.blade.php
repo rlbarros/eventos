@@ -33,7 +33,7 @@ new class extends Component
     <x-slot:content>
         @foreach($churches as $church)
         @if($loop->iteration > 1)
-        <flux:separator class="mt-4 mb-4 ml-0 mr-0" style="width: 395px!important;" />
+        <flux:separator class="mt-4 mb-4 ml-0 mr-0" style="width: min(395px, 100%)!important;" />
         @endif
         <livewire:pages::events.allocations.deallocated-church :church="$church" />
         @endforeach

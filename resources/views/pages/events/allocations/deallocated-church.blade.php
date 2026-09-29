@@ -37,7 +37,7 @@ new class extends Component
         <flux:checkbox wire:key="{{ $participant['id'] }}" value="{{ (string) $participant['id'] }}" label="{{$participant['name']}}" />
 
         @if(!$loop->last)
-        <flux:separator class="my-2" variant="subtle" style="width: 365px!important;" />
+        <flux:separator class="my-2" variant="subtle" style="width: min(365px, 100%)!important;" />
         @endif
         @endforeach
     </flux:checkbox.group>

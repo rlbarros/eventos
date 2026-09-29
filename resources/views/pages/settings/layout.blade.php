@@ -1,4 +1,4 @@
-<div class="flex items-start max-md:flex-col">
+<div class="flex items-start max-md:flex-col max-md:items-stretch">
     <style>
         @media (width>=64rem) {
             .md\:w-55 {
