@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminSyncController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SyncController;
 use Illuminate\Http\Request;
@@ -20,5 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('data-sync')->group(function () {
         Route::post('/anfitrioes-sync', [SyncController::class, 'receiveHost']);
         Route::post('/igrejas-sync', [SyncController::class, 'receiveChurch']);
+        // participações incluídas/removidas à mão na administração
+        Route::post('/participants-admin-sync', [AdminSyncController::class, 'participants']);
     });
 });
