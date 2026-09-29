@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AdminSyncController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\SuperappSyncController;
 use App\Http\Controllers\Api\SyncController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,5 +24,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/igrejas-sync', [SyncController::class, 'receiveChurch']);
         // participações incluídas/removidas à mão na administração
         Route::post('/participants-admin-sync', [AdminSyncController::class, 'participants']);
+
+        // eventos ⇄ superapp: lotes, preços, inscrições e pagamentos para o app; inscrição feita lá
+        Route::prefix('superapp')->group(function () {
+            Route::get('/eventos', [SuperappSyncController::class, 'events']);
+            Route::get('/lotes', [SuperappSyncController::class, 'batches']);
+            Route::get('/precos', [SuperappSyncController::class, 'fees']);
+            Route::get('/inscricoes', [SuperappSyncController::class, 'registrations']);
+            Route::get('/pagamentos', [SuperappSyncController::class, 'payments']);
+            Route::post('/inscricoes', [SuperappSyncController::class, 'receiveRegistration']);
+        });
     });
 });

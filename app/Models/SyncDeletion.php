@@ -5,13 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Evento ou participação excluídos aqui, a caminho da administração (ver a migration
+ * Evento, participação, lote, preço ou pagamento excluídos aqui, a caminho da administração ou do superapp (ver a migration
  * 2026_09_29_120000). Gravado pelos próprios modelos, no evento `deleted`.
  */
 class SyncDeletion extends Model
 {
     public const EVENTS = 'events';
     public const PARTICIPANTS = 'participants';
+    // só para o superapp (lotes, preços e pagamentos não vão à administração)
+    public const BATCHES = 'batches';
+    public const FEES = 'fees';
+    public const PAYMENTS = 'payments';
 
     protected $table = 'sync_deletions';
 

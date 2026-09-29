@@ -40,4 +40,9 @@ return [
         'email' => env('DATA_SYNC_EMAIL'),
     ],
 
+    // HMAC do CPF enviado ao superapp (mesma chave da administração e do superapp-api)
+    'superapp' => [
+        'cpf_hmac_chave' => env('SUPERAPP_CPF_HMAC_CHAVE'),
+    ],
+
 ];

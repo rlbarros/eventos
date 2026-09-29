@@ -17,6 +17,19 @@ class EventParticipantPayment extends GenericModel
         'amount',
     ];
 
+    protected static function booted(): void
+    {
+        // a exclusão chega ao superapp como active = false
+        static::deleted(function (EventParticipantPayment $payment) {
+            SyncDeletion::create([
+                'model' => SyncDeletion::PAYMENTS,
+                'record_id' => $payment->id,
+                'event_id' => $payment->event_id,
+                'deleted_at' => now(),
+            ]);
+        });
+    }
+
     public static function modelName(): string
     {
         return  "Pagamentos do Participante";
