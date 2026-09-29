@@ -103,7 +103,3 @@ select:focus[data-flux-control] {
   cursor: pointer !important;
 }
 
-.hide-only-child:has(> :only-child),
-.hide-only-child:empty {
-  display: none;
-}
