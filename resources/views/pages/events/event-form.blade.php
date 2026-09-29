@@ -94,6 +94,18 @@ new class extends GenericFormComponent {
 
 
     <flux:field>
+        <flux:label>Contato principal (quem recebe as inscrições)</flux:label>
+        <flux:input placeholder="nome do responsável pelas inscrições" wire:model="form.contact_name" :readonly="$this->isReadonly()" />
+        <flux:error name="form.contact_name" />
+    </flux:field>
+
+    <flux:field>
+        <flux:label>Telefone do contato principal</flux:label>
+        <flux:input placeholder="(00) 00000-0000" mask="(99) 99999-9999" wire:model="form.contact_phone" :readonly="$this->isReadonly()" />
+        <flux:error name="form.contact_phone" />
+    </flux:field>
+
+    <flux:field>
         <flux:label>Data de Início *</flux:label>
         <flux:input type="date" wire:model="form.start_date" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.start_date" />

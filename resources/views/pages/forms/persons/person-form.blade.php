@@ -116,5 +116,11 @@ new class extends GenericFormComponent {
         <flux:error name="form.phone" />
     </flux:field>
 
+    <flux:field>
+        <flux:label>E-mail</flux:label>
+        <flux:input type="email" placeholder="nome@exemplo.com" wire:model="form.email" :readonly="$this->isReadonly()" />
+        <flux:error name="form.email" />
+    </flux:field>
+
 
 </livewire:pages::forms.generic-form>

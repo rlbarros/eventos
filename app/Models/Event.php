@@ -16,6 +16,8 @@ class Event extends GenericModel
 
     protected $fillable = [
         'name',
+        'contact_name',
+        'contact_phone',
         'scope',
         'start_date',
         'end_date',
