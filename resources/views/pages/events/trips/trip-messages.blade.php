@@ -16,10 +16,6 @@ new class extends Component {
 
         $recipients = [];
 
-        if (!empty($trip->transporter_phone) || !empty($trip->transporter_name)) {
-            $recipients[] = $this->recipient('Transportador', $trip->transporter_name, $trip->transporter_phone, TripMessages::forTransporter($trip));
-        }
-
         $recipients[] = $this->recipient('Motorista', $trip->event_driver->name, $trip->event_driver->phone, TripMessages::forDriver($trip));
 
         foreach ($trip->event_trip_participants as $tripParticipant) {

@@ -14,8 +14,6 @@ class EventTrip extends GenericModel
     protected $fillable = [
         'event_id',
         'event_driver_id',
-        'transporter_name',
-        'transporter_phone',
         'from',
         'start_date',
         'to',

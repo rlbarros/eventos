@@ -11,18 +11,6 @@ use App\Utils\DateUtil;
  */
 class TripMessages
 {
-    public static function forTransporter(EventTrip $trip): string
-    {
-        $driver = $trip->event_driver;
-
-        return "Olá" . self::greetingName($trip->transporter_name) . "! Segue a viagem do evento {$trip->event->name}:\n"
-            . self::route($trip)
-            . "Motorista: {$driver->name} ({$driver->phone})\n"
-            . "Veículo: {$driver->vehicle}\n"
-            . "Passageiros: {$trip->event_trip_participants->count()}\n"
-            . self::contactLine($trip);
-    }
-
     public static function forDriver(EventTrip $trip): string
     {
         $passengers = $trip->event_trip_participants
@@ -69,10 +57,5 @@ class TripMessages
         }
 
         return "Dúvidas: " . trim("{$event->contact_name} {$event->contact_phone}") . "\n";
-    }
-
-    private static function greetingName(?string $name): string
-    {
-        return empty($name) ? '' : ", {$name}";
     }
 }
