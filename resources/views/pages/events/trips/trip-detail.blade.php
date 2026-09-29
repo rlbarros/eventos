@@ -50,4 +50,8 @@ new class extends Component {
         :eventId="$this->eventId"
         :tripId="$this->tripId" />
 
+    <flux:separator variant="subtle" />
+
+    <livewire:pages::events.trips.trip-messages :tripId="$this->tripId" />
+
 </div>
