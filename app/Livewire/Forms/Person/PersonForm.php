@@ -16,6 +16,7 @@ class PersonForm extends GenericForm
     public string $name = '';
     public string $birth_date = '';
     public string | null $phone = '';
+    public string | null $email = '';
     public array | null $avatar = null;
     public int | null $father_id = null;
     public int | null $mother_id = null;
@@ -30,6 +31,7 @@ class PersonForm extends GenericForm
             'function' => 'required|in:Membro,Pastor,Convidado,Obreiro,Diácono,Pregador de Conferência,Presbítero,Evangelista',
             'birth_date' => 'required|date',
             'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:200',
             'avatar' => 'nullable|image|max:2048',
             'father_id' => 'nullable|integer|exists:persons,id',
             'mother_id' => 'nullable|integer|exists:persons,id',
@@ -71,6 +73,7 @@ class PersonForm extends GenericForm
         $this->name = $person->name;
         $this->birth_date = $person->birth_date;
         $this->phone = $person->phone;
+        $this->email = $person->email;
         $this->avatar = $person->avatar;
         $this->father_id = $person->father_id;
         $this->mother_id = $person->mother_id;

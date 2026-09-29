@@ -18,6 +18,7 @@ class Person extends GenericModel
         'name',
         'birth_date',
         'phone',
+        'email',
         'avatar',
         'father_id',
         'mother_id',
