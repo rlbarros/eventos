@@ -1,0 +1,48 @@
+<?php
+
+return [
+    'after' => 'O campo :attribute deve ser uma data posterior a :date.',
+    'after_or_equal' => 'O campo :attribute deve ser uma data igual ou posterior a :date.',
+    'before' => 'O campo :attribute deve ser uma data anterior a :date.',
+    'before_or_equal' => 'O campo :attribute deve ser uma data igual ou anterior a :date.',
+    'date' => 'O campo :attribute não é uma data válida.',
+    'email' => 'O campo :attribute deve ser um e-mail válido.',
+    'exists' => 'O valor selecionado em :attribute é inválido.',
+    'image' => 'O campo :attribute deve ser uma imagem.',
+    'in' => 'O valor selecionado em :attribute é inválido.',
+    'integer' => 'O campo :attribute deve ser um número inteiro.',
+    'unique' => 'Já existe um registro com este :attribute.',
+    'required' => 'O campo :attribute é obrigatório.',
+    'string' => 'O campo :attribute deve ser um texto.',
+    'max' => [
+        'array' => 'O campo :attribute não pode ter mais de :max itens.',
+        'file' => 'O campo :attribute não pode ser maior que :max kilobytes.',
+        'numeric' => 'O campo :attribute não pode ser maior que :max.',
+        'string' => 'O campo :attribute não pode ter mais de :max caracteres.',
+    ],
+    'min' => [
+        'array' => 'O campo :attribute deve ter pelo menos :min itens.',
+        'file' => 'O campo :attribute deve ter pelo menos :min kilobytes.',
+        'numeric' => 'O campo :attribute deve ser pelo menos :min.',
+        'string' => 'O campo :attribute deve ter pelo menos :min caracteres.',
+    ],
+
+    'attributes' => [
+        'name' => 'nome',
+        'form.name' => 'nome',
+        'start_date' => 'data de início',
+        'form.start_date' => 'data de início',
+        'end_date' => 'data de fim',
+        'form.end_date' => 'data de fim',
+        'scope' => 'abrangência',
+        'church_id' => 'igreja',
+        'event_site_id' => 'local do evento',
+        'children_age' => 'idade infantil máxima',
+        'contact_name' => 'contato principal',
+        'contact_phone' => 'telefone do contato',
+        'phone' => 'telefone',
+        'email' => 'e-mail',
+        'cpf' => 'CPF',
+        'birth_date' => 'data de nascimento',
+    ],
+];
