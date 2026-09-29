@@ -88,7 +88,7 @@ new class extends Component {
 <x-pages::forms.layout>
     <livewire:dialogs::delete-confirmation />
     <div class="w-full mx-auto space-y-4">
-        <div class="flex items-start max-md:flex-col">
+        <div class="flex items-start max-md:flex-col max-md:items-stretch">
             <div class="flex-1">
                 <flux:heading size="lg" class="mb-4">Detalhamento de local de evento</flux:heading>
                 <flux:heading size="sm" class="mb-4">{{ $this->eventSite()->name }}</flux:heading>

@@ -65,7 +65,7 @@ new class extends \Livewire\Component
 }
 ?>
 
-<div class="relative flex flex-1 rounded-lg px-6 py-4 bg-zinc-50 dark:bg-zinc-700 flex-col gap-1">
+<div class="relative flex flex-1 rounded-lg px-3 md:px-6 py-4 bg-zinc-50 dark:bg-zinc-700 flex-col gap-1">
     <flux:callout variant="gray">
         <flux:callout.heading class="flex gap-2 @max-md:flex-col items-start">Acumulados de inscrições</flux:callout.heading>
     </flux:callout>

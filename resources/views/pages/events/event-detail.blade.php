@@ -76,7 +76,7 @@ new class extends Component {
         </flux:callout.heading>
     </flux:callout>
     <livewire:dialogs::delete-confirmation />
-    <div class="flex items-start max-md:flex-col">
+    <div class="flex items-start max-md:flex-col max-md:items-stretch">
         <div class="flex-1">
             <flux:heading size="lg" class="mb-4">Detalhamento de Evento | {{ $this->eventName }}</flux:heading>
             <flux:heading size="sm" class="mb-4">{{ $this->eventSiteName }} | {{ $this->eventSiteLocation }} | {{ $this->eventDates }}</flux:heading>

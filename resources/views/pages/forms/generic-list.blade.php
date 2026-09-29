@@ -46,7 +46,7 @@ new class extends Component {
 
 <div class="w-full mx-auto space-y-4">
 
-    <div class="flex items-start max-md:flex-col gap-4">
+    <div class="flex items-start max-md:flex-col max-md:items-stretch gap-4">
         <div class="flex-1">
             <flux:heading sixe="xl" level="1">{{ $header }}</flux:heading>
             <flux:subheading size="lg" class="mb-4">{{ $subHeader }}</flux:subheading>
@@ -57,7 +57,7 @@ new class extends Component {
         @endif
 
         @if($this->searchVisihle)
-        <div class="w-50">
+        <div class="w-full md:w-50">
             <flux:input wire:model.live.debounce.300ms="search" wire:island="list" type="text" icon="magnifying-glass" placeholder="filtre aqui" />
         </div>
         @endif
