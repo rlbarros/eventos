@@ -79,6 +79,12 @@ new class extends Component
                 </x-slot>
             </flux:callout>
         </div>
+        {{-- sem evento visível (anfitrião recém-cadastrado, por exemplo) os cards não têm o que mostrar --}}
+        @if ($selectedEvent === '')
+        <flux:callout icon="calendar" heading="Nenhum evento por aqui ainda">
+            <flux:callout.text>Crie um evento em <flux:link :href="route('events')" wire:navigate>Eventos</flux:link> ou peça ao organizador para liberar o seu acesso.</flux:callout.text>
+        </flux:callout>
+        @else
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             <div class="relative md:aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 md:max-h-[260px]">
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
@@ -115,5 +121,6 @@ new class extends Component
             </x-mary-tabs>
 
         </div>
+        @endif
     </div>
 </div>

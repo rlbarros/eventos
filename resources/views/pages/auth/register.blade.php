@@ -1,6 +1,6 @@
 <x-layouts::auth :title="__('Cadastrar-se')">
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Crie uma Conta')" :description="__('Insira seus dados abaixo para criar a sua conta')" />
+        <x-auth-header :title="__('Crie uma Conta')" :description="__('Só anfitriões cadastrados na administração podem criar conta. Use o e-mail do seu cadastro de anfitrião.')" />
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Services\HostJurisdiction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +22,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'administration_user_id',
         'name',
         'email',
         'password',
@@ -72,5 +74,16 @@ class User extends Authenticatable
         } else {
             return $names[0] . ' ' . $names[$namesCount - 1];
         }
+    }
+
+    /** Conta criada por um anfitrião da administração (as contas antigas não têm vínculo). */
+    public function isAdministrationHost(): bool
+    {
+        return $this->administration_user_id !== null;
+    }
+
+    public function hostJurisdiction(): HostJurisdiction
+    {
+        return HostJurisdiction::for($this);
     }
 }

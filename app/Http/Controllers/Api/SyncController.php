@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventParticipantAllocation;
+use App\Services\AdministrationReplica;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -20,9 +21,18 @@ use Illuminate\Support\Facades\DB;
  *
  * O parâmetro `desde` (ISO-8601) traz apenas o delta: registros criados ou
  * atualizados a partir daquele instante. Sem `desde`, retorna a carga completa.
+ *
+ * No sentido contrário (administração → eventos, esta API é o destino):
+ * - POST /anfitrioes-sync  anfitriões (quem pode ter conta e em que jurisdição)
+ * - POST /igrejas-sync     catálogo de igrejas da administração
+ * O `desde` desses dois sai de /sync (`anfitrioes`, `igrejas`): o último carimbo recebido.
  */
 class SyncController extends Controller
 {
+    public function __construct(private AdministrationReplica $replica)
+    {
+    }
+
     /** Últimas atualizações por modelo (chaveadas pelo nome usado no data-sync). */
     public function deltas()
     {
@@ -30,8 +40,44 @@ class SyncController extends Controller
             'data' => [
                 'events'       => $this->ultimaAtualizacao('events'),
                 'participants' => $this->ultimaAtualizacao('events_participants_allocations'),
+                // destino do sync administração → eventos: carimbo da administração, como veio
+                'anfitrioes'   => $this->replica->lastSyncedAt('administration_hosts'),
+                'igrejas'      => $this->replica->lastSyncedAt('administration_churches'),
             ],
         ]);
+    }
+
+    /** Anfitrião vindo da administração (um registro por usuário e jurisdição). */
+    public function receiveHost(Request $request)
+    {
+        $data = $request->validate([
+            'id'                  => ['required', 'string', 'max:80'],
+            'usuario_id'          => ['required', 'integer'],
+            'nome'                => ['required', 'string', 'max:255'],
+            'email'               => ['required', 'email', 'max:255'],
+            'nivel'               => ['required', 'in:nacional,superintendencia,igreja'],
+            'superintendencia_id' => ['nullable', 'integer'],
+            'igreja_id'           => ['nullable', 'integer'],
+            'ativo'               => ['required', 'boolean'],
+            'sincronizado_em'     => ['nullable', 'date'],
+        ]);
+
+        return response()->json(['data' => $this->replica->saveHost($data)]);
+    }
+
+    /** Igreja do catálogo da administração. */
+    public function receiveChurch(Request $request)
+    {
+        $data = $request->validate([
+            'id'                  => ['required', 'integer'],
+            'nome'                => ['required', 'string', 'max:255'],
+            'superintendencia_id' => ['nullable', 'integer'],
+            'superintendencia'    => ['nullable', 'string', 'max:255'],
+            'ativo'               => ['required', 'boolean'],
+            'sincronizado_em'     => ['nullable', 'date'],
+        ]);
+
+        return response()->json(['data' => $this->replica->saveChurch($data)]);
     }
 
     /** Eventos para a administração (mapeados no data-sync para a tabela `eventos`). */

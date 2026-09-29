@@ -33,6 +33,12 @@ new #[Title('Configuração de perfil')] class extends Component {
 
         $validated = $this->validate($this->profileRules($user->id));
 
+        // o e-mail do anfitrião é o da administração (vem pelo data-sync): não muda por aqui
+        if ($user->isAdministrationHost()) {
+            unset($validated['email']);
+            $this->email = $user->email;
+        }
+
         $user->fill($validated);
 
         if ($user->isDirty('email')) {
@@ -93,7 +99,12 @@ new #[Title('Configuração de perfil')] class extends Component {
             <flux:input wire:model="name" :label="__('Nome')" type="text" required autofocus autocomplete="name" />
 
             <div>
+                @if (auth()->user()->isAdministrationHost())
+                <flux:input wire:model="email" :label="__('Email')" type="email" readonly
+                    :description="__('O e-mail vem do seu cadastro de anfitrião na administração; para trocar, fale com a secretaria.')" />
+                @else
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                @endif
 
                 @if ($this->hasUnverifiedEmail)
                 <div>
