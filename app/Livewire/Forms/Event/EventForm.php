@@ -12,6 +12,8 @@ class EventForm extends GenericForm
 
 
     public string $name = '';
+    public string $contact_name = '';
+    public string $contact_phone = '';
     public string $scope = 'igreja';
     public string $start_date = '';
     public string $end_date = '';
@@ -21,6 +23,8 @@ class EventForm extends GenericForm
     public function fixedRules(): array
     {
         return [
+            'contact_name' => 'nullable|string|max:200',
+            'contact_phone' => 'nullable|string|max:20',
             'scope' => 'required|in:nacional,superintendencia,igreja',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
@@ -59,6 +63,8 @@ class EventForm extends GenericForm
 
         $this->id = $Event->id;
         $this->name = $Event->name;
+        $this->contact_name = $Event->contact_name ?? '';
+        $this->contact_phone = $Event->contact_phone ?? '';
         $this->scope = $Event->scope;
         $this->start_date = $Event->start_date;
         $this->end_date = $Event->end_date;

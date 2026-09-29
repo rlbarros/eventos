@@ -88,6 +88,18 @@ new class extends GenericFormComponent {
     <livewire:selects.drivers :readonly="$this->isReadonly()" :eventId="$eventId" :form="$form" class="space-x-2" />
 
     <flux:field>
+        <flux:label>Transportador (opcional)</flux:label>
+        <flux:input placeholder="nome da empresa ou responsável pelo transporte" wire:model="form.transporter_name" :readonly="$this->isReadonly()" />
+        <flux:error name="form.transporter_name" />
+    </flux:field>
+
+    <flux:field>
+        <flux:label>Telefone do transportador</flux:label>
+        <flux:input placeholder="(00) 00000-0000" mask="(99) 99999-9999" wire:model="form.transporter_phone" :readonly="$this->isReadonly()" />
+        <flux:error name="form.transporter_phone" />
+    </flux:field>
+
+    <flux:field>
         <flux:label>Origem</flux:label>
         <flux:input placeholder="insira o origem da viagem" wire:model="form.from" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.from" />
