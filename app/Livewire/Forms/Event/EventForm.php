@@ -6,6 +6,7 @@ use App\Enum\FormModeEnum;
 use App\Livewire\Forms\GenericForm;
 use App\Models\Event;
 use App\Models\GenericModel;
+use App\Services\HostJurisdiction;
 
 class EventForm extends GenericForm
 {
@@ -28,7 +29,12 @@ class EventForm extends GenericForm
             'scope' => 'required|in:nacional,superintendencia,igreja',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'church_id' => 'required|integer|exists:churches,id',
+            'church_id' => ['required', 'integer', 'exists:churches,id', function ($attribute, $value, $fail) {
+                // anfitrião só cria/edita eventos na própria jurisdição (abrangência + igreja)
+                if (! HostJurisdiction::for(auth()->user())->canManage($this->scope, (int) $value)) {
+                    $fail(HostJurisdiction::OUT_OF_JURISDICTION);
+                }
+            }],
             'event_site_id' => 'required|integer|exists:event_sites,id',
             'children_age' => 'nullable|integer|min:0|max:17',
         ];

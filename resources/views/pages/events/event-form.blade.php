@@ -31,6 +31,21 @@ new class extends GenericFormComponent {
 
     public function beforeSave(): void {}
 
+    /**
+     * Abrangências que o usuário pode escolher (anfitrião: as da jurisdição). Na visualização e na
+     * edição a do próprio evento sempre aparece, para o campo não ficar em branco.
+     */
+    public function scopeOptions(): array
+    {
+        $labels = ['nacional' => 'Nacional', 'superintendencia' => 'Superintendência', 'igreja' => 'Igreja'];
+        $allowed = auth()->user()?->hostJurisdiction()->allowedScopes() ?? [];
+        if (! empty($this->form->scope)) {
+            $allowed[] = $this->form->scope;
+        }
+
+        return array_intersect_key($labels, array_flip($allowed));
+    }
+
     public function modalName(): string
     {
         return 'events.event';
@@ -120,9 +135,9 @@ new class extends GenericFormComponent {
     <flux:field>
         <flux:label>Abrangência *</flux:label>
         <flux:select wire:model="form.scope" :disabled="$this->isReadonly()">
-            <flux:select.option value="nacional">Nacional</flux:select.option>
-            <flux:select.option value="superintendencia">Superintendência</flux:select.option>
-            <flux:select.option value="igreja">Igreja</flux:select.option>
+            @foreach ($this->scopeOptions() as $value => $label)
+                <flux:select.option :value="$value">{{ $label }}</flux:select.option>
+            @endforeach
         </flux:select>
         <flux:error name="form.scope" />
     </flux:field>

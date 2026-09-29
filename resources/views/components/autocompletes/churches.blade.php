@@ -20,7 +20,12 @@ new class extends Component {
 
     public function search(string $query): array
     {
+        // só o formulário de evento usa este campo: anfitrião de igreja/superintendência vê
+        // apenas as igrejas da própria jurisdição
+        $allowed = auth()->user()?->hostJurisdiction()->manageableAdministrationChurchIds();
+
         return Church::where('name', 'like', "%{$query}%")
+            ->when($allowed !== null, fn ($q) => $q->whereIn('administration_system_id', $allowed->all() ?: [0]))
             ->orderBy('name')
             ->limit(10)
             ->get()

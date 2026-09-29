@@ -82,7 +82,14 @@ class Event extends GenericModel
             return false;
         }
 
-        return $this->isOwner($user) || $this->allowedUsers()->whereKey($user->id)->exists();
+        if ($this->isOwner($user) || $this->allowedUsers()->whereKey($user->id)->exists()) {
+            return true;
+        }
+
+        // anfitrião: o evento dentro da jurisdição dele (conta antiga não ganha nada aqui)
+        $jurisdiction = $user->hostJurisdiction();
+
+        return ! $jurisdiction->isLegacy() && $jurisdiction->canManage($this->scope, $this->church_id);
     }
 
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
@@ -91,9 +98,15 @@ class Event extends GenericModel
             return $query->whereRaw('0 = 1');
         }
 
-        return $query->where(function (Builder $query) use ($user) {
+        $jurisdiction = $user->hostJurisdiction();
+
+        return $query->where(function (Builder $query) use ($user, $jurisdiction) {
             $query->where('owner_id', $user->id)
                 ->orWhereHas('allowedUsers', fn(Builder $query) => $query->whereKey($user->id));
+
+            if (! $jurisdiction->isLegacy()) {
+                $query->orWhere(fn(Builder $query) => $jurisdiction->constrainEvents($query));
+            }
         });
     }
 

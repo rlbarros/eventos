@@ -38,7 +38,10 @@ class ParticipantSyncTest extends TestCase
             'church_id' => $this->church->id, 'event_site_id' => 1,
         ]);
 
-        Sanctum::actingAs(User::factory()->create());
+        // rotas de réplica exigem o usuário do data-sync (DATA_SYNC_EMAIL)
+        $user = User::factory()->create();
+        config(['services.data_sync.email' => $user->email]);
+        Sanctum::actingAs($user);
     }
 
     protected function tearDown(): void
