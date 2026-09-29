@@ -17,6 +17,20 @@ class EventParticipantAllocation extends GenericModel
         'event_site_room_type_id',
     ];
 
+    protected static function booted(): void
+    {
+        // a exclusão chega à administração pelo /participants-sync (active = false)
+        static::deleted(function (EventParticipantAllocation $allocation) {
+            SyncDeletion::create([
+                'model' => SyncDeletion::PARTICIPANTS,
+                'record_id' => $allocation->id,
+                'event_id' => $allocation->event_id,
+                'cpf' => Person::whereKey($allocation->person_id)->value('cpf'),
+                'deleted_at' => now(),
+            ]);
+        });
+    }
+
     public static function modelName(): string
     {
         return 'Alocação de Participante';

@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventParticipantAllocation;
+use App\Models\SyncDeletion;
+use App\Services\Sync\SyncWatermarks;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -18,18 +21,26 @@ use Illuminate\Support\Facades\DB;
  * - GET /events-sync?desde=  eventos (filtro incremental)
  * - GET /participants-sync?desde=  participantes (filtro incremental)
  *
- * O parâmetro `desde` (ISO-8601) traz apenas o delta: registros criados ou
- * atualizados a partir daquele instante. Sem `desde`, retorna a carga completa.
+ * O parâmetro `desde` (ISO-8601) traz apenas o delta: registros criados,
+ * atualizados ou excluídos a partir daquele instante. Sem `desde`, retorna a
+ * carga completa. Excluídos vêm de `sync_deletions` com `active = false`, e
+ * tudo sai ordenado por `changed_at` (o destino guarda até onde recebeu).
+ *
+ * Este sistema é a fonte da verdade dos eventos. Participações vão e voltam:
+ * o caminho administração → eventos é o AdminSyncController.
  */
 class SyncController extends Controller
 {
     /** Últimas atualizações por modelo (chaveadas pelo nome usado no data-sync). */
-    public function deltas()
+    public function deltas(SyncWatermarks $watermarks)
     {
         return response()->json([
             'data' => [
-                'events'       => $this->ultimaAtualizacao('events'),
-                'participants' => $this->ultimaAtualizacao('events_participants_allocations'),
+                'events'       => $this->ultimaAtualizacao('events', SyncDeletion::EVENTS),
+                'participants' => $this->ultimaAtualizacao('events_participants_allocations', SyncDeletion::PARTICIPANTS),
+                // administração → eventos: até onde já recebemos de lá (relógio da administração)
+                'participants_admin' => $watermarks->last('administracao', 'participants')
+                    ?? Carbon::parse('1970-01-01 00:00:00', 'UTC')->toIso8601String(),
             ],
         ]);
     }
@@ -37,10 +48,12 @@ class SyncController extends Controller
     /** Eventos para a administração (mapeados no data-sync para a tabela `eventos`). */
     public function events(Request $request)
     {
-        $query = Event::query()->with('church:id,administration_system_id');
-        $this->aplicarDelta($query, $request->query('desde'));
+        $desde = $this->desde($request);
 
-        $eventos = $query->orderBy('id')->get()->map(fn (Event $e) => [
+        $query = Event::query()->with('church:id,administration_system_id');
+        $this->aplicarDelta($query, $desde);
+
+        $eventos = $query->get()->map(fn (Event $e) => [
             'id'                       => $e->id,
             'name'                     => $e->name,
             'scope'                    => $e->scope,
@@ -49,27 +62,65 @@ class SyncController extends Controller
             // id da igreja na administração (igrejas.id), para o escopo por igreja
             'administration_church_id' => $e->church?->administration_system_id,
             'children_age'             => $e->children_age,
+            'active'                   => true,
+            'changed_at'               => $this->alteradoEm($e),
         ]);
 
-        return response()->json(['data' => $eventos]);
+        $excluidos = $this->exclusoes(SyncDeletion::EVENTS, $desde)->map(fn (SyncDeletion $d) => [
+            'id'                       => $d->record_id,
+            'name'                     => null,
+            'scope'                    => null,
+            'start_date'               => null,
+            'end_date'                 => null,
+            'administration_church_id' => null,
+            'children_age'             => null,
+            'active'                   => false,
+            'changed_at'               => $d->deleted_at->toIso8601String(),
+        ]);
+
+        return response()->json(['data' => $this->ordenar($eventos->concat($excluidos))]);
     }
 
     /** Participações para a administração (mapeadas para `eventos_pessoas`). */
     public function participants(Request $request)
     {
-        $query = EventParticipantAllocation::query()->with('person:id,cpf');
-        $this->aplicarDelta($query, $request->query('desde'));
+        $desde = $this->desde($request);
 
-        $participantes = $query->orderBy('id')->get()->map(fn (EventParticipantAllocation $a) => [
+        $query = EventParticipantAllocation::query()->with('person:id,cpf');
+        $this->aplicarDelta($query, $desde);
+
+        // sem `present`: a presença é marcada na administração e não existe aqui
+        $participantes = $query->get()->map(fn (EventParticipantAllocation $a) => [
             'id'                       => $a->id,
             'event_id'                 => $a->event_id,
             // pessoa é resolvida na administração pelo CPF (persons não guarda o id de lá)
             'administration_person_id' => null,
             'cpf'                      => $a->person?->cpf,
-            'present'                  => true,
+            'active'                   => true,
+            'changed_at'               => $this->alteradoEm($a),
         ]);
 
-        return response()->json(['data' => $participantes]);
+        $excluidos = $this->exclusoes(SyncDeletion::PARTICIPANTS, $desde)->map(fn (SyncDeletion $d) => [
+            'id'                       => $d->record_id,
+            'event_id'                 => $d->event_id,
+            'administration_person_id' => null,
+            'cpf'                      => $d->cpf,
+            'active'                   => false,
+            'changed_at'               => $d->deleted_at->toIso8601String(),
+        ]);
+
+        return response()->json(['data' => $this->ordenar($participantes->concat($excluidos))]);
+    }
+
+    /** `desde` (ISO-8601, qualquer fuso) no fuso em que as datas deste banco são gravadas. */
+    private function desde(Request $request): ?string
+    {
+        $desde = $request->query('desde');
+        if (empty($desde)) {
+            return null;
+        }
+
+        return Carbon::parse($desde)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
     }
 
     /** Filtro incremental: criado_em/atualizado_em (created_at/updated_at) >= desde. */
@@ -85,7 +136,26 @@ class SyncController extends Controller
         });
     }
 
-    private function ultimaAtualizacao(string $tabela): string
+    private function exclusoes(string $model, ?string $desde): Collection
+    {
+        return SyncDeletion::where('model', $model)
+            ->when($desde, fn ($q) => $q->where('deleted_at', '>=', $desde))
+            ->get();
+    }
+
+    private function alteradoEm($registro): ?string
+    {
+        $data = $registro->updated_at ?? $registro->created_at;
+
+        return $data?->toIso8601String();
+    }
+
+    private function ordenar(Collection $registros): Collection
+    {
+        return $registros->sortBy(fn ($r) => [$r['changed_at'] ?? '', $r['id']])->values();
+    }
+
+    private function ultimaAtualizacao(string $tabela, string $modeloExclusao): string
     {
         $valor = DB::table($tabela)
             ->selectRaw("GREATEST(
@@ -94,6 +164,9 @@ class SyncController extends Controller
             ) as ultima_atualizacao")
             ->value('ultima_atualizacao');
 
-        return Carbon::parse($valor ?? '1970-01-01 00:00:00')->toIso8601String();
+        $exclusao = SyncDeletion::where('model', $modeloExclusao)->max('deleted_at');
+        $maior = max((string) $valor, (string) $exclusao) ?: '1970-01-01 00:00:00';
+
+        return Carbon::parse($maior)->toIso8601String();
     }
 }

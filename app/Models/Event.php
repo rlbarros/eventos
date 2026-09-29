@@ -34,6 +34,16 @@ class Event extends GenericModel
                 $event->owner_id = Auth::id();
             }
         });
+
+        // a exclusão chega à administração pelo /events-sync (active = false)
+        static::deleted(function (Event $event) {
+            SyncDeletion::create([
+                'model' => SyncDeletion::EVENTS,
+                'record_id' => $event->id,
+                'event_id' => $event->id,
+                'deleted_at' => now(),
+            ]);
+        });
     }
 
     public static function modelName(): string

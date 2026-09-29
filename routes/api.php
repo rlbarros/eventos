@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminSyncController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SyncController;
 use Illuminate\Http\Request;
@@ -15,4 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sync', [SyncController::class, 'deltas']);
     Route::get('/events-sync', [SyncController::class, 'events']);
     Route::get('/participants-sync', [SyncController::class, 'participants']);
+
+    // sincronização administração -> eventos (participações incluídas/removidas lá)
+    Route::post('/participants-admin-sync', [AdminSyncController::class, 'participants']);
 });
