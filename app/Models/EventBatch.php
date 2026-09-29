@@ -9,14 +9,26 @@ class EventBatch extends GenericModel
 {
     protected $table = 'events_batches';
 
-    public $timestamps = false;
-
+    // timestamps para a sincronização incremental com o superapp (?desde=)
     protected $fillable = [
         'event_id',
         'batch',
         'start_date',
         'end_date'
     ];
+
+    protected static function booted(): void
+    {
+        // a exclusão chega ao superapp como active = false
+        static::deleted(function (EventBatch $batch) {
+            SyncDeletion::create([
+                'model' => SyncDeletion::BATCHES,
+                'record_id' => $batch->id,
+                'event_id' => $batch->event_id,
+                'deleted_at' => now(),
+            ]);
+        });
+    }
 
     public static function modelName(): string
     {

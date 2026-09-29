@@ -17,6 +17,19 @@ class EventFee extends GenericModel
         'fee'
     ];
 
+    protected static function booted(): void
+    {
+        // a exclusão chega ao superapp como active = false
+        static::deleted(function (EventFee $fee) {
+            SyncDeletion::create([
+                'model' => SyncDeletion::FEES,
+                'record_id' => $fee->id,
+                'event_id' => $fee->event_id,
+                'deleted_at' => now(),
+            ]);
+        });
+    }
+
     public static function modelName(): string
     {
         return "Taxa de Evento";

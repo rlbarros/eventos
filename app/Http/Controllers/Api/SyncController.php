@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\IncrementalFeed;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventParticipantAllocation;
@@ -9,10 +10,7 @@ use App\Models\SyncDeletion;
 use App\Services\AdministrationReplica;
 use App\Services\Sync\SyncWatermarks;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Exposição da fonte (source) para o worker data-sync sincronizar
@@ -37,6 +35,8 @@ use Illuminate\Support\Facades\DB;
  */
 class SyncController extends Controller
 {
+    use IncrementalFeed;
+
     public function __construct(private AdministrationReplica $replica)
     {
     }
@@ -54,6 +54,15 @@ class SyncController extends Controller
                 // destino do sync administração → eventos: carimbo da administração, como veio
                 'anfitrioes'   => $this->replica->lastSyncedAt('administration_hosts'),
                 'igrejas'      => $this->replica->lastSyncedAt('administration_churches'),
+                // eventos → superapp (rotas /superapp/*)
+                'superapp_eventos'    => $this->ultimaAtualizacao('events', SyncDeletion::EVENTS),
+                'superapp_lotes'      => $this->ultimaAtualizacao('events_batches', SyncDeletion::BATCHES),
+                'superapp_precos'     => $this->ultimaAtualizacao('events_fees', SyncDeletion::FEES),
+                'superapp_inscricoes' => $this->ultimaAtualizacao('events_participants_allocations', SyncDeletion::PARTICIPANTS),
+                'superapp_pagamentos' => $this->ultimaAtualizacao('events_participants_payments', SyncDeletion::PAYMENTS),
+                // superapp → eventos: até onde já recebemos de lá (relógio do superapp)
+                'inscricoes_superapp' => $watermarks->last('superapp', 'inscricoes')
+                    ?? Carbon::parse('1970-01-01 00:00:00', 'UTC')->toIso8601String(),
             ],
         ]);
     }
@@ -156,63 +165,5 @@ class SyncController extends Controller
         ]);
 
         return response()->json(['data' => $this->ordenar($participantes->concat($excluidos))]);
-    }
-
-    /** `desde` (ISO-8601, qualquer fuso) no fuso em que as datas deste banco são gravadas. */
-    private function desde(Request $request): ?string
-    {
-        $desde = $request->query('desde');
-        if (empty($desde)) {
-            return null;
-        }
-
-        return Carbon::parse($desde)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
-    }
-
-    /** Filtro incremental: criado_em/atualizado_em (created_at/updated_at) >= desde. */
-    private function aplicarDelta(Builder $query, ?string $desde): void
-    {
-        if (empty($desde)) {
-            return;
-        }
-
-        $query->where(function (Builder $q) use ($desde) {
-            $q->where('created_at', '>=', $desde)
-                ->orWhere('updated_at', '>=', $desde);
-        });
-    }
-
-    private function exclusoes(string $model, ?string $desde): Collection
-    {
-        return SyncDeletion::where('model', $model)
-            ->when($desde, fn ($q) => $q->where('deleted_at', '>=', $desde))
-            ->get();
-    }
-
-    private function alteradoEm($registro): ?string
-    {
-        $data = $registro->updated_at ?? $registro->created_at;
-
-        return $data?->toIso8601String();
-    }
-
-    private function ordenar(Collection $registros): Collection
-    {
-        return $registros->sortBy(fn ($r) => [$r['changed_at'] ?? '', $r['id']])->values();
-    }
-
-    private function ultimaAtualizacao(string $tabela, string $modeloExclusao): string
-    {
-        $valor = DB::table($tabela)
-            ->selectRaw("GREATEST(
-                COALESCE(MAX(created_at), '1970-01-01 00:00:00'),
-                COALESCE(MAX(updated_at), '1970-01-01 00:00:00')
-            ) as ultima_atualizacao")
-            ->value('ultima_atualizacao');
-
-        $exclusao = SyncDeletion::where('model', $modeloExclusao)->max('deleted_at');
-        $maior = max((string) $valor, (string) $exclusao) ?: '1970-01-01 00:00:00';
-
-        return Carbon::parse($maior)->toIso8601String();
     }
 }
