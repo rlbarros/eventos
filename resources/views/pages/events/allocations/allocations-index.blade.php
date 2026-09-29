@@ -213,6 +213,7 @@ new class extends Component
 
 <div>
     <livewire:pages::events.allocations.allocate-participants-form />
+    <livewire:pages::events.allocations.auto-distribution-form :eventId="$this->eventId" />
 
     <div class="grid grid-cols-3 w-full justify-items-center">
         <flux:card class="space-y-2 space-x-1 pl-1 pr-1 ml-8 w-130">
@@ -264,6 +265,10 @@ new class extends Component
                     <flux:badge color="red" size="xs" rounded>{{$this->occupedBeds}}</flux:badge>
                 </x-slot>
             </flux:callout>
+
+            <flux:button variant="primary" icon="sparkles" wire:click="$dispatch('events.auto-distribution-preview')">
+                Distribuir Automaticamente
+            </flux:button>
 
             <flux:button variant="primary" icon:trailing="chevron-right" wire:click="allocateSelected">
                 Alocar Selecionados
