@@ -18,6 +18,8 @@ class Event extends GenericModel
         'name',
         'contact_name',
         'contact_phone',
+        'pix_key',
+        'pix_beneficiary',
         'scope',
         'start_date',
         'end_date',

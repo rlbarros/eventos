@@ -57,6 +57,8 @@ class SuperappSyncController extends Controller
             'children_age'             => $e->children_age,
             'contact_name'             => $e->contact_name,
             'contact_phone'            => $e->contact_phone,
+            'pix_key'                  => $e->pix_key,
+            'pix_beneficiary'          => $e->pix_beneficiary,
             'site_name'                => $e->event_site?->name,
             'site_city'                => $e->event_site?->city?->name,
             'site_state'               => $e->event_site?->state?->code,
