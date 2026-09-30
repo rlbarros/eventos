@@ -24,7 +24,7 @@ new class extends Component {
         $this->resetPage();
 
         $js = "const url = new URL(window.location);
-            url.searchParams.set('search', '" . $this->search . "');
+            url.searchParams.set('search', " . json_encode($this->search) . ");
             url.searchParams.set('page', 1);
             window.history.replaceState({}, '', url);
             window.location.reload();";
@@ -58,7 +58,7 @@ new class extends Component {
 
         @if($this->searchVisihle)
         <div class="min-w-0 flex-1">
-            <flux:input wire:model.live.debounce.300ms="search" wire:island="list" type="text" icon="magnifying-glass" placeholder="filtre aqui" />
+            <flux:input wire:model.live.debounce.350ms="search" wire:island="list" type="text" icon="magnifying-glass" placeholder="filtre aqui" />
         </div>
         @endif
 
