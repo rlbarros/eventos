@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('data-sync')->group(function () {
         Route::post('/anfitrioes-sync', [SyncController::class, 'receiveHost']);
         Route::post('/igrejas-sync', [SyncController::class, 'receiveChurch']);
+        Route::post('/pessoas-sync', [SyncController::class, 'receivePerson']);
         // participações incluídas/removidas à mão na administração
         Route::post('/participants-admin-sync', [AdminSyncController::class, 'participants']);
 
