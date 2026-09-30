@@ -28,6 +28,25 @@ abstract class GenericIndexComponent extends Component implements IProperties
 
     public bool $searchVisible = true;
 
+    // Filtros adicionais da tela (além da busca do cabeçalho), no formato ['chave' => valor].
+    // Cada tela declara em filterScopes() o que cada chave faz na consulta e coloca os campos
+    // no slot "extraFilters" do generic-index, ligados a "filters.<chave>".
+    #[Url(history: true)]
+    public array $filters = [];
+
+    /**
+     * @return array<string, callable> chave => fn ($query, $valor) que aplica o filtro
+     */
+    public function filterScopes(): array
+    {
+        return [];
+    }
+
+    public function updatedFilters(): void
+    {
+        $this->resetPage();
+    }
+
     public function modelName(): string
     {
         return $this->model()::modelName();
@@ -59,6 +78,13 @@ abstract class GenericIndexComponent extends Component implements IProperties
         foreach ($this->customWhereIndex() as $whereArray) {
             [$column, $operator, $value] = $whereArray;
             $query->where($column, $operator, $value);
+        }
+
+        foreach ($this->filterScopes() as $key => $scope) {
+            $value = $this->filters[$key] ?? null;
+            if ($value !== null && $value !== '' && $value !== '0' && $value !== 0) {
+                $scope($query, $value);
+            }
         }
 
         if (!empty($this->search) && $this->searchVisible) {

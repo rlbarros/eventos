@@ -1,13 +1,28 @@
 <?php
 
 use App\Livewire\Components\GenericIndexComponent;
+use App\Models\Church;
 use App\Traits\Forms\Person\WithPersonProperties;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 
 new #[Title('Pessoas')] class extends GenericIndexComponent {
 
     use WithPersonProperties;
+
+    public function filterScopes(): array
+    {
+        return [
+            'church_id' => fn ($query, $churchId) => $query->where('church_id', (int) $churchId),
+        ];
+    }
+
+    #[Computed]
+    public function churches()
+    {
+        return Church::orderBy('name')->get(['id', 'name']);
+    }
 
     public function indexArray(): array
     {
@@ -31,6 +46,17 @@ new #[Title('Pessoas')] class extends GenericIndexComponent {
 
 
 <livewire:pages::forms.generic-index :indexArray="$this->indexArray()">
+    <x-slot:extraFilters>
+        <div class="w-full md:w-64">
+            <flux:select wire:model.live="filters.church_id" wire:island="list">
+                <flux:select.option value="">Todas as igrejas</flux:select.option>
+                @foreach ($this->churches() as $church)
+                <flux:select.option value="{{ $church->id }}">{{ $church->name }}</flux:select.option>
+                @endforeach
+            </flux:select>
+        </div>
+    </x-slot:extraFilters>
+
     <livewire:pages::forms.persons.person-form />
 
     <flux:table :paginate="$this->index()" pagination:scroll-to>
