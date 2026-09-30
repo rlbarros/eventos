@@ -6,6 +6,7 @@ use App\Models\AdministrationChurch;
 use App\Models\Church;
 use App\Models\Person;
 use App\Models\User;
+use App\Services\AdministrationPeople;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
@@ -168,5 +169,47 @@ class PessoasAdministracaoSyncTest extends TestCase
 
         $this->artisan('igrejas:vincular-administracao', ['--aplicar' => true])->assertSuccessful();
         $this->assertSame(34, (int) $this->igreja->fresh()->administration_system_id);
+    }
+
+    public function test_comando_cria_so_as_sem_par_e_so_com_aplicar(): void
+    {
+        AdministrationChurch::create(['id' => 34, 'name' => 'IEA - LOTEAMENTO BRASIL - RN', 'active' => true]);
+        AdministrationChurch::create(['id' => 60, 'name' => 'IEA - NOVA FLORESTA - RN', 'active' => true]);
+        AdministrationChurch::create(['id' => 61, 'name' => 'IEA - SEM UF', 'active' => true]);
+        $antes = Church::count();
+
+        $this->artisan('igrejas:vincular-administracao', ['--criar' => true])->assertSuccessful();
+        $this->assertSame($antes, Church::count());
+
+        $this->artisan('igrejas:vincular-administracao', ['--criar' => true, '--aplicar' => true])->assertSuccessful();
+
+        $this->assertSame($antes + 2, Church::count());
+        $nova = Church::where('administration_system_id', 60)->firstOrFail();
+        $this->assertSame('IEA - NOVA FLORESTA - RN', $nova->name);
+        $this->assertSame(24, $nova->state_id);
+        $this->assertNull($nova->city_id);
+        $this->assertNull(Church::where('administration_system_id', 61)->firstOrFail()->state_id);
+        // a 34 já estava ligada: não duplica
+        $this->assertSame(1, Church::where('administration_system_id', 34)->count());
+    }
+
+    public function test_comando_nao_cria_quando_ha_candidata_por_nome(): void
+    {
+        $this->igreja->update(['administration_system_id' => null]);
+        AdministrationChurch::create(['id' => 34, 'name' => 'Loteamento Brasil', 'active' => true]);
+        $antes = Church::count();
+
+        $this->artisan('igrejas:vincular-administracao', ['--criar' => true, '--aplicar' => true])->assertSuccessful();
+
+        $this->assertSame($antes, Church::count());
+        $this->assertSame(34, (int) $this->igreja->fresh()->administration_system_id);
+    }
+
+    public function test_uf_do_nome_da_igreja(): void
+    {
+        $this->assertSame('RN', AdministrationPeople::stateCodeFromName('IEA - ROSA DOS VENTOS - RN'));
+        $this->assertSame('RJ', AdministrationPeople::stateCodeFromName('IEA - Anchieta - RJ-A'));
+        $this->assertSame('RJ', AdministrationPeople::stateCodeFromName('IEA - Santa Cruz-RJ-B'));
+        $this->assertNull(AdministrationPeople::stateCodeFromName('IEA - CAMPINAS - SEDE NACIONAL'));
     }
 }

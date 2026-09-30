@@ -48,8 +48,8 @@ new #[Title('Igrejas')] class extends GenericIndexComponent {
             <flux:table.row :key="$church->id">
                 <flux:table.cell>{{ $church->id }}</flux:table.cell>
                 <flux:table.cell>{{ $church->name }}</flux:table.cell>
-                <flux:table.cell>{{ $church->city->name }}</flux:table.cell>
-                <flux:table.cell>{{ $church->state->name }}</flux:table.cell>
+                <flux:table.cell>{{ $church->city?->name }}</flux:table.cell>
+                <flux:table.cell>{{ $church->state?->name }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
                         <flux:button wire:click="$dispatch('forms.churchs.church-list', { id: {{ $church->id }} })" icon="list-bullet" style="cursor: pointer;"
