@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // select explícito: com ONLY_FULL_GROUP_BY o count() sobre o group by (select *) falha no MySQL
         $duplicates = DB::table('persons')->whereNotNull('administration_person_id')
-            ->groupBy('administration_person_id')->havingRaw('COUNT(*) > 1')->count();
+            ->select('administration_person_id')
+            ->groupBy('administration_person_id')->havingRaw('COUNT(*) > 1')->get()->count();
         if ($duplicates > 0) {
             throw new RuntimeException("Há {$duplicates} pessoas da administração duplicadas: rode `php artisan pessoas:unir-duplicadas --aplicar` e depois migre de novo.");
         }
