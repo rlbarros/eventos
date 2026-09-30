@@ -6,6 +6,7 @@ use App\Models\AdministrationChurch;
 use App\Models\Church;
 use App\Models\State;
 use App\Models\Person;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -31,6 +32,16 @@ class AdministrationPeople
      * @return array{action:string, person_id:?int}
      */
     public function save(array $data): array
+    {
+        try {
+            return $this->saveOnce($data);
+        } catch (UniqueConstraintViolationException) {
+            // duas gravações da mesma pessoa ao mesmo tempo: a outra criou primeiro, então atualiza
+            return $this->saveOnce($data);
+        }
+    }
+
+    private function saveOnce(array $data): array
     {
         $result = DB::transaction(function () use ($data) {
             $cpf = $this->formatCpf($data['cpf']);
