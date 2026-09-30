@@ -100,7 +100,7 @@ new class extends GenericIndexComponent
 
 
 <livewire:pages::forms.generic-list :indexArray="$this->indexArray()">
-    <x-slot:extraFilters>
+    <livewire:slot name="extraFilters">
         <div class="w-full md:w-64">
             <flux:select wire:model.live="churchId" wire:island="list">
                 <flux:select.option value="0">Todas as igrejas</flux:select.option>
@@ -109,7 +109,7 @@ new class extends GenericIndexComponent
                 @endforeach
             </flux:select>
         </div>
-    </x-slot:extraFilters>
+    </livewire:slot>
 
     <livewire:pages::events.participants.participant-form :eventId="$this->eventId" :eventSiteId="$this->eventSiteId" :nonList="$this->nonList" />
 

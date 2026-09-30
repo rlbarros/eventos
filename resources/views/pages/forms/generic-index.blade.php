@@ -12,9 +12,9 @@ new class extends Component {
     <livewire:dialogs::delete-confirmation />
     <livewire:pages::forms.generic-list :indexArray="$indexArray">
         @if($slots->has('extraFilters'))
-        <x-slot:extraFilters>
+        <livewire:slot name="extraFilters">
             {{ $slots->get('extraFilters') }}
-        </x-slot:extraFilters>
+        </livewire:slot>
         @endif
         {{ $slot }}
     </livewire:pages::forms.generic-list>

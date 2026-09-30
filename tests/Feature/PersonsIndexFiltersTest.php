@@ -38,6 +38,7 @@ class PersonsIndexFiltersTest extends TestCase
     public function test_sem_filtro_lista_todas_as_pessoas(): void
     {
         Livewire::test('pages::forms.persons.persons-index')
+            ->assertSee('Todas as igrejas')
             ->assertSee('Ana da A')
             ->assertSee('Bruno da B');
     }
