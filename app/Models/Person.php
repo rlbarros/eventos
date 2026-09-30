@@ -25,6 +25,7 @@ class Person extends GenericModel
         'spouse_id',
         'function',
         'cpf',
+        'administration_person_id',
     ];
 
     public static function modelName(): string

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventParticipantAllocation;
 use App\Models\SyncDeletion;
+use App\Services\AdministrationPeople;
 use App\Services\AdministrationReplica;
 use App\Services\Sync\SyncWatermarks;
 use Carbon\Carbon;
@@ -31,13 +32,14 @@ use Illuminate\Http\Request;
  * No sentido contrário (administração → eventos, esta API é o destino):
  * - POST /anfitrioes-sync  anfitriões (quem pode ter conta e em que jurisdição)
  * - POST /igrejas-sync     catálogo de igrejas da administração
- * O `desde` desses dois sai de /sync (`anfitrioes`, `igrejas`): o último carimbo recebido.
+ * - POST /pessoas-sync    pessoas da administração (achadas pelo CPF; ver AdministrationPeople)
+ * O `desde` desses sai de /sync (`anfitrioes`, `igrejas`, `pessoas`): o último carimbo recebido.
  */
 class SyncController extends Controller
 {
     use IncrementalFeed;
 
-    public function __construct(private AdministrationReplica $replica)
+    public function __construct(private AdministrationReplica $replica, private AdministrationPeople $people)
     {
     }
 
@@ -54,6 +56,7 @@ class SyncController extends Controller
                 // destino do sync administração → eventos: carimbo da administração, como veio
                 'anfitrioes'   => $this->replica->lastSyncedAt('administration_hosts'),
                 'igrejas'      => $this->replica->lastSyncedAt('administration_churches'),
+                'pessoas'      => $this->people->lastSyncedAt(),
                 // eventos → superapp (rotas /superapp/*)
                 'superapp_eventos'    => $this->ultimaAtualizacao('events', SyncDeletion::EVENTS),
                 'superapp_lotes'      => $this->ultimaAtualizacao('events_batches', SyncDeletion::BATCHES),
@@ -98,6 +101,25 @@ class SyncController extends Controller
         ]);
 
         return response()->json(['data' => $this->replica->saveChurch($data)]);
+    }
+
+    /** Pessoa da administração (upsert pelo CPF; inativa é ignorada). */
+    public function receivePerson(Request $request)
+    {
+        $data = $request->validate([
+            'id'              => ['required', 'integer'],
+            'cpf'             => ['required', 'string', 'regex:/^\D*(\d\D*){11}$/'],
+            'nome'            => ['required', 'string', 'max:255'],
+            'data_nascimento' => ['nullable', 'date'],
+            'email'           => ['nullable', 'string', 'max:200'],
+            'telefone'        => ['nullable', 'string'],
+            'igreja_id'       => ['nullable', 'integer'],
+            'funcao'          => ['nullable', 'string', 'max:60'],
+            'ativo'           => ['required', 'boolean'],
+            'sincronizado_em' => ['nullable', 'date'],
+        ]);
+
+        return response()->json(['data' => $this->people->save($data)]);
     }
 
     /** Eventos para a administração (mapeados no data-sync para a tabela `eventos`). */
