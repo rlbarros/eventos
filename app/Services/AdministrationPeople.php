@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AdministrationChurch;
 use App\Models\Church;
+use App\Models\State;
 use App\Models\Person;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -164,6 +165,25 @@ class AdministrationPeople
         $key = preg_replace('/\s+(?:' . self::UFS . ')$/', '', $key);
 
         return trim((string) $key);
+    }
+
+    /** UF no fim do nome ("IEA - ROSA DOS VENTOS - RN", "IEA - Anchieta - RJ-A"), ou null. */
+    public static function stateCodeFromName(string $name): ?string
+    {
+        return preg_match('/(?:^|[\s-])(' . self::UFS . ')(?:[\s-][A-Z])?\s*$/', $name, $m) ? $m[1] : null;
+    }
+
+    /** Cria a igreja daqui para uma da administração sem par. Estado pela UF do nome; cidade fica vazia. */
+    public function createChurch(AdministrationChurch $administrationChurch): Church
+    {
+        $code = self::stateCodeFromName($administrationChurch->name);
+
+        return Church::create([
+            'administration_system_id' => $administrationChurch->id,
+            'name' => $administrationChurch->name,
+            'state_id' => $code ? State::where('code', $code)->value('id') : null,
+            'city_id' => null,
+        ]);
     }
 
     private function formatCpf(string $value): string
