@@ -121,6 +121,18 @@ new class extends GenericFormComponent {
     </flux:field>
 
     <flux:field>
+        <flux:label>Chave PIX para pagar a inscrição</flux:label>
+        <flux:input placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória" wire:model="form.pix_key" :readonly="$this->isReadonly()" />
+        <flux:error name="form.pix_key" />
+    </flux:field>
+
+    <flux:field>
+        <flux:label>Favorecido do PIX</flux:label>
+        <flux:input placeholder="Nome de quem recebe" wire:model="form.pix_beneficiary" :readonly="$this->isReadonly()" />
+        <flux:error name="form.pix_beneficiary" />
+    </flux:field>
+
+    <flux:field>
         <flux:label>Data de Início *</flux:label>
         <flux:input type="date" wire:model="form.start_date" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()" />
         <flux:error name="form.start_date" />

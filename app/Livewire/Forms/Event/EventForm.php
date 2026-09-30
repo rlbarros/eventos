@@ -15,6 +15,8 @@ class EventForm extends GenericForm
     public string $name = '';
     public string $contact_name = '';
     public string $contact_phone = '';
+    public string $pix_key = '';
+    public string $pix_beneficiary = '';
     public string $scope = 'igreja';
     public string $start_date = '';
     public string $end_date = '';
@@ -26,6 +28,8 @@ class EventForm extends GenericForm
         return [
             'contact_name' => 'nullable|string|max:200',
             'contact_phone' => 'nullable|string|max:20',
+            'pix_key' => 'nullable|string|max:140',
+            'pix_beneficiary' => 'nullable|string|max:200',
             'scope' => 'required|in:nacional,superintendencia,igreja',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -71,6 +75,8 @@ class EventForm extends GenericForm
         $this->name = $Event->name;
         $this->contact_name = $Event->contact_name ?? '';
         $this->contact_phone = $Event->contact_phone ?? '';
+        $this->pix_key = $Event->pix_key ?? '';
+        $this->pix_beneficiary = $Event->pix_beneficiary ?? '';
         $this->scope = $Event->scope;
         $this->start_date = $Event->start_date;
         $this->end_date = $Event->end_date;
