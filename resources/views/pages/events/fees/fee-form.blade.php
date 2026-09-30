@@ -28,6 +28,9 @@ new class extends GenericFormComponent {
     {
         $this->form->event_id = $this->eventId;
         $this->form->fee = CurrencyUtil::formatCurrencyToDb($this->form->fee);
+        // campo vazio = sem limite (a taxa vale para qualquer ocupação)
+        $this->form->min_occupants = $this->form->min_occupants === '' ? null : $this->form->min_occupants;
+        $this->form->max_occupants = $this->form->max_occupants === '' ? null : $this->form->max_occupants;
     }
 
     #[On('events.fees.fee-create')]
@@ -105,8 +108,22 @@ new class extends GenericFormComponent {
         </flux:select>
     </flux:field>
 
+    <div class="flex gap-4">
+        <flux:field class="w-full">
+            <flux:label>Pessoas no quarto (de)</flux:label>
+            <flux:input type="number" min="1" placeholder="qualquer" wire:model="form.min_occupants" :readonly="$this->isReadonly()" />
+            <flux:error name="form.min_occupants" />
+        </flux:field>
+        <flux:field class="w-full">
+            <flux:label>Pessoas no quarto (até)</flux:label>
+            <flux:input type="number" min="1" placeholder="qualquer" wire:model="form.max_occupants" :readonly="$this->isReadonly()" />
+            <flux:error name="form.max_occupants" />
+        </flux:field>
+    </div>
+    <flux:text size="sm">Deixe em branco para valer em qualquer ocupação. A taxa é sempre por pessoa; use uma taxa por categoria (Integral e Infantil) para cada faixa.</flux:text>
+
     <flux:field>
-        <flux:label>Taxa</flux:label>
+        <flux:label>Taxa (por pessoa)</flux:label>
         <flux:input placeholder="insira o valor" wire:model="form.fee" placeholder="0,00" wire:change="checkSubmitButtonDisabled" :readonly="$this->isReadonly()">
             <x-slot name="prefix">
                 R$

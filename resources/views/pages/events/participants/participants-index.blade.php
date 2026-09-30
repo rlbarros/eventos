@@ -127,7 +127,12 @@ new class extends GenericIndexComponent
             @forelse ($this->index() as $participant)
             <flux:table.row :key="$participant->id">
                 <flux:table.cell>{{ $participant->id }}</flux:table.cell>
-                <flux:table.cell>{{ $participant->descriptor() }}</flux:table.cell>
+                <flux:table.cell>
+                    {{ $participant->descriptor() }}
+                    @if ($participant->payer)
+                    <div class="text-xs text-zinc-500 dark:text-zinc-400">Reserva paga por {{ $participant->payer->name }}</div>
+                    @endif
+                </flux:table.cell>
                 <flux:table.cell>{{ $participant->event_site_room_type->name }}</flux:table.cell>
                 <flux:table.cell>{{ $participant->event_site_room?->name ?: '—' }}</flux:table.cell>
                 <flux:table.cell>{{ $participant->person->phone ?: '—' }}</flux:table.cell>

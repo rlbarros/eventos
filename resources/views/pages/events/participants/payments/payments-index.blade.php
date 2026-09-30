@@ -3,10 +3,10 @@
 use App\Livewire\Components\GenericIndexComponent;
 use App\Models\Event;
 use App\Models\EventFee;
+use App\Models\EventParticipantAllocation;
 use App\Models\EventParticipantPayment;
-use App\Models\Person;
+use App\Services\Pricing\OccupancyPricing;
 use App\Traits\Forms\Event\Participant\Payment\WithEventParticipantPaymentProperties;
-use App\Utils\AgeUtil;
 use Livewire\Attributes\On;
 
 
@@ -16,6 +16,9 @@ new class extends GenericIndexComponent
 
     public string $totalPayed;
     public string $balance;
+    public int $occupancy = 1;
+    public float $reservationTotal = 0;
+    public ?string $payerName = null;
 
     public function mount()
     {
@@ -32,45 +35,50 @@ new class extends GenericIndexComponent
         $this->totalPayed = $payments->sum('amount');
         $this->balance = 0;
 
+        $pricing = new OccupancyPricing();
+        $allocation = EventParticipantAllocation::findOrFail($this->allocationId);
+        $payer = $pricing->payerAllocation($allocation);
+
+        // quem não é o pagador da reserva não deve nada: o total fica com o pagador
+        if (!$payer->is($allocation)) {
+            $this->payerName = $payer->person->name;
+            return;
+        }
+
         $lastBatchoffPayments = 0;
         foreach ($payments as $payment) {
-
             $eventFee = $eventFees->where('id', $payment->event_fee_id)->first();
             if ($eventFee->event_batch->batch > $lastBatchoffPayments) {
                 $lastBatchoffPayments = $eventFee->event_batch->batch;
             }
         }
 
-        $lastFee = 0;
         if (!empty($lastBatchoffPayments)) {
-            $eventFeeOfLastBatchOffPayments = $eventFees->where('event_batch.batch', $lastBatchoffPayments)->first();
-            $lastFee = $eventFeeOfLastBatchOffPayments->fee;
+            $batchFees = $eventFees->filter(fn ($item) => $item->event_batch->batch === $lastBatchoffPayments)->values();
         } else {
             $currentDate = now()->toDateString();
-            $currentEventFees = $eventFees->filter(function ($item) use ($currentDate) {
+            $batchFees = $eventFees->filter(function ($item) use ($currentDate) {
                 $eventBatch = $item->event_batch;
                 return $eventBatch->start_date <= $currentDate &&  $currentDate <= $eventBatch->end_date;
             })->values();
 
-            if (empty($currentEventFees) || $currentEventFees->count() === 0) {
-                $lastBatch = $eventFees->max(function ($item) {
-                    return $item->event_batch->batch;
-                });
-
-                $currentEventFees = $eventFees->filter(function ($item) use ($lastBatch) {
-                    return $item->event_batch->batch === $lastBatch;
-                })->values();
+            if ($batchFees->isEmpty()) {
+                $lastBatch = $eventFees->max(fn ($item) => $item->event_batch->batch);
+                $batchFees = $eventFees->filter(fn ($item) => $item->event_batch->batch === $lastBatch)->values();
             }
-
-            $event = Event::find($this->eventId);
-            $person = Person::find($this->personId);
-            $currentEventFees =  AgeUtil::filterEventFeesByAge($currentEventFees, $person, $event);
-            $eventFee = $currentEventFees->first();
-
-            $lastFee = $eventFee->fee;
         }
 
-        $this->balance += max(0, $lastFee - $this->totalPayed);
+        $event = Event::find($this->eventId);
+        $this->occupancy = $pricing->reservation($payer)->count();
+        $this->reservationTotal = $pricing->reservationTotal($payer, $batchFees, $event);
+
+        // pagamentos de quem divide o quarto e paga pelo pagador entram no saldo da reserva
+        $reservationPersonIds = $pricing->reservation($payer)->pluck('person_id');
+        $this->totalPayed = EventParticipantPayment::where('event_id', $this->eventId)
+            ->whereIn('person_id', $reservationPersonIds)
+            ->sum('amount');
+
+        $this->balance += max(0, $this->reservationTotal - $this->totalPayed);
     }
 
     public function indexArray(): array
@@ -97,6 +105,11 @@ new class extends GenericIndexComponent
         <flux:callout.heading>
             <flux:heading size="sm">Total Pago: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->totalPayed, true) }}</flux:heading>
             <flux:heading size="sm">Saldo Devedor: {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->balance, true) }}</flux:heading>
+            @if ($this->payerName)
+            <flux:text size="sm">A reserva é paga por {{ $this->payerName }}, que responde pelo total.</flux:text>
+            @elseif ($this->occupancy > 1)
+            <flux:text size="sm">Reserva com {{ $this->occupancy }} pessoas: total {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($this->reservationTotal, true) }}. O saldo considera os pagamentos de todos da reserva.</flux:text>
+            @endif
         </flux:callout.heading>
     </flux:callout>
 

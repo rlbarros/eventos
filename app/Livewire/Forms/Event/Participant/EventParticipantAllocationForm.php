@@ -14,6 +14,7 @@ class EventParticipantAllocationForm extends GenericForm
     public $event_id = 0;
     public $event_site_room_type_id = 0;
     public $event_site_room_id = 0;
+    public $payer_person_id = null;
 
     public function fixedRules(): array
     {
@@ -22,6 +23,7 @@ class EventParticipantAllocationForm extends GenericForm
             'event_id' => 'required|integer|exists:events,id',
             'person_id' => 'required|integer|exists:persons,id',
             'event_site_room_type_id' => 'required|integer|exists:event_site_room_types,id',
+            'payer_person_id' => 'nullable|integer|exists:persons,id',
         ];
     }
 
@@ -55,5 +57,6 @@ class EventParticipantAllocationForm extends GenericForm
         $this->event_id = $eventParticipantAllocation->event_id;
         $this->event_site_room_type_id = $eventParticipantAllocation->event_site_room_type_id;
         $this->event_site_room_id = $eventParticipantAllocation->event_site_room_id;
+        $this->payer_person_id = $eventParticipantAllocation->payer_person_id;
     }
 }

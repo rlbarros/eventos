@@ -14,6 +14,7 @@ class EventSiteRoomTypeForm extends GenericForm
     public $name = '';
     public int|string $type = RoomTypesEnum::Alojamento->value;
     public $beds = 1;
+    public $amenities = '';
     public $event_site_id = 0;
 
     public function fixedRules(): array
@@ -23,6 +24,7 @@ class EventSiteRoomTypeForm extends GenericForm
             'name' => 'required|string|min:3|max:200',
             'type' => 'in:' . implode(',', $roomTypes),
             'beds' => 'required|integer|min:1',
+            'amenities' => 'nullable|string|max:500',
         ];
     }
 
@@ -54,5 +56,6 @@ class EventSiteRoomTypeForm extends GenericForm
         $this->name = $eventSiteRoomType->name;
         $this->type = $eventSiteRoomType->type;
         $this->beds = $eventSiteRoomType->beds;
+        $this->amenities = $eventSiteRoomType->amenities ?? '';
     }
 }

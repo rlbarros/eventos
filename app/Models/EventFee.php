@@ -13,6 +13,8 @@ class EventFee extends GenericModel
         'event_site_room_type_id',
         'event_batch_id',
         'category',
+        'min_occupants',
+        'max_occupants',
         'batch',
         'fee'
     ];
@@ -44,6 +46,25 @@ class EventFee extends GenericModel
     }
 
 
+
+    /** Faixa de ocupação em texto: "Qualquer", "1 pessoa", "2 pessoas", "4 a 5 pessoas", "6+ pessoas". */
+    public function occupancyLabel(): string
+    {
+        $min = $this->min_occupants;
+        $max = $this->max_occupants;
+        if ($min === null && $max === null) {
+            return 'Qualquer';
+        }
+        $min ??= 1;
+        if ($max === null) {
+            return $min . '+ pessoas';
+        }
+        if ($min === $max) {
+            return $min . ($min === 1 ? ' pessoa' : ' pessoas');
+        }
+
+        return $min . ' a ' . $max . ' pessoas';
+    }
 
     public function event(): BelongsTo
     {

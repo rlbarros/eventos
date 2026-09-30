@@ -38,6 +38,7 @@ new class extends GenericIndexComponent
             <flux:table.column sortable>Tipo de Quarto</flux:table.column>
             <flux:table.column sortable>Lote</flux:table.column>
             <flux:table.column sortable>Categoria</flux:table.column>
+            <flux:table.column>Pessoas no quarto</flux:table.column>
             <flux:table.column sortable>Taxa</flux:table.column>
             <flux:table.column sortable>Ações</flux:table.column>
         </flux:table.columns>
@@ -49,6 +50,7 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $fee->event_site_room_type->name }}</flux:table.cell>
                 <flux:table.cell>{{ $fee->event_batch->descriptor() }}</flux:table.cell>
                 <flux:table.cell>{{ $fee ->category}}</flux:table.cell>
+                <flux:table.cell>{{ $fee->occupancyLabel() }}</flux:table.cell>
                 <flux:table.cell>{{ $fee ->fee}}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">

@@ -6,9 +6,9 @@ use App\Livewire\Forms\Event\Participant\Payment\EventParticipantPaymentForm;
 use App\Models\Event;
 use App\Models\EventFee;
 use App\Models\EventParticipantPayment;
-use App\Models\Person;
+use App\Models\EventParticipantAllocation;
+use App\Services\Pricing\OccupancyPricing;
 use App\Traits\Forms\Event\Participant\Payment\WithEventParticipantPaymentProperties;
-use App\Utils\AgeUtil;
 use App\Utils\CurrencyUtil;
 use Livewire\Attributes\On;
 
@@ -40,10 +40,10 @@ new class extends GenericFormComponent {
                 $query->where('start_date', '<=', $paymentDate)
                     ->where('end_date', '>=', $paymentDate);
             })->get();
-        $person = Person::find($this->personId);
         $event = Event::find($this->eventId);
-        $eventFees = AgeUtil::filterEventFeesByAge($eventFees, $person, $event);
-        $eventFee = $eventFees->first();
+        $allocation = EventParticipantAllocation::with('person')->findOrFail($this->allocationId);
+        $pricing = new OccupancyPricing();
+        $eventFee = $pricing->feeForPerson($eventFees, $allocation, $event, $pricing->occupancy($allocation));
         $this->form->event_fee_id = $eventFee->id;
         $this->form->amount = CurrencyUtil::formatCurrencyToDb($this->form->amount);
         $this->form->payment_date = $paymentDate;

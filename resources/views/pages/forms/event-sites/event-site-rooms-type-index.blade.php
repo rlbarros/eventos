@@ -48,6 +48,7 @@ new class extends GenericIndexComponent
             <flux:table.column sortable>Nome</flux:table.column>
             <flux:table.column sortable>Tipo</flux:table.column>
             <flux:table.column sortable>Nº de leitos</flux:table.column>
+            <flux:table.column>Comodidades</flux:table.column>
             <flux:table.column sortable>Ações</flux:table.column>
         </flux:table.columns>
 
@@ -58,6 +59,7 @@ new class extends GenericIndexComponent
                 <flux:table.cell>{{ $roomType->name }}</flux:table.cell>
                 <flux:table.cell>{{ $roomType->type }}</flux:table.cell>
                 <flux:table.cell>{{ $roomType->beds }}</flux:table.cell>
+                <flux:table.cell>{{ $roomType->amenities ?: '—' }}</flux:table.cell>
                 <flux:table.cell>
                     <div class="flex gap-3">
                         <flux:button wire:click="$dispatch('forms.event-sites.event-site-room-type-view', { id: {{ $roomType->id }} })" icon="document-magnifying-glass" style="cursor: pointer;"

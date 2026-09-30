@@ -4,7 +4,7 @@ use App\Models\Event;
 use App\Models\EventFee;
 use App\Models\EventParticipantAllocation;
 use App\Models\EventParticipantPayment;
-use App\Utils\AgeUtil;
+use App\Services\Pricing\OccupancyPricing;
 
 new class extends \Livewire\Component
 {
@@ -19,6 +19,7 @@ new class extends \Livewire\Component
         $event = Event::find($this->eventId);
         $eventAllocations = EventParticipantAllocation::where('event_id', $this->eventId)->get();
         $eventFees = EventFee::where('event_id', $this->eventId)->get();
+        $pricing = new OccupancyPricing();
         $this->totalFees = 0;
         $this->totalPaidFees = 0;
         foreach ($eventAllocations as $allocation) {
@@ -53,8 +54,8 @@ new class extends \Livewire\Component
                 $person =  $allocation->person;
 
 
-                $filteredEventFees = AgeUtil::filterEventFeesByAge($filterEventFeesByBatch, $person, $event);
-                $eventFeeForRoomType =  $filteredEventFees->first();
+                // a taxa de cada pessoa depende de quantas dividem o quarto na reserva
+                $eventFeeForRoomType = $pricing->feeForPerson($filterEventFeesByBatch, $allocation, $event, $pricing->occupancy($allocation));
                 if ($eventFeeForRoomType) {
                     $this->totalFees += $eventFeeForRoomType->fee;
                 }

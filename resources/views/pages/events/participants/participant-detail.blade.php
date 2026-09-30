@@ -4,7 +4,7 @@ use App\Models\Event;
 use App\Models\EventFee;
 use App\Models\EventParticipantAllocation;
 use App\Models\Person;
-use App\Utils\AgeUtil;
+use App\Services\Pricing\OccupancyPricing;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -20,6 +20,7 @@ new class extends Component {
     public object $roomType;
 
     public Collection $eventFees;
+    public int $occupancy = 1;
 
     #[Url]
     public string $selectedTab = 'payments-tab';
@@ -45,7 +46,16 @@ new class extends Component {
             ->get();
 
         $event = Event::find($this->eventId);
-        $this->eventFees = AgeUtil::filterEventFeesByAge($eventFees, $this->person, $event);
+        $pricing = new OccupancyPricing();
+        $this->occupancy = $pricing->occupancy($this->allocation);
+
+        // uma taxa por lote: a da categoria da pessoa na ocupação da reserva
+        $this->eventFees = new Collection($eventFees->groupBy('event_batch_id')
+            ->map(fn ($batchFees) => $pricing->feeForPerson($batchFees, $this->allocation, $event, $this->occupancy))
+            ->filter()
+            ->sortBy(fn ($fee) => $fee->event_batch->batch)
+            ->values()
+            ->all());
     }
 };
 
@@ -71,7 +81,7 @@ new class extends Component {
                         <flux:heading size="sm" style="font-size:1.1rem;">{{ $this->person->descriptor()  }}</flux:heading>
                         <flux:subheading sixe="xl" class="font-bold" style="font-size:1rem; margin-top:2px;">{{ $this->roomType->descriptor() }}</flux:subheading>
                         @foreach($eventFees as $eventFee)
-                        <flux:subheading sixe="lg" style="margin-top: 4px;">Lote {{ $eventFee->event_batch->batch }} | <strong> {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($eventFee->fee, true)     }}</strong></flux:subheading>
+                        <flux:subheading sixe="lg" style="margin-top: 4px;">Lote {{ $eventFee->event_batch->batch }}{{ $eventFee->min_occupants !== null || $eventFee->max_occupants !== null ? ' (' . $eventFee->occupancyLabel() . ')' : '' }} | <strong> {{ \App\Utils\CurrencyUtil::formatCurrencyToBr($eventFee->fee, true)     }}</strong></flux:subheading>
                         @endforeach
                     </div>
                 </flux:callout.heading>
