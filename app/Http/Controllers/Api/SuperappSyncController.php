@@ -25,7 +25,7 @@ use RuntimeException;
  * Fonte (eventos → superapp), `?desde=` incremental como o /events-sync:
  * - GET /superapp/eventos       evento com local, contato e idade infantil
  * - GET /superapp/lotes         lotes (vigência)
- * - GET /superapp/precos        taxa por lote × tipo de hospedagem × categoria
+ * - GET /superapp/precos        taxa por lote × tipo de hospedagem × categoria × faixa de ocupação
  * - GET /superapp/inscricoes    participações com o tipo de hospedagem
  * - GET /superapp/pagamentos    pagamentos por pessoa e evento
  *
@@ -91,7 +91,7 @@ class SuperappSyncController extends Controller
     {
         $desde = $this->desde($request);
 
-        $query = EventFee::query()->with(['event_site_room_type:id,name,type', 'event_batch:id,batch']);
+        $query = EventFee::query()->with(['event_site_room_type:id,name,type,amenities', 'event_batch:id,batch']);
         $this->aplicarDelta($query, $desde);
 
         $precos = $query->get()->map(fn (EventFee $f) => [
@@ -102,7 +102,10 @@ class SuperappSyncController extends Controller
             'room_type_id'   => $f->event_site_room_type_id,
             'room_type_name' => $f->event_site_room_type?->name,
             'room_type_kind' => $f->event_site_room_type?->type,
+            'room_type_amenities' => $f->event_site_room_type?->amenities,
             'category'       => $f->category,
+            'min_occupants'  => $f->min_occupants,
+            'max_occupants'  => $f->max_occupants,
             'fee'            => $f->fee === null ? null : (float) $f->fee,
             'active'         => true,
             'changed_at'     => $this->alteradoEm($f),

@@ -16,7 +16,8 @@ class EventSiteRoomType extends GenericModel
         'name',
         'event_site_id',
         'type',
-        'beds'
+        'beds',
+        'amenities'
     ];
 
     public $timestamps = false;

@@ -13,12 +13,20 @@ class EventParticipantAllocation extends GenericModel
     protected $fillable = [
         'event_id',
         'person_id',
+        'payer_person_id',
         'event_site_room_id',
         'event_site_room_type_id',
     ];
 
     protected static function booted(): void
     {
+        // quem pagava por outros deixa de ser pagador: cada um volta a pagar a própria taxa
+        static::deleted(function (EventParticipantAllocation $allocation) {
+            static::where('event_id', $allocation->event_id)
+                ->where('payer_person_id', $allocation->person_id)
+                ->update(['payer_person_id' => null]);
+        });
+
         // a exclusão chega à administração pelo /participants-sync (active = false)
         static::deleted(function (EventParticipantAllocation $allocation) {
             SyncDeletion::create([
@@ -57,6 +65,11 @@ class EventParticipantAllocation extends GenericModel
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'person_id');
+    }
+
+    public function payer(): BelongsTo
+    {
+        return $this->belongsTo(Person::class, 'payer_person_id');
     }
 
     public function event_site_room_type(): BelongsTo

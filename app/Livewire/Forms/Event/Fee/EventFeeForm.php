@@ -16,6 +16,8 @@ class EventFeeForm extends GenericForm
     public int $event_batch_id = 0;
     public string $category = '';
     public string $fee = '';
+    public $min_occupants = null;
+    public $max_occupants = null;
 
 
     public function fixedRules(): array
@@ -26,7 +28,16 @@ class EventFeeForm extends GenericForm
             'event_site_room_type_id' => 'required|integer|exists:event_site_room_types,id',
             'event_batch_id' => 'required|integer|exists:events_batches,id',
             'category' => 'required|in:' . implode(',', $categories),
-            'fee' => 'required|numeric|min:0.01|max:999999.99'
+            'fee' => 'required|numeric|min:0.01|max:999999.99',
+            'min_occupants' => 'nullable|integer|min:1|max:99',
+            'max_occupants' => [
+                'nullable', 'integer', 'min:1', 'max:99',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if ($value !== null && $this->min_occupants !== null && $value < $this->min_occupants) {
+                        $fail('O máximo de pessoas não pode ser menor que o mínimo.');
+                    }
+                },
+            ],
         ];
     }
 
@@ -59,5 +70,7 @@ class EventFeeForm extends GenericForm
         $this->event_batch_id = $eventFee->event_batch_id;
         $this->category = $eventFee->category;
         $this->fee = $eventFee->fee;
+        $this->min_occupants = $eventFee->min_occupants;
+        $this->max_occupants = $eventFee->max_occupants;
     }
 }

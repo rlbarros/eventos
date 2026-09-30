@@ -108,4 +108,9 @@ new class extends GenericFormComponent {
             <flux:error name="form.beds" />
         </flux:field>
     </div>
+    <flux:field>
+        <flux:label>Comodidades</flux:label>
+        <flux:textarea rows="2" placeholder="ex.: incluso roupa de cama, banho, ar-condicionado e frigobar" wire:model="form.amenities" :readonly="$this->isReadonly()" />
+        <flux:error name="form.amenities" />
+    </flux:field>
 </livewire:pages::forms.generic-form>
