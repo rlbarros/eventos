@@ -5,6 +5,9 @@ name: Deploy
 # envia o resultado por rsync via SSH e roda as migrations. .env, storage/ e os arquivos de
 # configuração do servidor (.htaccess da raiz, .user.ini, php.ini) ficam lá, intocados.
 #
+# Sem config:cache de propósito: com a configuração em cache o Laravel não lê mais o .env, e
+# qualquer env() usado direto no código (fora de config/) volta vazio.
+#
 # TRAVA: só publica com a variável de repositório DEPLOY_HABILITADO = true.
 # Passo a passo da configuração: docs/deploy-automatico.md
 
@@ -73,14 +76,14 @@ jobs:
             ./ "$SSH_USER@$SSH_HOST:$DESTINO/" | grep '^\*deleting' || echo "(nenhum)"
           rsync "${RSYNC_OPTS[@]}" -e "ssh -p $SSH_PORT" ./ "$SSH_USER@$SSH_HOST:$DESTINO/"
 
-      - name: Migrations e caches
+      - name: Migrations e limpeza de caches
         run: |
           ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" bash -se <<SCRIPT
           set -e
           cd "$DESTINO"
           mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/public
           if [ "$MIGRATE" = "true" ]; then $PHP_BIN artisan migrate --force; fi
-          $PHP_BIN artisan config:cache
-          $PHP_BIN artisan route:cache
-          $PHP_BIN artisan view:cache
+          $PHP_BIN artisan config:clear
+          $PHP_BIN artisan route:clear
+          $PHP_BIN artisan view:clear
           SCRIPT
