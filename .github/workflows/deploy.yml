@@ -1,0 +1,80 @@
+name: Deploy
+
+# Publica o eventos na Hostinger a cada push na main (ou manualmente).
+# Nada de git no servidor: o GitHub Actions instala as dependências, compila os assets (Vite),
+# envia o resultado por rsync via SSH e roda as migrations. .env e storage/ ficam no servidor.
+#
+# TRAVA: só publica com a variável de repositório DEPLOY_HABILITADO = true.
+# Passo a passo da configuração: docs/deploy-automatico.md
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.DEPLOY_HABILITADO == 'true'
+    runs-on: ubuntu-latest
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+      DESTINO: ${{ vars.DEPLOY_DESTINO }}
+      PHP_BIN: ${{ vars.PHP_BIN || 'php' }}
+      MIGRATE: ${{ vars.DEPLOY_MIGRATE || 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Dependências de produção
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-progress
+
+      - name: Assets (Vite)
+        run: |
+          npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+          npm run build
+
+      - name: Chave SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: Enviar arquivos
+        run: |
+          test -n "$DESTINO" || { echo "::error::Defina a variável DEPLOY_DESTINO (docs/deploy-automatico.md)"; exit 1; }
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "test -f '$DESTINO/.env'" \
+            || { echo "::error::$DESTINO/.env não existe no servidor; confira DEPLOY_DESTINO"; exit 1; }
+          rsync -az --delete -e "ssh -p $SSH_PORT" \
+            --exclude '/.env' --exclude '/storage/' --exclude '/public/storage' \
+            --exclude '/.git' --exclude '/.github/' --exclude '/tests/' \
+            --exclude '/node_modules/' \
+            ./ "$SSH_USER@$SSH_HOST:$DESTINO/"
+
+      - name: Migrations e caches
+        run: |
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" bash -se <<SCRIPT
+          set -e
+          cd "$DESTINO"
+          mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/public
+          if [ "$MIGRATE" = "true" ]; then $PHP_BIN artisan migrate --force; fi
+          $PHP_BIN artisan config:cache
+          $PHP_BIN artisan route:cache
+          $PHP_BIN artisan view:cache
+          SCRIPT
